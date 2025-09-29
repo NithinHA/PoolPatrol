@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: PlasmaWorldPos
+  m_Shader: {fileID: 4800000, guid: cd115cacc9099064aa690ee386500b1a, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 10305, guid: 0000000000000000f000000000000000, type: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMultiplier: 1.85
+    - _Intensity: 61.11
+    - _PlasmaEffectMultiplier: 0.066
+    - _Radius: 5.16
+    - _Scale: 0.34
+    - _Stretch: 21.94
+    - _Timescale: 0.3
+    - _WorldUVScale: 0.36
+    m_Colors:
+    - _Color1: {r: 0.45080093, g: 0.6323333, b: 0.7584905, a: 0}
+    - _Color2: {r: 0.46814516, g: 0.81886786, b: 0.7959738, a: 0}
+    - _FoamColor: {r: 0.8867924, g: 0.3597365, b: 0.3597365, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
