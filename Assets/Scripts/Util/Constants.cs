@@ -45,4 +45,13 @@ public class Constants
         public const string BOOTSTRAP = "Bootstrap";
         public const string GAME = "Game";
     }
+
+    public static class MultiplayerConstants
+    {
+        public const string PlayerProperty_Name = "Name";
+        public const string PlayerProperty_Character = "Character";
+        public const string PlayerProperty_Floatie = "Floatie";
+        public const string PlayerProperty_Weapon = "Weapon";
+        public const string PlayerProperty_Ready = "Ready";
+    }
 }
