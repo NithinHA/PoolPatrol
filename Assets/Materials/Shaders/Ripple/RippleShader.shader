@@ -2,7 +2,7 @@ Shader "Unlit/RippleShader"
 {
     Properties
     {
-        
+        _Damping ("Damping", Float) = 0.99
     }
     SubShader
     {
@@ -32,6 +32,7 @@ Shader "Unlit/RippleShader"
             sampler2D _PrevRT;
             sampler2D _CurrentRT;
             float4 _CurrentRT_TexelSize;
+            float _Damping;
 
             v2f vert (appdata v)
             {
@@ -55,7 +56,7 @@ Shader "Unlit/RippleShader"
                 float p11 = tex2D(_PrevRT, uv).x;
 
                 float d = (p10 + p01 + p21 + p12)/2 - p11;
-                d *= 0.99f;
+                d *= _Damping;
                 return d;
             }
             ENDCG

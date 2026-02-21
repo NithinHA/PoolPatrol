@@ -21,12 +21,12 @@ namespace Movement
 
         public void Tick()
         {
+            DidBounce = false; // Clear previous frame's result — then CheckScreenBounce() can set it fresh
             CheckScreenBounce();
         }
 
         public void FixedTick(Vector2 velocity)
         {
-            DidBounce = false;
             _lastVelocity = velocity;
         }
 
@@ -81,20 +81,41 @@ namespace Movement
                 return;
 
             ContactPoint2D contact = col.contacts[0];
+            
+            // Check if we hit a dynamic entity (Player, Enemy, Bullet)
+            // If NOT, we treat it as a static wall/obstacle and FORCE reflection
+            bool isDynamicEntity = col.gameObject.CompareTag(Constants.GameConstants.TAG_Player) ||
+                                   col.gameObject.CompareTag(Constants.GameConstants.TAG_Enemy) ||
+                                   col.gameObject.CompareTag(Constants.GameConstants.TAG_Bullet);
+
+            // Check for Head-On vs Rear-Hit
             float dotProduct = Vector2.Dot(_lastVelocity.normalized, -contact.normal);
-            // reflected bounce
-            if (dotProduct > 0.1f)
+            
+            // Head-on collision (approx) -> Reflect
+            if (!isDynamicEntity || dotProduct > 0.1f)
             {
+                Debug.Log("Normal bounce off");
                 Vector2 reflectVelocity = Vector2.Reflect(_lastVelocity, contact.normal);
                 BounceOff(reflectVelocity, transform.position);
             }
-            // rear hit; propulsion
+            // Rear hit / Glancing blow -> Propulsion (Boost away)
             else
             {
-                Rigidbody2D other = col.rigidbody;
-                Vector2 otherVelocity = other != null ? other.linearVelocity : Vector2.zero;
-                Vector2 relativeVelocity = otherVelocity - _lastVelocity;
-                Vector2 newVelocity = _lastVelocity + relativeVelocity * 3;
+                Debug.Log("Rear-hit bounce off");
+                // Fix: Use separation vector instead of relative velocity to ensure we move AWAY from the collider
+                // This prevents the "wrong direction" bug when moving in similar directions
+                Vector2 separationDir = (transform.position - col.transform.position).normalized;
+                
+                // If separation is zero (exact overlap), pick a random direction
+                if (separationDir == Vector2.zero)
+                    separationDir = Random.insideUnitCircle.normalized;
+
+                // Apply boost in the separation direction
+                // We keep some of the original velocity magnitude but redirect it
+                float currentSpeed = _lastVelocity.magnitude;
+                float boostSpeed = Mathf.Max(currentSpeed, 5f) * 1.5f; // Ensure minimum boost
+                
+                Vector2 newVelocity = separationDir * boostSpeed;
                 BoostForward(newVelocity, transform.position);
             }
         }

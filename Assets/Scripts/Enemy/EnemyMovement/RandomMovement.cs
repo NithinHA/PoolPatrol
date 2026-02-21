@@ -21,13 +21,15 @@ namespace Enemy.Movement
 
         public override void Tick()
         {
-            _bounceMovementHandler?.Tick();
+            // Read the bounce result BEFORE calling Tick(), which resets DidBounce
             if (_bounceMovementHandler != null && _bounceMovementHandler.DidBounce)
             {
                 MoveDirection = _bounceMovementHandler.NewVelocity.normalized;
                 transform.position = _bounceMovementHandler.NewPosition;
                 AdjustRotation();   // adjustment of rotation is only needed if angle actually changes.
             }
+            
+            _bounceMovementHandler?.Tick(); // Clears DidBounce — must come AFTER the check above
         }
 
         public override void FixedTick()
