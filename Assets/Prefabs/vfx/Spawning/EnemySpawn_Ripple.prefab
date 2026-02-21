@@ -1368,7 +1368,7 @@ ParticleSystem:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
         key1: {r: 0.5801887, g: 0.9193304, b: 1, a: 0}
-        key2: {r: 0.41037738, g: 0.5668078, b: 1, a: 0.039215688}
+        key2: {r: 0.7528302, g: 0.8187421, b: 1, a: 0.039215688}
         key3: {r: 0.5801887, g: 0.9193304, b: 1, a: 0.039215688}
         key4: {r: 1, g: 0.017601715, b: 0, a: 0.039215688}
         key5: {r: 1, g: 1, b: 1, a: 0.039215688}
@@ -1391,7 +1391,7 @@ ParticleSystem:
         atime6: 0
         atime7: 0
         m_Mode: 0
-        m_ColorSpace: -1
+        m_ColorSpace: 0
         m_NumColorKeys: 3
         m_NumAlphaKeys: 2
       minGradient:
@@ -10731,15 +10731,15 @@ ParticleSystem:
           tangentMode: 34
           weightedMode: 0
           inWeight: 0
-          outWeight: 0
+          outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
           value: 1
-          inSlope: 1
-          outSlope: 1
-          tangentMode: 34
+          inSlope: 2.1123452
+          outSlope: 2.1123452
+          tangentMode: 0
           weightedMode: 0
-          inWeight: 0
+          inWeight: 0.054068804
           outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
@@ -11046,9 +11046,9 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 1, b: 1, a: 1}
-        key1: {r: 0.32087573, g: 0.5433693, b: 0.90943396, a: 0}
-        key2: {r: 1, g: 1, b: 1, a: 0.039215688}
+        key0: {r: 1, g: 1, b: 1, a: 0.60784316}
+        key1: {r: 0.39885363, g: 0.6496345, b: 0.8037735, a: 0}
+        key2: {r: 0.7853827, g: 0.8439939, b: 0.93962264, a: 0.039215688}
         key3: {r: 0.5660378, g: 0.32025725, b: 0, a: 0.039215688}
         key4: {r: 0, g: 0.98239845, b: 1, a: 0.039215688}
         key5: {r: 1, g: 1, b: 1, a: 0.039215688}
@@ -11056,7 +11056,7 @@ ParticleSystem:
         key7: {r: 0, g: 0, b: 0, a: 0}
         ctime0: 0
         ctime1: 26445
-        ctime2: 30410
+        ctime2: 26445
         ctime3: 48109
         ctime4: 45875
         ctime5: 65535
