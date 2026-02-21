@@ -1,4 +1,5 @@
 using System;
+using PTL.Framework.Services;
 using UnityEngine;
 
 namespace Movement
@@ -43,7 +44,8 @@ namespace Movement
                 _rb.linearVelocity = _moveDirection * m_TargetSpeed;
             }
 
-            CheckScreenBounce();
+            if (Constants.EnvironmentConstants.IsMovementWithinScreenBounds)
+                CheckScreenBounce();
         }
 
         public void FixedTick()

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Enemy;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
@@ -12,6 +13,8 @@ public class Spawner : MonoBehaviour
     [SerializeField] private float m_SpawnDelay = 0.5f;
     [SerializeField] private int m_MaxEnemies = 15;
     [SerializeField] private float m_EnemySpacing = 1.5f; // Min distance between enemies
+    [Space]
+    [SerializeField] private CinemachineTargetGroup m_CinemachineTargetGroup;
 
     private float m_SpawnTimer;
     private float m_ElapsedTime;

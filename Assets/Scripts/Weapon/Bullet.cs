@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Enemy;
@@ -31,9 +32,44 @@ namespace Weapon
             _lastFrameVelocity = m_Rb2D.linearVelocity;
         }
 
-        private void OnCollisionEnter2D(Collision2D other)
+        // private void OnCollisionEnter2D(Collision2D other)
+        // {
+        //     if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Player))
+        //     {
+        //         PlayerController player = other.gameObject.GetComponent<PlayerController>();
+        //         if(BulletSource == BulletSource.Enemy)
+        //         {
+        //             player.PlayerHealth.TakeDamage();
+        //         }
+        //         DestroyBullet();
+        //     }
+        //     else if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Enemy))
+        //     {
+        //         EnemyController enemy = other.gameObject.GetComponent<EnemyController>();
+        //         if (BulletSource == BulletSource.Player || BulletSource == BulletSource.Environment)
+        //         {
+        //             Dictionary<string, object> parameters = new Dictionary<string, object>()
+        //             {
+        //                 { Constants.GameConstants.BULLET_COLLISION_Collider, other },
+        //                 { Constants.GameConstants.BULLET_COLLISION_Direction, _lastFrameVelocity.normalized }
+        //             };
+        //             enemy.Die(parameters);
+        //         }
+        //         DestroyBullet();
+        //     }
+        //     else
+        //     {
+        //         DestroyBullet();    // destroys on collision with anything!
+        //     }
+        // }
+
+        private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Player))
+            if (other.gameObject.CompareTag(Constants.GameConstants.TAG_ScreenEdges))
+            {
+                Instantiate(m_BulletImpactEffect, transform.position, Quaternion.identity);
+            }
+            else if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Player))
             {
                 PlayerController player = other.gameObject.GetComponent<PlayerController>();
                 if(BulletSource == BulletSource.Enemy)
@@ -56,10 +92,10 @@ namespace Weapon
                 }
                 DestroyBullet();
             }
-            else
-            {
-                DestroyBullet();    // destroys on collision with anything!
-            }
+            // else
+            // {
+            //     DestroyBullet();    // destroys on collision with anything!
+            // }
         }
 
 #endregion

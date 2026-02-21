@@ -8,6 +8,7 @@ public class Constants
         public const string TAG_Player = "Player";
         public const string TAG_Enemy = "Enemy";
         public const string TAG_Bullet = "Bullet";
+        public const string TAG_ScreenEdges = "ScreenEdges";
 
 #endregion
 
@@ -22,8 +23,9 @@ public class Constants
 
     public class EnvironmentConstants
     {
-        public const float X_MIN = -11.5f, X_MAX = 11.5f;
-        public const float Y_MIN = -5.5f, Y_MAX = 5.5f;
+        public const bool IsMovementWithinScreenBounds = true;
+        public const float X_MIN = -12f, X_MAX = 12f;
+        public const float Y_MIN = -7f, Y_MAX = 7f;
         public const float SpawnWidth = 9.5f, SpawnHeight = 5.5f;
     }
     

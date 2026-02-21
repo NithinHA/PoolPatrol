@@ -22,7 +22,8 @@ namespace Movement
         public void Tick()
         {
             DidBounce = false; // Clear previous frame's result — then CheckScreenBounce() can set it fresh
-            CheckScreenBounce();
+            if (Constants.EnvironmentConstants.IsMovementWithinScreenBounds)
+                CheckScreenBounce();
         }
 
         public void FixedTick(Vector2 velocity)
@@ -94,14 +95,12 @@ namespace Movement
             // Head-on collision (approx) -> Reflect
             if (!isDynamicEntity || dotProduct > 0.1f)
             {
-                Debug.Log("Normal bounce off");
                 Vector2 reflectVelocity = Vector2.Reflect(_lastVelocity, contact.normal);
                 BounceOff(reflectVelocity, transform.position);
             }
             // Rear hit / Glancing blow -> Propulsion (Boost away)
             else
             {
-                Debug.Log("Rear-hit bounce off");
                 // Fix: Use separation vector instead of relative velocity to ensure we move AWAY from the collider
                 // This prevents the "wrong direction" bug when moving in similar directions
                 Vector2 separationDir = (transform.position - col.transform.position).normalized;
