@@ -85,7 +85,7 @@ namespace Weapon
                 {
                     Dictionary<string, object> parameters = new Dictionary<string, object>()
                     {
-                        { Constants.GameConstants.BULLET_COLLISION_Collider, other },
+                        { Constants.GameConstants.BULLET_COLLISION_Collider, other.gameObject },
                         { Constants.GameConstants.BULLET_COLLISION_Direction, _lastFrameVelocity.normalized }
                     };
                     enemy.Die(parameters);

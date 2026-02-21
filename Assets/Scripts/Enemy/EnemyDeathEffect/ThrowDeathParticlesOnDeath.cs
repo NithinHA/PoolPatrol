@@ -10,8 +10,8 @@ namespace Enemy.Death
 
         public void Execute(Dictionary<string, object> parameters)
         {
-            Collision2D collision = parameters.ContainsKey(Constants.GameConstants.BULLET_COLLISION_Collider)
-                ? parameters[Constants.GameConstants.BULLET_COLLISION_Collider] as Collision2D : null;
+            GameObject collision = parameters.ContainsKey(Constants.GameConstants.BULLET_COLLISION_Collider)
+                ? parameters[Constants.GameConstants.BULLET_COLLISION_Collider] as GameObject : null;
             if (collision == null)
             {
                 Failure();
