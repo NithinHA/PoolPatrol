@@ -11,7 +11,7 @@ namespace Player
         public ParticleEmitter WaterRippleParticleEmitter;
 
         private ImpulseMover _impulseMover;
-        public Action<Vector2> OnFireInput;
+        public Action<Vector2, Vector2> OnFireInput;
 
         private Camera _mainCam;
 
@@ -32,8 +32,9 @@ namespace Player
 #if UNITY_EDITOR
              if (Input.GetMouseButtonDown(0))
              {
-                 Vector2 fireDir = (_mainCam.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
-                 OnFireInput?.Invoke(fireDir);
+                 Vector3 mousePos = _mainCam.ScreenToWorldPoint(Input.mousePosition);
+                 Vector2 fireDir = (mousePos - transform.position).normalized;
+                 OnFireInput?.Invoke(fireDir, mousePos);
                  _impulseMover.ApplyImpulse(-fireDir);
              }
 #elif UNITY_ANDROID || UNITY_IOS

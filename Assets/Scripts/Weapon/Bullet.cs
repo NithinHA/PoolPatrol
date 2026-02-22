@@ -19,6 +19,9 @@ namespace Weapon
 
         private WaitForSeconds _outOfBoundDelay = new WaitForSeconds(1f);
         private Vector3 _lastFrameVelocity;
+        
+        public Action<BulletSource> OnBulletImpact;
+        public Action OnBulletDestroy;
 
 #region Unity callbacks
 
@@ -75,6 +78,7 @@ namespace Weapon
                 if(BulletSource == BulletSource.Enemy)
                 {
                     player.PlayerHealth.TakeDamage();
+                    OnBulletImpact?.Invoke(BulletSource);
                 }
                 DestroyBullet();
             }
@@ -89,6 +93,7 @@ namespace Weapon
                         { Constants.GameConstants.BULLET_COLLISION_Direction, _lastFrameVelocity.normalized }
                     };
                     enemy.Die(parameters);
+                    OnBulletImpact?.Invoke(BulletSource);
                 }
                 DestroyBullet();
             }
@@ -114,7 +119,7 @@ namespace Weapon
             if (viewportPos.x < -1 || viewportPos.x > 2 || 
                 viewportPos.y < -1 || viewportPos.y > 2)
             {
-                Destroy(this.gameObject);
+                DestroyBullet(false);
                 yield break;
             }
 
@@ -133,10 +138,12 @@ namespace Weapon
             m_TrailRenderer.startColor = color;
         }
 
-        public void DestroyBullet()
+        public void DestroyBullet(bool withParticles = true)
         {
-            Instantiate(m_BulletImpactEffect, transform.position, Quaternion.identity);
+            if (withParticles)
+                Instantiate(m_BulletImpactEffect, transform.position, Quaternion.identity);
             Destroy(this.gameObject);
+            OnBulletDestroy?.Invoke();
         }
     }
 

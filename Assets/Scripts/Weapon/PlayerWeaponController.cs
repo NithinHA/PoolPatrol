@@ -9,6 +9,7 @@ namespace Weapon
         [SerializeField] private float m_WeaponRotateTweenDuration = .05f;
         [Header("References")]
         [SerializeField] private PlayerController m_PlayerController;
+        public Crosshair CrosshairPrefab;
         
 #region Unity callbacks
 
@@ -25,12 +26,13 @@ namespace Weapon
 
 #endregion
 
-        private void OnFireInput(Vector2 direction)
+        private void OnFireInput(Vector2 direction, Vector2 mousePos)
         {
+            Crosshair crosshair = Instantiate(CrosshairPrefab, mousePos, Quaternion.identity) as Crosshair;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 180;  // +180 because by default the gun is rotated 180 degree
             transform.DORotate(new Vector3(0,0,angle), m_WeaponRotateTweenDuration, RotateMode.Fast).OnComplete(() =>
             {
-                ActiveWeapon.FireWeapon(direction, BulletSource.Player);
+                ActiveWeapon.FireWeapon(direction, BulletSource.Player, crosshair);
             });
         }
     }
