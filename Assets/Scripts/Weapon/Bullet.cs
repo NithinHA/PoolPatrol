@@ -71,6 +71,7 @@ namespace Weapon
             if (other.gameObject.CompareTag(Constants.GameConstants.TAG_ScreenEdges))
             {
                 Instantiate(m_BulletImpactEffect, transform.position, Quaternion.identity);
+                OnBulletDestroy?.Invoke();
             }
             else if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Player))
             {
