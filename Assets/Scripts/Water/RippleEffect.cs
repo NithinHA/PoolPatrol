@@ -10,47 +10,51 @@ public class RippleEffect : MonoBehaviour
     private RenderTexture CurrRT, PrevRT, TempRT;
     public Shader RippleShader, AddShader;
     private Material RippleMat, AddMat;
-    // Start is called before the first frame update
+    
+    private Material targetMaterial;
+    private int objectsRTId;
+    private int currentRTId;
+    private int prevRTId;
+    private int rippleTexId;
+
     void Start()
     {
-        //Creating render textures and materials
-        CurrRT = new RenderTexture(TextureSize, TextureSize, 0, RenderTextureFormat.RFloat);
-        PrevRT = new RenderTexture(TextureSize, TextureSize, 0, RenderTextureFormat.RFloat);
-        TempRT = new RenderTexture(TextureSize, TextureSize, 0, RenderTextureFormat.RFloat);
+        objectsRTId = Shader.PropertyToID("_ObjectsRT");
+        currentRTId = Shader.PropertyToID("_CurrentRT");
+        prevRTId = Shader.PropertyToID("_PrevRT");
+        rippleTexId = Shader.PropertyToID("_RippleTex");
+
+        // Use RHalf (16-bit float) instead of RFloat (32-bit float) for mobile performance
+        CurrRT = new RenderTexture(TextureSize, TextureSize, 0, RenderTextureFormat.RHalf);
+        PrevRT = new RenderTexture(TextureSize, TextureSize, 0, RenderTextureFormat.RHalf);
+        TempRT = new RenderTexture(TextureSize, TextureSize, 0, RenderTextureFormat.RHalf);
         RippleMat = new Material(RippleShader);
         AddMat = new Material(AddShader);
 
-        //Change the texture in the material of this object to the render texture calculated by the ripple shader.
-        GetComponent<Renderer>().material.SetTexture("_RippleTex", CurrRT);
-
-        StartCoroutine(ripples());
+        targetMaterial = GetComponent<Renderer>().material;
+        targetMaterial.SetTexture(rippleTexId, CurrRT);
     }
 
-    // Update is called once per frame
-    IEnumerator ripples()
+    void Update()
     {
-        //Copy the result of blending the render textures to TempRT.
-        AddMat.SetTexture("_ObjectsRT", ObjectsRT);
-        AddMat.SetTexture("_CurrentRT", CurrRT);
+        AddMat.SetTexture(objectsRTId, ObjectsRT);
+        AddMat.SetTexture(currentRTId, CurrRT);
         Graphics.Blit(null, TempRT, AddMat);
 
         RenderTexture rt0 = TempRT;
         TempRT = CurrRT;
         CurrRT = rt0;
 
-        //Calculate the ripple animation using ripple shader.
-        RippleMat.SetTexture("_PrevRT", PrevRT);
-        RippleMat.SetTexture("_CurrentRT", CurrRT);
+        RippleMat.SetTexture(prevRTId, PrevRT);
+        RippleMat.SetTexture(currentRTId, CurrRT);
         Graphics.Blit(null, TempRT, RippleMat);
-        Graphics.Blit(TempRT, PrevRT);
 
-        //Swap PrevRT and CurrentRT to calculate the result for the next frame.
-        RenderTexture rt = PrevRT;
+        // Optimize: Eliminated expensive Graphics.Blit(TempRT, PrevRT) by using a 3-way reference swap.
+        RenderTexture oldPrev = PrevRT;
         PrevRT = CurrRT;
-        CurrRT = rt;
+        CurrRT = TempRT;
+        TempRT = oldPrev;
 
-        //Wait for one frame and then execute again.
-        yield return null;
-        StartCoroutine(ripples());
+        targetMaterial.SetTexture(rippleTexId, CurrRT);
     }
 }

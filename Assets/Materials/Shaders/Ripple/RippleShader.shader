@@ -31,8 +31,8 @@ Shader "Unlit/RippleShader"
 
             sampler2D _PrevRT;
             sampler2D _CurrentRT;
-            float4 _CurrentRT_TexelSize;
-            float _Damping;
+            half4 _CurrentRT_TexelSize;
+            half _Damping;
 
             v2f vert (appdata v)
             {
@@ -42,22 +42,22 @@ Shader "Unlit/RippleShader"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            half4 frag (v2f i) : SV_Target
             {
-                float3 e = float3(_CurrentRT_TexelSize.xy,0);
-                float2 uv = i.uv;
-                float speed = 1.0f;
+                half3 e = half3(_CurrentRT_TexelSize.xy, 0);
+                half2 uv = i.uv;
+                half speed = 1.0;
 
-                float p10 = tex2D(_CurrentRT, uv - e.zy * speed).x;
-                float p01 = tex2D(_CurrentRT, uv - e.xz * speed).x;
-                float p21 = tex2D(_CurrentRT, uv + e.xz * speed).x;
-                float p12 = tex2D(_CurrentRT, uv + e.zy * speed).x;
+                half p10 = tex2D(_CurrentRT, uv - e.zy * speed).x;
+                half p01 = tex2D(_CurrentRT, uv - e.xz * speed).x;
+                half p21 = tex2D(_CurrentRT, uv + e.xz * speed).x;
+                half p12 = tex2D(_CurrentRT, uv + e.zy * speed).x;
 
-                float p11 = tex2D(_PrevRT, uv).x;
+                half p11 = tex2D(_PrevRT, uv).x;
 
-                float d = (p10 + p01 + p21 + p12)/2 - p11;
+                half d = (p10 + p01 + p21 + p12) * 0.5 - p11;
                 d *= _Damping;
-                return d;
+                return half4(d, d, d, d);
             }
             ENDCG
         }

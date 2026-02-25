@@ -41,11 +41,11 @@ Shader "Unlit/Add"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            half4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                fixed4 tex1 = tex2D(_ObjectsRT, i.uv);
-                fixed4 tex2 = tex2D(_CurrentRT, i.uv);
+                half4 tex1 = tex2D(_ObjectsRT, i.uv);
+                half4 tex2 = tex2D(_CurrentRT, i.uv);
                 return tex1 + tex2;
             }
             ENDCG
