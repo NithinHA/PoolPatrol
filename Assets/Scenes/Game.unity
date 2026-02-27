@@ -916,13 +916,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 596631121}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0.40373734, w: 0.9148749}
   m_LocalPosition: {x: -7.29, y: 2.72, z: 0}
-  m_LocalScale: {x: 7.31, y: 7.31, z: 7.31}
+  m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1609833009}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -47.624}
 --- !u!58 &596631123
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1110,13 +1110,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 690196801}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0.7914499, w: 0.6112341}
   m_LocalPosition: {x: 7.64, y: -3.1, z: 0}
-  m_LocalScale: {x: 7.31, y: 7.31, z: 7.31}
+  m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1609833009}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -104.642}
 --- !u!58 &690196803
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1420,6 +1420,11 @@ MonoBehaviour:
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
   FollowOffset: {x: 0, y: 0, z: -10}
+--- !u!198 &980424064 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 4252400521507117859, guid: 51de5c47efd038846b3f0f0b2a491938, type: 3}
+  m_PrefabInstance: {fileID: 1594785606}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1034125251
 GameObject:
   m_ObjectHideFlags: 0
@@ -1586,13 +1591,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1282281863}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.10214068, w: 0.99476993}
   m_LocalPosition: {x: 4.1, y: 4.2, z: 0}
-  m_LocalScale: {x: 7.31, y: 7.31, z: 7.31}
+  m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1609833009}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 11.725}
 --- !u!58 &1282281865
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2047,6 +2052,10 @@ PrefabInstance:
       propertyPath: BulletSpeed
       value: 60
       objectReference: {fileID: 0}
+    - target: {fileID: 4101563097455054269, guid: 51de5c47efd038846b3f0f0b2a491938, type: 3}
+      propertyPath: m_MuzzleFlash
+      value: 
+      objectReference: {fileID: 980424064}
     - target: {fileID: 5279379673753254852, guid: 51de5c47efd038846b3f0f0b2a491938, type: 3}
       propertyPath: m_Name
       value: Player
@@ -2059,6 +2068,10 @@ PrefabInstance:
       propertyPath: CrosshairPrefab
       value: 
       objectReference: {fileID: 8383980848640880226, guid: 92dbd23d6c7e0764ebef8bf785a2fe94, type: 3}
+    - target: {fileID: 6514116320804890438, guid: 51de5c47efd038846b3f0f0b2a491938, type: 3}
+      propertyPath: m_WeaponRotateTweenDuration
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 6600218474983176324, guid: 51de5c47efd038846b3f0f0b2a491938, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -2197,13 +2210,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1743044780}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.97156006, w: 0.23679332}
   m_LocalPosition: {x: -6.3, y: -4.5, z: 0}
-  m_LocalScale: {x: 7.31, y: 7.31, z: 7.31}
+  m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1609833009}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 152.605}
 --- !u!58 &1743044782
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2444,10 +2457,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AllEnemies:
+  - {fileID: 8294556068584543407, guid: 983f8244da7cacb4c9bba8222c8a84b8, type: 3}
   - {fileID: 451910388429490016, guid: e037176f071c95a4f86e92d5c18a604c, type: 3}
   - {fileID: 9002047774425090281, guid: 1ebd31b783d87ae45a0091eb189399d7, type: 3}
   - {fileID: 8425030537939918830, guid: bbba8f00c1748124abb910d59d0533db, type: 3}
-  - {fileID: 8294556068584543407, guid: 983f8244da7cacb4c9bba8222c8a84b8, type: 3}
   m_SpawnParticles: {fileID: 4978544030283683510, guid: 5287919e77ea47547a15f6ecdff2a86c, type: 3}
   m_InitialSpawnInterval: 3
   m_MinSpawnInterval: 0.8

@@ -38,6 +38,6 @@ Material:
     - _RingDistance: 0.4
     - _RingWidth: 0.06
     m_Colors:
-    - _Color: {r: 0.50748885, g: 1, b: 0.48113203, a: 1}
+    - _Color: {r: 0.86415094, g: 0.3896832, b: 0.65419596, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

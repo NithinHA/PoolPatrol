@@ -1,6 +1,7 @@
 using System;
 using Movement;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Player
 {
@@ -29,23 +30,15 @@ namespace Player
         {
             _impulseMover.Tick();
 
-#if UNITY_EDITOR
-             if (Input.GetMouseButtonDown(0))
-             {
-                 Vector3 mousePos = _mainCam.ScreenToWorldPoint(Input.mousePosition);
-                 Vector2 fireDir = (mousePos - transform.position).normalized;
-                 OnFireInput?.Invoke(fireDir, mousePos);
-                 _impulseMover.ApplyImpulse(-fireDir);
-             }
-#elif UNITY_ANDROID || UNITY_IOS
-            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+            if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
             {
-                Vector2 touchPosition = _mainCam.ScreenToWorldPoint(Input.GetTouch(0).position);
-                Vector2 fireDir = (touchPosition - (Vector2)transform.position).normalized;
-                OnFireInput?.Invoke(fireDir);
+                Vector2 pointerPos = Pointer.current.position.ReadValue();
+                Vector3 worldPos = _mainCam.ScreenToWorldPoint(pointerPos);
+                Vector2 fireDir = ((Vector2)worldPos - (Vector2)transform.position).normalized;
+                
+                OnFireInput?.Invoke(fireDir, worldPos);
                 _impulseMover.ApplyImpulse(-fireDir);
             }
-#endif
         }
 
         private void FixedUpdate()

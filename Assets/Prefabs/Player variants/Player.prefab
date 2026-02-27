@@ -5994,6 +5994,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_WeaponRotateTweenDuration: 0.1
   m_PlayerController: {fileID: 7653214830081311281}
+  CrosshairPrefab: {fileID: 0}
 --- !u!1 &7056443084556627072
 GameObject:
   m_ObjectHideFlags: 0
