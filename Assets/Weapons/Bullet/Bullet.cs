@@ -12,8 +12,8 @@ namespace Weapon
         [SerializeField] private ParticleSystem m_BulletImpactEffect;
         [SerializeField] private Rigidbody2D m_Rb2D;
         [SerializeField] private TrailRenderer m_TrailRenderer;
+        [SerializeField] private CircleCollider2D m_Collider;
 
-        public Color BulletColor;
         private BulletSource _bulletSource;
         public BulletSource BulletSource => _bulletSource;
 
@@ -34,37 +34,6 @@ namespace Weapon
         {
             _lastFrameVelocity = m_Rb2D.linearVelocity;
         }
-
-        // private void OnCollisionEnter2D(Collision2D other)
-        // {
-        //     if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Player))
-        //     {
-        //         PlayerController player = other.gameObject.GetComponent<PlayerController>();
-        //         if(BulletSource == BulletSource.Enemy)
-        //         {
-        //             player.PlayerHealth.TakeDamage();
-        //         }
-        //         DestroyBullet();
-        //     }
-        //     else if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Enemy))
-        //     {
-        //         EnemyController enemy = other.gameObject.GetComponent<EnemyController>();
-        //         if (BulletSource == BulletSource.Player || BulletSource == BulletSource.Environment)
-        //         {
-        //             Dictionary<string, object> parameters = new Dictionary<string, object>()
-        //             {
-        //                 { Constants.GameConstants.BULLET_COLLISION_Collider, other },
-        //                 { Constants.GameConstants.BULLET_COLLISION_Direction, _lastFrameVelocity.normalized }
-        //             };
-        //             enemy.Die(parameters);
-        //         }
-        //         DestroyBullet();
-        //     }
-        //     else
-        //     {
-        //         DestroyBullet();    // destroys on collision with anything!
-        //     }
-        // }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
@@ -106,6 +75,13 @@ namespace Weapon
 
 #endregion
 
+        public void SetupScale(float sizeMultiplier, float colliderSizeMultiplier)
+        {
+            transform.localScale *= sizeMultiplier;
+            SetTrailSize(sizeMultiplier);
+            m_Collider.radius *= colliderSizeMultiplier;
+        }
+        
         public void Fire(Vector2 direction, float speed, BulletSource source)
         {
             _bulletSource = source;
@@ -128,18 +104,18 @@ namespace Weapon
             StartCoroutine(OutOfBoundsCheckRoutine());
         }
 
-        public void SetTrailSize(float multiplier)
+        private void SetTrailSize(float multiplier)
         {
             float currentSize = m_TrailRenderer.startWidth;
             m_TrailRenderer.startWidth = m_TrailRenderer.endWidth = currentSize * multiplier;
         }
 
-        public void SetTrailColor(Color color)
+        private void SetTrailColor(Color color)
         {
             m_TrailRenderer.startColor = color;
         }
 
-        public void DestroyBullet(bool withParticles = true)
+        private void DestroyBullet(bool withParticles = true)
         {
             if (withParticles)
                 Instantiate(m_BulletImpactEffect, transform.position, Quaternion.identity);

@@ -5706,6 +5706,10 @@ PrefabInstance:
       propertyPath: BulletSizeMultiplier
       value: 1.2
       objectReference: {fileID: 0}
+    - target: {fileID: 8065174694294064079, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
+      propertyPath: BulletColliderSizeMultiplier
+      value: 0.86
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

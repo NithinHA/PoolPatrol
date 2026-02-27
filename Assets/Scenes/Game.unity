@@ -2056,6 +2056,14 @@ PrefabInstance:
       propertyPath: m_MuzzleFlash
       value: 
       objectReference: {fileID: 980424064}
+    - target: {fileID: 4101563097455054269, guid: 51de5c47efd038846b3f0f0b2a491938, type: 3}
+      propertyPath: BulletSizeMultiplier
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4101563097455054269, guid: 51de5c47efd038846b3f0f0b2a491938, type: 3}
+      propertyPath: BulletColliderSizeMultiplier
+      value: 1.2
+      objectReference: {fileID: 0}
     - target: {fileID: 5279379673753254852, guid: 51de5c47efd038846b3f0f0b2a491938, type: 3}
       propertyPath: m_Name
       value: Player

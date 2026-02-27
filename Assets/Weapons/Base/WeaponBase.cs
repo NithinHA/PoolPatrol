@@ -11,24 +11,18 @@ namespace Weapon
         
         public float BulletSpeed = 10;
         public float BulletSizeMultiplier = 1;
+        public float BulletColliderSizeMultiplier = 1f;     // makes the bullet collider large/small
 
         public virtual void FireWeapon(Vector2 direction, BulletSource source, Crosshair crosshair = null)
         {
             Bullet bullet = Instantiate(m_BulletPrefab, m_FirePoint.position, Quaternion.identity);
-            SetBulletScale(bullet); 
+            bullet.SetupScale(BulletSizeMultiplier, BulletColliderSizeMultiplier);
             bullet.Fire(direction, BulletSpeed, source);
             if (source == BulletSource.Player && crosshair != null)
             {
                 _crosshair = crosshair;
                 _crosshair.SubscribeToBullet(bullet);
             }
-        }
-
-        private void SetBulletScale(Bullet bullet)
-        {
-            Vector3 scale = bullet.transform.localScale;
-            bullet.transform.localScale = scale * BulletSizeMultiplier;
-            bullet.SetTrailSize(BulletSizeMultiplier);
         }
     }
 }

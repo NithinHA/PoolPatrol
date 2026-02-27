@@ -169,6 +169,7 @@ MonoBehaviour:
   m_BulletPrefab: {fileID: 8581976762867977616, guid: e986bd60b7f3a5f4d82cd532911968dc, type: 3}
   BulletSpeed: 30
   BulletSizeMultiplier: 1.8
+  BulletColliderSizeMultiplier: 1
   m_MuzzleFlash: {fileID: 7783737476914928977}
 --- !u!1001 &3455662746814441647
 PrefabInstance:
