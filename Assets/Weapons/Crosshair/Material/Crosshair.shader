@@ -4,10 +4,15 @@ Shader "Unlit/Crosshair"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _Color ("Color", Color) = (1,1,1,1)
+        [Header(Dot)]
         _DotSize ("Dot size", Range(0,.2)) = .1
-        _RingDistance ("Ring Distance", Range(0, .5)) = .4
+        [Space(6)]
+        [Header(Ring)]
         _RingWidth ("Ring Width", Range(0, .5)) = .1
+        _RingDistance ("Ring Distance", Range(0, .5)) = .4
         _RingCrossCutout ("Ring Cross Cutout", Range(0, .4)) = .1
+        [Space(6)]
+        [Header(Lines)]
         _LineWidth ("Line Width", Range(0, .1)) = .1
         _LineLengthMin ("Line Length Min", Range(0, .5)) = .1
         _LineLengthMax ("Line Length Max", Range(0, .5)) = .5

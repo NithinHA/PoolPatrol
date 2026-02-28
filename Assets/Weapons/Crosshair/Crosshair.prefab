@@ -47,6 +47,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Gfx: {fileID: 6789242182796072848}
   m_SpriteRenderer: {fileID: 2589943012359306800}
+  m_StartColor: {r: 0.8627451, g: 0.729595, b: 0.3882353, a: 1}
+  m_EndColor: {r: 0.78998625, g: 0.8627451, b: 0.3882353, a: 1}
+  m_HitColor: {r: 0.8627451, g: 0.3882353, b: 0.654902, a: 1}
 --- !u!1 &8408224577629181409
 GameObject:
   m_ObjectHideFlags: 0
