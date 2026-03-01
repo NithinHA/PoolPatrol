@@ -261,6 +261,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyType: 2
   WaterRippleParticleEmitter: {fileID: 4833293088431291558}
+  m_FrameRadius: 0.5
 --- !u!114 &7174442488397436681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,8 +274,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 288d852eb9d53ac448c6699a989f13fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ForceMagnitude: 180
   m_RotationSpeed: 0.6
+  m_ForceMagnitude: 180
   m_Interval: 1.5
   m_StartingInterval: 0.5
 --- !u!114 &6640713316989718179
@@ -402,7 +403,7 @@ GameObject:
   - component: {fileID: 7193753817943937385}
   - component: {fileID: 7993601636075887942}
   - component: {fileID: 4833293088431291558}
-  m_Layer: 1
+  m_Layer: 9
   m_Name: Ripple_temp
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -24,8 +24,8 @@ public class Constants
     public class EnvironmentConstants
     {
         public const bool IsMovementWithinScreenBounds = true;
-        public const float X_MIN = -12f, X_MAX = 12f;
-        public const float Y_MIN = -7f, Y_MAX = 7f;
+        public const float X_MIN = -13f, X_MAX = 13f;
+        public const float Y_MIN = -8f, Y_MAX = 8f;
         public const float SpawnWidth = 9.5f, SpawnHeight = 5.5f;
     }
     

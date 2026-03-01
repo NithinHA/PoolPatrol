@@ -261,6 +261,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyType: 0
   WaterRippleParticleEmitter: {fileID: 7155066237272848591}
+  m_FrameRadius: 0.5
 --- !u!114 &7126059408194795015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,6 +274,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70fe9c8a71ee6184384878778168447b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_RotationSpeed: 0.6
+  m_WaveRepeatDelay: 2
+  m_DipMagnitude: 0.2
+  m_DipDuration: 0.4
 --- !u!114 &6440708523967912510
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,7 +316,7 @@ GameObject:
   - component: {fileID: 1944671988427067945}
   - component: {fileID: 2069701294732198866}
   - component: {fileID: 7155066237272848591}
-  m_Layer: 1
+  m_Layer: 9
   m_Name: Ripple_temp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -523,7 +528,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.25100002, g: 0.25100002, b: 0.25100002, a: 0.7490196}
+      maxColor: {r: 0.2509804, g: 0.2509804, b: 0.2509804, a: 0.7490196}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}

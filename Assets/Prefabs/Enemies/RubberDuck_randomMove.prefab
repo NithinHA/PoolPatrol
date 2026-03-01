@@ -436,6 +436,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyType: 1
   WaterRippleParticleEmitter: {fileID: 4421822308902501394}
+  m_FrameRadius: 0.5
 --- !u!114 &4662123502184034028
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -501,7 +502,7 @@ GameObject:
   - component: {fileID: 3906472906632656362}
   - component: {fileID: 5495244101765446074}
   - component: {fileID: 4421822308902501394}
-  m_Layer: 1
+  m_Layer: 9
   m_Name: Ripple_temp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
