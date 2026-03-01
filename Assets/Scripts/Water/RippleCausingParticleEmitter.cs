@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ParticleEmitter : MonoBehaviour
+public class RippleCausingParticleEmitter : MonoBehaviour
 {
     public ParticleSystem Particles;
 

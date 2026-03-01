@@ -11,7 +11,7 @@ namespace Movement
         public float m_TargetSpeed = 3f;
         public float m_SmoothingTime = 0.2f;
 
-        private ParticleEmitter _rippleParticleEmitter = null;     // this reference must be set by the controller (player/enemy)
+        private RippleCausingParticleEmitter _rippleParticleEmitter = null;     // this reference must be set by the controller (player/enemy)
         private Rigidbody2D _rb;
         private Vector2 _moveDirection;
         private float _smoothingTimer;
@@ -64,7 +64,7 @@ namespace Movement
             }
         }
 
-        public void AssignParticleEmitter(ParticleEmitter emitter)
+        public void AssignParticleEmitter(RippleCausingParticleEmitter emitter)
         {
             _rippleParticleEmitter = emitter;
         }

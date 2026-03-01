@@ -9,7 +9,7 @@ namespace Player
     {
         [Header("Player references")]
         public PlayerHealth PlayerHealth;
-        public ParticleEmitter WaterRippleParticleEmitter;
+        public RippleCausingParticleEmitter WaterRippleParticleEmitter;
 
         private ImpulseMover _impulseMover;
         public Action<Vector2, Vector2> OnFireInput;

@@ -14,7 +14,7 @@ namespace Movement
         public Vector2 NewPosition { get; private set; }
 
         private Vector2 _lastVelocity;
-        private ParticleEmitter _rippleParticleEmitter = null;
+        private RippleCausingParticleEmitter _rippleParticleEmitter = null;
 
 
 #region Default callbacks
@@ -33,7 +33,7 @@ namespace Movement
 
 #endregion
 
-        public void AssignParticleEmitter(ParticleEmitter emitter)
+        public void AssignParticleEmitter(RippleCausingParticleEmitter emitter)
         {
             _rippleParticleEmitter = emitter;
         }

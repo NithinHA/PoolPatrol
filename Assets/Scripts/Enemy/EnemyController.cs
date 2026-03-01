@@ -4,14 +4,13 @@ using Enemy.Attack;
 using Enemy.Death;
 using Unity.Cinemachine;
 using UnityEngine;
-using Weapon;
 
 namespace Enemy
 {
     public class EnemyController : MonoBehaviour
     {
         public EnemyType EnemyType;
-        public ParticleEmitter WaterRippleParticleEmitter;
+        public RippleCausingParticleEmitter WaterRippleParticleEmitter;
         public Rigidbody2D RigidBody { get; private set; }
         
         private EnemyMovement _movement;
