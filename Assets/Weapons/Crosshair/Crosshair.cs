@@ -50,6 +50,9 @@ public class Crosshair : MonoBehaviour
         // Reset any visuals (like scale changed by DOTween)
         m_Gfx.localScale = Vector3.one;
         m_Gfx.localRotation = Quaternion.identity;
+        
+        // Reset material property
+        _material.SetColor(ColorProperty, m_StartColor);
     }
 
     public void SubscribeToBullet(Bullet bullet)
@@ -119,8 +122,8 @@ public class Crosshair : MonoBehaviour
         _generalAnimationSequence.Join(_material.DOFloat(0.35f, LineLengthMaxProperty, _generalAnimationDuration).SetEase(Ease.InOutSine));
 
         // tween material property "_Color" from m_StartColor to m_EndColor;
-        _material.SetColor(ColorProperty, m_StartColor);
-        _generalAnimationSequence.Join(_material.DOColor(m_EndColor, ColorProperty, _generalAnimationDuration).SetEase(Ease.InOutSine));
+        // _material.SetColor(ColorProperty, m_StartColor);
+        // _generalAnimationSequence.Join(_material.DOColor(m_EndColor, ColorProperty, _generalAnimationDuration).SetEase(Ease.InOutSine));
     }
 
 #region Event listeners
