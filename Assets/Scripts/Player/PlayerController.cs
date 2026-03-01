@@ -12,6 +12,8 @@ namespace Player
         public RippleCausingParticleEmitter WaterRippleParticleEmitter;
 
         private ImpulseMover _impulseMover;
+        public ImpulseMover ImpulseMover => _impulseMover;
+
         public Action<Vector2, Vector2> OnFireInput;
 
         private Camera _mainCam;
