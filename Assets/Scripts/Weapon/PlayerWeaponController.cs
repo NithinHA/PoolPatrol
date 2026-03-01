@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Player;
+using Pooling;
 using UnityEngine;
 
 namespace Weapon
@@ -27,10 +28,7 @@ namespace Weapon
 
         private void OnFireInput(Vector2 direction, Vector2 mousePos)
         {
-            Crosshair crosshair = null;
-            if (CrosshairManager.Instance != null) {
-                crosshair = CrosshairManager.Instance.SpawnCrosshair(mousePos);
-            }
+            Crosshair crosshair = ObjectPoolManager.Instance.SpawnItem(PoolableItemType.Crosshair, mousePos, Quaternion.identity) as Crosshair;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 180;  // +180 because by default the gun is rotated 180 degree
             transform.DORotate(new Vector3(0,0,angle), m_WeaponRotateTweenDuration, RotateMode.Fast).OnComplete(() =>
             {

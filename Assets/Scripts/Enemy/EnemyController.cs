@@ -46,7 +46,7 @@ namespace Enemy
         public void Die(Dictionary<string, object> parameters)
         {
             // play enemy death SFX and VFX
-            WaterRippleParticleEmitter.EmitParticles();
+            WaterRippleParticleEmitter.EmitParticles();     // TODO: Wouldn't do anything as the object would be destroyed this frame. Need to handle this elsewhere.
             _deathHandler?.TriggerDeathEffects(parameters);
             _targetGroup.RemoveMember(transform);
             Destroy(gameObject);

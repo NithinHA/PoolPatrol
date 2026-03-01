@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using Enemy;
+using Pooling;
 using Unity.Cinemachine;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
     [SerializeField] private List<EnemyController> AllEnemies;
-    [SerializeField] private GameObject m_SpawnParticles;
     [SerializeField] private float m_InitialSpawnInterval = 3f;
     [SerializeField] private float m_MinSpawnInterval = 0.8f;
     [SerializeField] private float m_SpawnDelay = 0.5f;
@@ -62,7 +62,7 @@ public class Spawner : MonoBehaviour
 
     private IEnumerator SpawnEnemyWithEffect(Vector3 spawnPosition)
     {
-        Instantiate(m_SpawnParticles, spawnPosition, Quaternion.identity);
+        ObjectPoolManager.Instance.SpawnItem(PoolableItemType.EnemySpawnParticles, spawnPosition, Quaternion.identity);
         yield return new WaitForSeconds(m_SpawnDelay);
 
         int difficultyIndex = GetDifficultyIndex();

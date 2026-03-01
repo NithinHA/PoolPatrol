@@ -1,8 +1,9 @@
 using DG.Tweening;
+using Pooling;
 using UnityEngine;
 using Weapon;
 
-public class Crosshair : MonoBehaviour
+public class Crosshair : MonoBehaviour, IPoolableObject
 {
     [SerializeField] private Transform m_Gfx;
     [SerializeField] private SpriteRenderer m_SpriteRenderer;
@@ -19,6 +20,8 @@ public class Crosshair : MonoBehaviour
     private static readonly int LineLengthMaxProperty = Shader.PropertyToID("_LineLengthMax");
     private static readonly int ColorProperty = Shader.PropertyToID("_Color");
 
+    private PoolableItemType _itemType;
+
     private Bullet _bullet;
     private bool _isBulletAlive = false;
     private bool _isAnimating = false;
@@ -30,29 +33,42 @@ public class Crosshair : MonoBehaviour
 
     private void Awake()
     {
+        // Material is cached here as a fallback for objects
+        // created before PoolManager calls Initialize.
+        if (_material == null)
+            _material = m_SpriteRenderer.material;
+    }
+
+    // ── IPoolableObject ──────────────────────────────────────────────────
+
+    public void Initialize(PoolableItemType type)
+    {
+        _itemType = type;
         _material = m_SpriteRenderer.material;
     }
 
     /// <summary>
-    /// Resets all tweens and arbitrary values and is ready for use again.
+    /// Resets all tweens and state so the crosshair is ready for reuse.
     /// </summary>
-    public void ResetCrosshair()
+    public void Reset()
     {
         m_Gfx.DOKill();
         _generalAnimationSequence?.Kill();
         _hitTween?.Kill();
 
-        // Reset state so it's fresh when taking from the pool
         _isBulletAlive = false;
         _isAnimating = false;
         _bullet = null;
-        
-        // Reset any visuals (like scale changed by DOTween)
+
         m_Gfx.localScale = Vector3.one;
         m_Gfx.localRotation = Quaternion.identity;
-        
-        // Reset material property
+
         _material.SetColor(ColorProperty, m_StartColor);
+    }
+
+    public void ReturnToPool()
+    {
+        ObjectPoolManager.Instance.ReleaseItem(_itemType, this);
     }
 
     public void SubscribeToBullet(Bullet bullet)
@@ -77,17 +93,7 @@ public class Crosshair : MonoBehaviour
         _hitTween?.Kill();
 
         m_Gfx.DOScale(0, .4f).SetEase(Ease.InSine)
-            .OnComplete(() =>
-            {
-                if (CrosshairManager.Instance != null)
-                {
-                    CrosshairManager.Instance.ReleaseCrosshair(this);
-                }
-                else
-                {
-                    Destroy(this.gameObject);
-                }
-            });
+            .OnComplete(() => ReturnToPool());
     }
 
     private void GeneralLifetimeAnimation()

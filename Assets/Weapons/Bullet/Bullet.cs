@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Enemy;
 using Player;
+using Pooling;
 using UnityEngine;
 
 namespace Weapon
 {
     public class Bullet : MonoBehaviour
     {
-        [SerializeField] private ParticleSystem m_BulletImpactEffect;
         [SerializeField] private Rigidbody2D m_Rb2D;
         [SerializeField] private TrailRenderer m_TrailRenderer;
         [SerializeField] private CircleCollider2D m_Collider;
@@ -39,7 +39,7 @@ namespace Weapon
         {
             if (other.gameObject.CompareTag(Constants.GameConstants.TAG_ScreenEdges))
             {
-                Instantiate(m_BulletImpactEffect, transform.position, Quaternion.identity);
+                ObjectPoolManager.Instance.SpawnItem(PoolableItemType.BulletImpactParticles, transform.position, Quaternion.identity);
                 OnBulletDestroy?.Invoke();
             }
             else if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Player))
@@ -118,7 +118,7 @@ namespace Weapon
         private void DestroyBullet(bool withParticles = true)
         {
             if (withParticles)
-                Instantiate(m_BulletImpactEffect, transform.position, Quaternion.identity);
+                ObjectPoolManager.Instance.SpawnItem(PoolableItemType.BulletImpactParticles, transform.position, Quaternion.identity);
             Destroy(this.gameObject);
             OnBulletDestroy?.Invoke();
         }
