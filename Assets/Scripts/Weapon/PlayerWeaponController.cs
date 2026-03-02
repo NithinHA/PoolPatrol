@@ -32,7 +32,8 @@ namespace Weapon
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 180;  // +180 because by default the gun is rotated 180 degree
             transform.DORotate(new Vector3(0,0,angle), m_WeaponRotateTweenDuration, RotateMode.Fast).OnComplete(() =>
             {
-                ActiveWeapon.FireWeapon(direction, BulletSource.Player, crosshair);
+                Vector2 directionPostRotation = (mousePos - (Vector2)transform.position).normalized;
+                ActiveWeapon.FireWeapon(directionPostRotation, BulletSource.Player, crosshair);
             });
         }
     }

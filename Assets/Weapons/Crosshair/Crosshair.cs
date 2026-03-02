@@ -7,8 +7,8 @@ public class Crosshair : MonoBehaviour, IPoolableObject
 {
     [SerializeField] private Transform m_Gfx;
     [SerializeField] private SpriteRenderer m_SpriteRenderer;
-    [SerializeField] private Color m_StartColor;
-    [SerializeField] private Color m_EndColor;
+    [SerializeField] private Color m_Color1;
+    [SerializeField] private Color m_Color2;
     [SerializeField] private Color m_HitColor;
 
     private Material _material;
@@ -63,7 +63,8 @@ public class Crosshair : MonoBehaviour, IPoolableObject
         m_Gfx.localScale = Vector3.one;
         m_Gfx.localRotation = Quaternion.identity;
 
-        _material.SetColor(ColorProperty, m_StartColor);
+        Color randomColor = Color.Lerp(m_Color1, m_Color2, Random.value);
+        _material.SetColor(ColorProperty, randomColor);
     }
 
     public void ReturnToPool()
