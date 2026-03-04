@@ -1,0 +1,179 @@
+Frame Debugger Export - 04-03-2026 15:24:52
+Total Events: 44
+==================================================
+Event #0: Graphics.Blit
+  m_Type: DynamicGeometry
+  m_Obj: 
+--------------------------------------------------
+Event #1: Graphics.Blit
+  m_Type: DynamicGeometry
+  m_Obj: 
+--------------------------------------------------
+Event #2: UniversalRenderPipeline.RenderSingleCameraInternal: Cam_waterSurface/ExecuteRenderGraph
+  m_Type: ClearAll
+  m_Obj: 
+--------------------------------------------------
+Event #3: UniversalRenderPipeline.RenderSingleCameraInternal: Cam_waterSurface/ExecuteRenderGraph/(RP 6:0) DrawTransparentObjects/RenderLoop.Draw
+  m_Type: DynamicGeometry
+  m_Obj: 
+--------------------------------------------------
+Event #4: UniversalRenderPipeline.RenderSingleCameraInternal: Cam_waterSurface/ExecuteRenderGraph/(RP 7:0) BlitFinalToBackBuffer
+  m_Type: DrawProcedural
+  m_Obj: 
+--------------------------------------------------
+Event #5: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph
+  m_Type: ClearColor
+  m_Obj: 
+--------------------------------------------------
+Event #6: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 0:0) Blit Color LUT/ColorGradingLUT
+  m_Type: DrawProcedural
+  m_Obj: 
+--------------------------------------------------
+Event #7: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph
+  m_Type: ClearAll
+  m_Obj: 
+--------------------------------------------------
+Event #8: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawOpaqueObjects/RenderLoop.Draw
+  m_Type: InstancedMesh
+  m_Obj: EnemyDeathFx(Clone) (UnityEngine.GameObject)
+--------------------------------------------------
+Event #9: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawOpaqueObjects/RenderLoop.Draw
+  m_Type: InstancedMesh
+  m_Obj: EnemyDeathFx(Clone) (UnityEngine.GameObject)
+--------------------------------------------------
+Event #10: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawOpaqueObjects/RenderLoop.Draw
+  m_Type: DynamicGeometry
+  m_Obj: Sparks (UnityEngine.GameObject)
+--------------------------------------------------
+Event #11: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawOpaqueObjects/RenderLoop.Draw
+  m_Type: InstancedMesh
+  m_Obj: WaveBurst (UnityEngine.GameObject)
+--------------------------------------------------
+Event #12: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawOpaqueObjects/RenderLoop.Draw
+  m_Type: InstancedMesh
+  m_Obj: WaveBurst (UnityEngine.GameObject)
+--------------------------------------------------
+Event #13: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawOpaqueObjects/RenderLoop.Draw
+  m_Type: InstancedMesh
+  m_Obj: WaveBurst (UnityEngine.GameObject)
+--------------------------------------------------
+Event #14: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.DrawSRPBatcher
+  m_Type: SRPBatch
+  m_Obj: 
+--------------------------------------------------
+Event #15: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.DrawSRPBatcher
+  m_Type: SRPBatch
+  m_Obj: 
+--------------------------------------------------
+Event #16: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.Draw
+  m_Type: DynamicGeometry
+  m_Obj: 
+--------------------------------------------------
+Event #17: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.Draw
+  m_Type: DynamicGeometry
+  m_Obj: Ring (UnityEngine.GameObject)
+--------------------------------------------------
+Event #18: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.Draw
+  m_Type: DynamicGeometry
+  m_Obj: continuous splash (UnityEngine.GameObject)
+--------------------------------------------------
+Event #19: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.DrawSRPBatcher
+  m_Type: SRPBatch
+  m_Obj: 
+--------------------------------------------------
+Event #20: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.Draw
+  m_Type: InstancedMesh
+  m_Obj: gfx (UnityEngine.GameObject)
+--------------------------------------------------
+Event #21: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.Draw
+  m_Type: DynamicGeometry
+  m_Obj: 
+--------------------------------------------------
+Event #22: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.Draw
+  m_Type: DynamicGeometry
+  m_Obj: 
+--------------------------------------------------
+Event #23: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.Draw
+  m_Type: DynamicGeometry
+  m_Obj: 
+--------------------------------------------------
+Event #24: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.Draw
+  m_Type: DynamicGeometry
+  m_Obj: 
+--------------------------------------------------
+Event #25: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.DrawSRPBatcher
+  m_Type: SRPBatch
+  m_Obj: 
+--------------------------------------------------
+Event #26: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.Draw
+  m_Type: DynamicGeometry
+  m_Obj: 
+--------------------------------------------------
+Event #27: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.Draw
+  m_Type: DynamicGeometry
+  m_Obj: 
+--------------------------------------------------
+Event #28: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.DrawSRPBatcher
+  m_Type: SRPBatch
+  m_Obj: 
+--------------------------------------------------
+Event #29: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.Draw
+  m_Type: DynamicGeometry
+  m_Obj: 
+--------------------------------------------------
+Event #30: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 1:0) DrawTransparentObjects/RenderLoop.DrawSRPBatcher
+  m_Type: SRPBatch
+  m_Obj: 
+--------------------------------------------------
+Event #31: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph
+  m_Type: ClearColor
+  m_Obj: 
+--------------------------------------------------
+Event #32: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 2:0) RG_UberPost
+  m_Type: DrawProcedural
+  m_Obj: 
+--------------------------------------------------
+Event #33: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph
+  m_Type: ClearColor
+  m_Obj: 
+--------------------------------------------------
+Event #34: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 3:0) RG_FinalSetup
+  m_Type: DrawProcedural
+  m_Obj: 
+--------------------------------------------------
+Event #35: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph
+  m_Type: ClearColor
+  m_Obj: 
+--------------------------------------------------
+Event #36: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 4:0) RG_FinalFSRScale
+  m_Type: DrawProcedural
+  m_Obj: 
+--------------------------------------------------
+Event #37: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 5:0) RG_FinalBlit
+  m_Type: DrawProcedural
+  m_Obj: 
+--------------------------------------------------
+Event #38: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 5:1) DrawScreenSpaceUI/UI.RenderOverlays
+  m_Type: ClearDepthStencil
+  m_Obj: 
+--------------------------------------------------
+Event #39: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 5:1) DrawScreenSpaceUI/UI.RenderOverlays/Canvas.RenderOverlays
+  m_Type: Mesh
+  m_Obj: 
+--------------------------------------------------
+Event #40: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 5:1) DrawScreenSpaceUI/UI.RenderOverlays/Canvas.RenderOverlays
+  m_Type: Mesh
+  m_Obj: 
+--------------------------------------------------
+Event #41: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 5:1) DrawScreenSpaceUI/UI.RenderOverlays/Canvas.RenderOverlays
+  m_Type: Mesh
+  m_Obj: 
+--------------------------------------------------
+Event #42: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 5:1) DrawScreenSpaceUI/UI.RenderOverlays/Canvas.RenderOverlays
+  m_Type: Mesh
+  m_Obj: 
+--------------------------------------------------
+Event #43: UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera/ExecuteRenderGraph/(RP 5:1) DrawScreenSpaceUI/UI.RenderOverlays/Canvas.RenderOverlays
+  m_Type: Mesh
+  m_Obj: 
+--------------------------------------------------

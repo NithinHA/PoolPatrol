@@ -1,17 +1,31 @@
 using DG.Tweening;
 using Pooling;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Weapon;
 
 public class Crosshair : MonoBehaviour, IPoolableObject
 {
     [SerializeField] private Transform m_Gfx;
-    [SerializeField] private SpriteRenderer m_SpriteRenderer;
-    [SerializeField] private Color m_Color1;
-    [SerializeField] private Color m_Color2;
+    [SerializeField] private Renderer m_Renderer;
+    [FormerlySerializedAs("m_StartColor")] [SerializeField] private Color m_DefaultColor;
     [SerializeField] private Color m_HitColor;
+    [Header("Lifetime Anim Values")]
+    // Define target values
+    [SerializeField] private float m_TargetDotSize = 0.05f;
+    [SerializeField] private float m_TargetRingCrossCutout = 0.12f;
+    [SerializeField] private float m_TargetRingDistance = 0.28f;
+    [SerializeField] private float m_TargetLineLengthMin = 0.15f;
+    [SerializeField] private float m_TargetLineLengthMax = 0.35f;
+    [Space]
+    // Initial values
+    [SerializeField] private float m_StartDotSize = 0f;
+    [SerializeField] private float m_StartRingCrossCutout = 0.05f;
+    [SerializeField] private float m_StartRingDistance = 0.4f;
+    [SerializeField] private float m_StartLineLengthMin = 0.08f;
+    [SerializeField] private float m_StartLineLengthMax = 0.08f;
 
-    private Material _material;
+    private MaterialPropertyBlock _propBlock;
 
     private static readonly int DotSizeProperty = Shader.PropertyToID("_DotSize");
     private static readonly int RingCrossCutoutProperty = Shader.PropertyToID("_RingCrossCutout");
@@ -33,18 +47,18 @@ public class Crosshair : MonoBehaviour, IPoolableObject
 
     private void Awake()
     {
-        // Material is cached here as a fallback for objects
-        // created before PoolManager calls Initialize.
-        if (_material == null)
-            _material = m_SpriteRenderer.material;
+        _propBlock = new MaterialPropertyBlock();
+        m_Renderer.GetPropertyBlock(_propBlock);
     }
-
-    // ── IPoolableObject ──────────────────────────────────────────────────
 
     public void Initialize(PoolableItemType type)
     {
         _itemType = type;
-        _material = m_SpriteRenderer.material;
+        if (_propBlock == null)
+        {
+            _propBlock = new MaterialPropertyBlock();
+            m_Renderer.GetPropertyBlock(_propBlock);
+        }
     }
 
     /// <summary>
@@ -63,8 +77,8 @@ public class Crosshair : MonoBehaviour, IPoolableObject
         m_Gfx.localScale = Vector3.one;
         m_Gfx.localRotation = Quaternion.identity;
 
-        Color randomColor = Color.Lerp(m_Color1, m_Color2, Random.value);
-        _material.SetColor(ColorProperty, randomColor);
+        _propBlock.SetColor(ColorProperty, m_DefaultColor);
+        m_Renderer.SetPropertyBlock(_propBlock);
     }
 
     public void ReturnToPool()
@@ -108,29 +122,18 @@ public class Crosshair : MonoBehaviour, IPoolableObject
         m_Gfx.localRotation = Quaternion.Euler(0, 0, startAngle);
         _generalAnimationSequence.Join(m_Gfx.DORotate(new Vector3(0, 0, startAngle + (360f * direction)), 4f, RotateMode.FastBeyond360).SetEase(Ease.Linear));
         
-        // tween material property "_DotSize" from 0 to 0.05
-        _material.SetFloat(DotSizeProperty, 0f);
-        _generalAnimationSequence.Join(_material.DOFloat(0.05f, DotSizeProperty, _generalAnimationDuration).SetEase(Ease.InOutSine));
+        
 
-        // tween material property "_RingCrossCutout" from 0.05 to 0.12
-        _material.SetFloat(RingCrossCutoutProperty, 0.05f);
-        _generalAnimationSequence.Join(_material.DOFloat(0.12f, RingCrossCutoutProperty, _generalAnimationDuration).SetEase(Ease.InOutSine));
-
-        // tween material property "_RingDistance" from 0.4 to 0.21
-        _material.SetFloat(RingDistanceProperty, 0.4f);
-        _generalAnimationSequence.Join(_material.DOFloat(0.21f, RingDistanceProperty, _generalAnimationDuration).SetEase(Ease.InOutSine));
-                                     
-        // tween material property "_LineLengthMin" from 0.08 to  0.15
-        _material.SetFloat(LineLengthMinProperty, 0.08f);
-        _generalAnimationSequence.Join(_material.DOFloat(0.15f, LineLengthMinProperty, _generalAnimationDuration).SetEase(Ease.InOutSine));
-
-        // tween material property "_LineLengthMax" from 0.08 to 0.35
-        _material.SetFloat(LineLengthMaxProperty, 0.08f);
-        _generalAnimationSequence.Join(_material.DOFloat(0.35f, LineLengthMaxProperty, _generalAnimationDuration).SetEase(Ease.InOutSine));
-
-        // tween material property "_Color" from m_StartColor to m_EndColor;
-        // _material.SetColor(ColorProperty, m_StartColor);
-        // _generalAnimationSequence.Join(_material.DOColor(m_EndColor, ColorProperty, _generalAnimationDuration).SetEase(Ease.InOutSine));
+        float t = 0;
+        _generalAnimationSequence.Join(DOTween.To(() => t, x => {
+            t = x;
+            _propBlock.SetFloat(DotSizeProperty, Mathf.Lerp(m_StartDotSize, m_TargetDotSize, t));
+            _propBlock.SetFloat(RingCrossCutoutProperty, Mathf.Lerp(m_StartRingCrossCutout, m_TargetRingCrossCutout, t));
+            _propBlock.SetFloat(RingDistanceProperty, Mathf.Lerp(m_StartRingDistance, m_TargetRingDistance, t));
+            _propBlock.SetFloat(LineLengthMinProperty, Mathf.Lerp(m_StartLineLengthMin, m_TargetLineLengthMin, t));
+            _propBlock.SetFloat(LineLengthMaxProperty, Mathf.Lerp(m_StartLineLengthMax, m_TargetLineLengthMax, t));
+            m_Renderer.SetPropertyBlock(_propBlock);
+        }, 1f, _generalAnimationDuration).SetEase(Ease.InOutSine));
     }
 
 #region Event listeners
@@ -145,10 +148,12 @@ public class Crosshair : MonoBehaviour, IPoolableObject
         _hitTween = DOTween.Sequence();
 
         // quick tween material property "_Color" to m_HitColor.
-        _hitTween.Join(_material.DOColor(m_HitColor, ColorProperty, .1f));
+        _hitTween.Join(DOTween.To(
+            () => _propBlock.HasColor(ColorProperty) ? _propBlock.GetColor(ColorProperty) : m_DefaultColor, 
+            x => { _propBlock.SetColor(ColorProperty, x); m_Renderer.SetPropertyBlock(_propBlock); }, 
+            m_HitColor, .1f));
         // tween a pop effect where scale increases slightly and returns back to same value.
         _hitTween.Join(m_Gfx.DOPunchScale(Vector3.one * 0.8f, _hitTweenDuration, 10, 1f));
-        
         _hitTween.OnComplete(() =>
         {
             _isAnimating = false;

@@ -112,11 +112,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20808a250cc14ce595a8c55961fffe62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_BulletImpactEffect: {fileID: 5305731252951830730, guid: ad215692166bb514699800dfeceffa52, type: 3}
   m_Rb2D: {fileID: 1512118113025243757}
   m_TrailRenderer: {fileID: 1979261695404118525}
   m_Collider: {fileID: 5169363352365529581}
-  BulletColor: {r: 0.7906006, g: 0.81886786, b: 0.22711994, a: 0.5176471}
 --- !u!1 &4826209435407918310
 GameObject:
   m_ObjectHideFlags: 0
@@ -4849,7 +4847,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e88ae70fdb7a9234bb51f64e1f7d21d0, type: 2}
+  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4957,7 +4955,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

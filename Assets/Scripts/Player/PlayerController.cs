@@ -2,6 +2,7 @@ using System;
 using Movement;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Weapon;
 
 namespace Player
 {
@@ -9,6 +10,7 @@ namespace Player
     {
         [Header("Player references")]
         public PlayerHealth PlayerHealth;
+        public PlayerWeaponController PlayerWeaponController;
         public RippleCausingParticleEmitter WaterRippleParticleEmitter;
 
         private ImpulseMover _impulseMover;
