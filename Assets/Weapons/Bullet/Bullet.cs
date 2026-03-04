@@ -14,14 +14,15 @@ namespace Weapon
         [SerializeField] private TrailRenderer m_TrailRenderer;
         [SerializeField] private CircleCollider2D m_Collider;
 
-        private BulletSource _bulletSource;
-        public BulletSource BulletSource => _bulletSource;
+        private WeaponControllerBase _heldWeaponController;
 
         private WaitForSeconds _outOfBoundDelay = new WaitForSeconds(1f);
         private Vector3 _lastFrameVelocity;
         
         public Action<BulletSource> OnBulletImpact;
         public Action OnBulletDestroy;
+
+        private bool _isBulletHitSuccess = false;
 
 #region Unity callbacks
 
@@ -40,22 +41,25 @@ namespace Weapon
             if (other.gameObject.CompareTag(Constants.GameConstants.TAG_ScreenEdges))
             {
                 ObjectPoolManager.Instance.SpawnItem(PoolableItemType.BulletImpactParticles, transform.position, Quaternion.identity);
+                _heldWeaponController.OnBulletDestroyed?.Invoke(this);
                 OnBulletDestroy?.Invoke();
             }
             else if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Player))
             {
                 PlayerController player = other.gameObject.GetComponent<PlayerController>();
-                if(BulletSource == BulletSource.Enemy)
+                if(_heldWeaponController.BulletSource == BulletSource.Enemy)
                 {
                     player.PlayerHealth.TakeDamage();
-                    OnBulletImpact?.Invoke(BulletSource);
+                    _heldWeaponController.OnHitSuccess?.Invoke(transform.position);
+                    OnBulletImpact?.Invoke(_heldWeaponController.BulletSource);
+                    _isBulletHitSuccess = true;
                 }
                 DestroyBullet();
             }
             else if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Enemy))
             {
                 EnemyController enemy = other.gameObject.GetComponent<EnemyController>();
-                if (BulletSource == BulletSource.Player || BulletSource == BulletSource.Environment)
+                if (_heldWeaponController.BulletSource == BulletSource.Player || _heldWeaponController.BulletSource == BulletSource.Environment)
                 {
                     Dictionary<string, object> parameters = new Dictionary<string, object>()
                     {
@@ -63,7 +67,10 @@ namespace Weapon
                         { Constants.GameConstants.BULLET_COLLISION_Direction, _lastFrameVelocity.normalized }
                     };
                     enemy.Die(parameters);
-                    OnBulletImpact?.Invoke(BulletSource);
+                    _heldWeaponController.OnHitSuccess?.Invoke(transform.position);
+                    OnBulletImpact?.Invoke(_heldWeaponController.BulletSource);
+                    _isBulletHitSuccess = true;
+                    OnHitEnemyWithCombo();
                 }
                 DestroyBullet();
             }
@@ -82,9 +89,9 @@ namespace Weapon
             m_Collider.radius *= colliderSizeMultiplier;
         }
         
-        public void Fire(Vector2 direction, float speed, BulletSource source)
+        public void Fire(Vector2 direction, float speed, WeaponControllerBase weaponController)
         {
-            _bulletSource = source;
+            _heldWeaponController = weaponController;
             direction.Normalize();
             m_Rb2D.AddForce(direction * speed, ForceMode2D.Impulse);
         }
@@ -96,7 +103,7 @@ namespace Weapon
             if (viewportPos.x < -1 || viewportPos.x > 2 || 
                 viewportPos.y < -1 || viewportPos.y > 2)
             {
-                DestroyBullet(false);
+                DestroyBullet(true);
                 yield break;
             }
 
@@ -115,13 +122,34 @@ namespace Weapon
             m_TrailRenderer.startColor = color;
         }
 
-        private void DestroyBullet(bool withParticles = true)
+        private void DestroyBullet(bool isOutOfBounds = false)
         {
-            if (withParticles)
+            if(!_isBulletHitSuccess)
+                _heldWeaponController.OnHitFail?.Invoke();
+
+            if (!isOutOfBounds)
+            {
                 ObjectPoolManager.Instance.SpawnItem(PoolableItemType.BulletImpactParticles, transform.position, Quaternion.identity);
+                _heldWeaponController.OnBulletDestroyed?.Invoke(this);
+                OnBulletDestroy?.Invoke();
+            }
+
             Destroy(this.gameObject);
-            OnBulletDestroy?.Invoke();
         }
+
+#region Handle Player Combo
+
+        public void OnHitEnemyWithCombo()
+        {
+            // check the current player combo level. How can I get the player combo level at this point?
+            // compute range based on the combo level: Low=0, Mid=1, High=1.4, Max=1.8  
+            // check if any enemy exists inside circle of radius=range from this transform position.
+            // call enemy.Die for all the enemies within the range
+            // also spawn explosion prefab at this position and set scale = range
+            // DestroyBullet gets called by the invoking function at this point. Hope this won't cause memory leaks and other issues.
+        }
+
+#endregion
     }
 
     public enum BulletSource

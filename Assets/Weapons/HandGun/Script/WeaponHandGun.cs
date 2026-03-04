@@ -7,10 +7,13 @@ namespace Weapon
         [Header("HandGun")]
         [SerializeField] private ParticleSystem m_MuzzleFlash;
 
-        public override void FireWeapon(Vector2 direction, BulletSource source, Crosshair crosshair)
+        public override Bullet FireWeapon(Vector2 direction)
         {
-            base.FireWeapon(direction, source, crosshair);
+            // perform reload checks here.
+            // if can not fire => return null.  // this check can also be 
+            Bullet bullet = base.FireWeapon(direction);
             AnimateOnFire();
+            return bullet;
         }
 
         void AnimateOnFire()

@@ -6,7 +6,8 @@ namespace Weapon
     {
         public void FireWeapon(Vector2 direction)
         {
-            ActiveWeapon.FireWeapon(direction, BulletSource.Enemy);
+            Bullet bullet = ActiveWeapon.FireWeapon(direction);
+            OnBulletCreatedFunction(bullet);
         }
     }
 }
