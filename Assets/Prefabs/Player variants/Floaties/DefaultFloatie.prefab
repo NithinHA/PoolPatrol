@@ -138,9 +138,9 @@ MonoBehaviour:
   m_Reflection: {fileID: 9140133465639915078}
   m_FollowSmoothTime: 0.1
   m_MaxLagDistance: 0.2
-  m_FireWiggleIntensity: 0.6
+  m_FireWiggleIntensity: 0.8
   m_BounceWiggleIntensity: 0.4
-  m_WiggleDuration: 0.45
+  m_WiggleDuration: 0.6
   m_SpinImpulse: 180
   m_AngularDrag: 0.1
 --- !u!1 &4134590232497969929
