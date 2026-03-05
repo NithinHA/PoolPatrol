@@ -54,7 +54,8 @@ namespace Weapon
                     _isBulletHitSuccess = true;
                 }
 
-                DestroyBullet();
+                if (_source != BulletSource.Player)     // This will prevent friendly fire. Or scenarios where player's bullets hit self collider.
+                    DestroyBullet();
             }
             else if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Enemy))
             {
