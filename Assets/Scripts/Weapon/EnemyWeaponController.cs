@@ -6,8 +6,8 @@ namespace Weapon
     {
         public void FireWeapon(Vector2 direction)
         {
-            Bullet bullet = ActiveWeapon.FireWeapon(direction);
-            OnBulletCreatedFunction(bullet);
+            WeaponAttack attack = ActiveWeapon.FireWeapon(direction, BulletSource);
+            // Enemy ignores the attack events, as it has no crosshair or combo
         }
     }
 }

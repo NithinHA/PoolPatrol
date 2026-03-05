@@ -30,17 +30,7 @@ namespace Player
         public Action<ComboLevel> OnComboLevelChanged;
         public Action<int> OnComboFailed;
 
-        private void Start()
-        {
-            m_PlayerController.PlayerWeaponController.OnHitSuccess += AddCombo;
-            m_PlayerController.PlayerWeaponController.OnHitFail += BreakCombo;
-        }
 
-        private void OnDestroy()
-        {
-            m_PlayerController.PlayerWeaponController.OnHitSuccess -= AddCombo;
-            m_PlayerController.PlayerWeaponController.OnHitFail -= BreakCombo;
-        }
 
         public void AddCombo(Vector2 vector2)
         {

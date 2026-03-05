@@ -20,14 +20,17 @@ namespace Weapon
 
         /// <summary>
         /// The control reaches here means the player/enemy does not require a reload. They have enough bullets and wish to Fire.
-        /// This function will definitely spawn or fetch a bullet from pool, setup, perform Fire and return it for reference.
+        /// This function will definitely spawn or fetch a bullet from pool, setup, perform Fire and return the new WeaponAttack instance for tracking.
         /// </summary>
-        public virtual Bullet FireWeapon(Vector2 direction)
+        public virtual WeaponAttack FireWeapon(Vector2 direction, BulletSource source)
         {
             Bullet bullet = Instantiate(m_BulletPrefab, m_FirePoint.position, Quaternion.identity);
             bullet.SetupScale(BulletSizeMultiplier, BulletColliderSizeMultiplier);
-            bullet.Fire(direction, BulletSpeed, _weaponController);
-            return bullet;
+            
+            WeaponAttack attack = new WeaponAttack();
+            bullet.Fire(direction, BulletSpeed, source, attack);
+            
+            return attack;
         }
     }
 }

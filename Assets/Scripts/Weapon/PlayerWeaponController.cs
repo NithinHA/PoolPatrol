@@ -1,4 +1,3 @@
-using System;
 using DG.Tweening;
 using Player;
 using Pooling;
@@ -34,16 +33,29 @@ namespace Weapon
             transform.DORotate(new Vector3(0,0,angle), m_WeaponRotateTweenDuration, RotateMode.Fast).OnComplete(() =>
             {
                 Vector2 directionPostRotation = (mousePos - (Vector2)transform.position).normalized;
-                Bullet bullet = ActiveWeapon.FireWeapon(directionPostRotation);
-                if (bullet == null)
+                WeaponAttack attack = ActiveWeapon.FireWeapon(directionPostRotation, BulletSource);
+                if (attack == null)
                 {
                     // did not fire bullet due to a problem
                     // invoke crosshair.animateOut
                 }
                 else
                 {
-                    crosshair?.SubscribeToBullet(bullet);
-                    OnBulletCreatedFunction(bullet);
+                    crosshair?.SubscribeToAttack(attack);
+                    
+                    attack.OnHitSuccess += (hitPos) =>
+                    {
+                        m_PlayerController.PlayerCombo.AddCombo(hitPos);
+                        if (ActiveWeapon is IComboWeapon comboWeapon)
+                        {
+                            comboWeapon.PerformComboHitEffect(hitPos, m_PlayerController.PlayerCombo.CurrentComboLevel);
+                        }
+                    };
+
+                    attack.OnHitFail += () =>
+                    {
+                        m_PlayerController.PlayerCombo.BreakCombo();
+                    };
                 }
             });
         }

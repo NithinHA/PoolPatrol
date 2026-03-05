@@ -36,8 +36,8 @@ public class Crosshair : MonoBehaviour, IPoolableObject
 
     private PoolableItemType _itemType;
 
-    private Bullet _bullet;
-    private bool _isBulletAlive = false;
+    private WeaponAttack _attack;
+    private bool _isAttackActive = false;
     private bool _isAnimating = false;
 
     private Sequence _generalAnimationSequence;
@@ -70,9 +70,9 @@ public class Crosshair : MonoBehaviour, IPoolableObject
         _generalAnimationSequence?.Kill();
         _hitTween?.Kill();
 
-        _isBulletAlive = false;
+        _isAttackActive = false;
         _isAnimating = false;
-        _bullet = null;
+        _attack = null;
 
         m_Gfx.localScale = Vector3.one;
         m_Gfx.localRotation = Quaternion.identity;
@@ -86,20 +86,24 @@ public class Crosshair : MonoBehaviour, IPoolableObject
         ObjectPoolManager.Instance.ReleaseItem(_itemType, this);
     }
 
-    public void SubscribeToBullet(Bullet bullet)
+    public void SubscribeToAttack(WeaponAttack attack)
     {
-        _bullet = bullet;
-        _isBulletAlive = true;
-        _bullet.OnBulletImpact += AnimateOnHit;
-        _bullet.OnBulletDestroy += OnBulletDestroy;
+        _attack = attack;
+        _isAttackActive = true;
+        _attack.OnHitSuccess += AnimateOnHit;
+        _attack.OnAttackComplete += OnAttackComplete;
         GeneralLifetimeAnimation();
     }
 
-    private void UnsubscribeFromBullet()
+    private void UnsubscribeFromAttack()
     {
-        _isBulletAlive = false;
-        _bullet.OnBulletImpact -= AnimateOnHit;
-        _bullet.OnBulletDestroy -= OnBulletDestroy;
+        _isAttackActive = false;
+        if (_attack != null)
+        {
+            _attack.OnHitSuccess -= AnimateOnHit;
+            _attack.OnAttackComplete -= OnAttackComplete;
+            _attack = null;
+        }
     }
 
     private void AnimateOut()
@@ -121,8 +125,6 @@ public class Crosshair : MonoBehaviour, IPoolableObject
         float direction = Random.value > 0.5f ? 1f : -1f;
         m_Gfx.localRotation = Quaternion.Euler(0, 0, startAngle);
         _generalAnimationSequence.Join(m_Gfx.DORotate(new Vector3(0, 0, startAngle + (360f * direction)), 4f, RotateMode.FastBeyond360).SetEase(Ease.Linear));
-        
-        
 
         float t = 0;
         _generalAnimationSequence.Join(DOTween.To(() => t, x => {
@@ -138,7 +140,7 @@ public class Crosshair : MonoBehaviour, IPoolableObject
 
 #region Event listeners
     
-    private void AnimateOnHit(BulletSource bulletSource)
+    private void AnimateOnHit(Vector3 hitPosition)
     {
         _isAnimating = true;
         
@@ -157,14 +159,14 @@ public class Crosshair : MonoBehaviour, IPoolableObject
         _hitTween.OnComplete(() =>
         {
             _isAnimating = false;
-            if(!_isBulletAlive)
+            if(!_isAttackActive)
                 AnimateOut();
         });
     }
 
-    private void OnBulletDestroy()
+    private void OnAttackComplete()
     {
-        UnsubscribeFromBullet();
+        UnsubscribeFromAttack();
         if (!_isAnimating)
             AnimateOut();
     }
