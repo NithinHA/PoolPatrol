@@ -5947,6 +5947,7 @@ GameObject:
   - component: {fileID: 7653214830081311281}
   - component: {fileID: 8105741895132660662}
   - component: {fileID: 6414039551967786748}
+  - component: {fileID: 9088755020692702791}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -6050,6 +6051,7 @@ MonoBehaviour:
   PlayerHealth: {fileID: 6414039551967786748}
   PlayerWeaponController: {fileID: 6514116320804890438}
   WaterRippleParticleEmitter: {fileID: 7541410612910564909}
+  PlayerCombo: {fileID: 9088755020692702791}
 --- !u!114 &8105741895132660662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6080,6 +6082,20 @@ MonoBehaviour:
   MaxHealth: 5
   CurrentHealth: 5
   DamageCooldown: 1
+--- !u!114 &9088755020692702791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5279379673753254852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b6df175613a6b44aa52f48443d75052, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentCombo: 0
+  m_PlayerController: {fileID: 7653214830081311281}
 --- !u!1 &5978413141224973853
 GameObject:
   m_ObjectHideFlags: 0
@@ -6190,6 +6206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58ce8f76327a8194aaa6e9d987c32112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BulletSource: 0
   m_WeaponRotateTweenDuration: 0.05
   m_PlayerController: {fileID: 7653214830081311281}
 --- !u!1 &7056443084556627072
@@ -6425,6 +6442,50 @@ PrefabInstance:
     - target: {fileID: 8065174694294064079, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
       propertyPath: BulletSpeed
       value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 8065174694294064079, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
+      propertyPath: m_ExplosionVfx
+      value: 
+      objectReference: {fileID: 6546930976931813343, guid: 43973d81e6183e947824ea8dc8a65614, type: 3}
+    - target: {fileID: 8065174694294064079, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
+      propertyPath: m_ComboLowColor.b
+      value: 0.8762753
+      objectReference: {fileID: 0}
+    - target: {fileID: 8065174694294064079, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
+      propertyPath: m_ComboLowColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8065174694294064079, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
+      propertyPath: m_ComboLowColor.r
+      value: 0.48235297
+      objectReference: {fileID: 0}
+    - target: {fileID: 8065174694294064079, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
+      propertyPath: m_ComboMaxColor.b
+      value: 0.5869952
+      objectReference: {fileID: 0}
+    - target: {fileID: 8065174694294064079, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
+      propertyPath: m_ComboMaxColor.g
+      value: 0.42354566
+      objectReference: {fileID: 0}
+    - target: {fileID: 8065174694294064079, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
+      propertyPath: m_ComboMaxColor.r
+      value: 0.89433956
+      objectReference: {fileID: 0}
+    - target: {fileID: 8065174694294064079, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
+      propertyPath: m_ComboMidColor.b
+      value: 0.48235294
+      objectReference: {fileID: 0}
+    - target: {fileID: 8065174694294064079, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
+      propertyPath: m_ComboMidColor.g
+      value: 0.8627451
+      objectReference: {fileID: 0}
+    - target: {fileID: 8065174694294064079, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
+      propertyPath: m_ComboHighColor.b
+      value: 0.48235297
+      objectReference: {fileID: 0}
+    - target: {fileID: 8065174694294064079, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
+      propertyPath: m_ComboHighColor.g
+      value: 0.68095505
       objectReference: {fileID: 0}
     - target: {fileID: 8065174694294064079, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
       propertyPath: BulletSizeMultiplier

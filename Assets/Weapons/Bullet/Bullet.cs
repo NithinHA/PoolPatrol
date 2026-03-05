@@ -14,14 +14,14 @@ namespace Weapon
         [SerializeField] private TrailRenderer m_TrailRenderer;
         [SerializeField] private CircleCollider2D m_Collider;
 
-        private BulletSource _bulletSource;
-        public BulletSource BulletSource => _bulletSource;
+
+        private WeaponAttack _attack;
+        private BulletSource _source;
 
         private WaitForSeconds _outOfBoundDelay = new WaitForSeconds(1f);
         private Vector3 _lastFrameVelocity;
-        
-        public Action<BulletSource> OnBulletImpact;
-        public Action OnBulletDestroy;
+
+        private bool _isBulletHitSuccess = false;
 
 #region Unity callbacks
 
@@ -40,36 +40,42 @@ namespace Weapon
             if (other.gameObject.CompareTag(Constants.GameConstants.TAG_ScreenEdges))
             {
                 ObjectPoolManager.Instance.SpawnItem(PoolableItemType.BulletImpactParticles, transform.position, Quaternion.identity);
-                OnBulletDestroy?.Invoke();
+                _attack?.OnAttackComplete?.Invoke();
+                if (!_isBulletHitSuccess)
+                    _attack?.OnHitFail?.Invoke();
             }
             else if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Player))
             {
                 PlayerController player = other.gameObject.GetComponent<PlayerController>();
-                if(BulletSource == BulletSource.Enemy)
+                if (_source == BulletSource.Enemy)
                 {
+                    _attack?.OnHitSuccess?.Invoke(player.transform.position);
                     player.PlayerHealth.TakeDamage();
-                    OnBulletImpact?.Invoke(BulletSource);
+                    _isBulletHitSuccess = true;
                 }
+
                 DestroyBullet();
             }
             else if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Enemy))
             {
                 EnemyController enemy = other.gameObject.GetComponent<EnemyController>();
-                if (BulletSource == BulletSource.Player || BulletSource == BulletSource.Environment)
+                if (_source == BulletSource.Player || _source == BulletSource.Environment)
                 {
                     Dictionary<string, object> parameters = new Dictionary<string, object>()
                     {
                         { Constants.GameConstants.BULLET_COLLISION_Collider, other.gameObject },
                         { Constants.GameConstants.BULLET_COLLISION_Direction, _lastFrameVelocity.normalized }
                     };
+                    _attack?.OnHitSuccess?.Invoke(enemy.transform.position);
                     enemy.Die(parameters);
-                    OnBulletImpact?.Invoke(BulletSource);
+                    _isBulletHitSuccess = true;
                 }
+
                 DestroyBullet();
             }
             // else
             // {
-            //     DestroyBullet();    // destroys on collision with anything!
+            //     DestroyBullet();    // destroys on collision with anything else!
             // }
         }
 
@@ -81,10 +87,11 @@ namespace Weapon
             SetTrailSize(sizeMultiplier);
             m_Collider.radius *= colliderSizeMultiplier;
         }
-        
-        public void Fire(Vector2 direction, float speed, BulletSource source)
+
+        public void Fire(Vector2 direction, float speed, BulletSource source, WeaponAttack attack)
         {
-            _bulletSource = source;
+            _source = source;
+            _attack = attack;
             direction.Normalize();
             m_Rb2D.AddForce(direction * speed, ForceMode2D.Impulse);
         }
@@ -93,10 +100,10 @@ namespace Weapon
         {
             Vector3 viewportPos = Camera.main.WorldToViewportPoint(transform.position);
 
-            if (viewportPos.x < -1 || viewportPos.x > 2 || 
+            if (viewportPos.x < -1 || viewportPos.x > 2 ||
                 viewportPos.y < -1 || viewportPos.y > 2)
             {
-                DestroyBullet(false);
+                DestroyBullet(true);
                 yield break;
             }
 
@@ -115,13 +122,22 @@ namespace Weapon
             m_TrailRenderer.startColor = color;
         }
 
-        private void DestroyBullet(bool withParticles = true)
+        private void DestroyBullet(bool isOutOfBounds = false)
         {
-            if (withParticles)
-                ObjectPoolManager.Instance.SpawnItem(PoolableItemType.BulletImpactParticles, transform.position, Quaternion.identity);
+            if (!isOutOfBounds)
+            {
+                ObjectPoolManager.Instance.SpawnItem(PoolableItemType.BulletImpactParticles, transform.position,
+                    Quaternion.identity);
+            }
+
+            _attack?.OnAttackComplete?.Invoke();
+            _attack?.Clear();
+            _attack = null;
+
             Destroy(this.gameObject);
-            OnBulletDestroy?.Invoke();
         }
+
+
     }
 
     public enum BulletSource

@@ -1547,6 +1547,10 @@ MonoBehaviour:
     Prefab: {fileID: 3544464979945753563, guid: ad215692166bb514699800dfeceffa52, type: 3}
     DefaultCapacity: 5
     MaxSize: 20
+  - Type: 3
+    Prefab: {fileID: 5308739719835041062, guid: 43973d81e6183e947824ea8dc8a65614, type: 3}
+    DefaultCapacity: 5
+    MaxSize: 20
 --- !u!4 &1365302566
 Transform:
   m_ObjectHideFlags: 0

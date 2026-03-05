@@ -12,6 +12,7 @@ namespace Player
         public PlayerHealth PlayerHealth;
         public PlayerWeaponController PlayerWeaponController;
         public RippleCausingParticleEmitter WaterRippleParticleEmitter;
+        public PlayerCombo PlayerCombo;
 
         private ImpulseMover _impulseMover;
         public ImpulseMover ImpulseMover => _impulseMover;

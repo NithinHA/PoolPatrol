@@ -9,5 +9,6 @@ namespace Pooling
         Crosshair,
         EnemySpawnParticles,
         BulletImpactParticles,
+        BulletComboExplosion,
     }
 }

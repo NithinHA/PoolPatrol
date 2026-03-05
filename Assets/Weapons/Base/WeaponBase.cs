@@ -7,22 +7,30 @@ namespace Weapon
         [SerializeField] protected Transform m_FirePoint;
         [SerializeField] protected Bullet m_BulletPrefab;
 
-        protected Crosshair _crosshair;
-        
+        private WeaponControllerBase _weaponController;
+
         public float BulletSpeed = 10;
         public float BulletSizeMultiplier = 1;
         public float BulletColliderSizeMultiplier = 1f;     // makes the bullet collider large/small
 
-        public virtual void FireWeapon(Vector2 direction, BulletSource source, Crosshair crosshair = null)
+        public void Setup(WeaponControllerBase heldByController)
+        {
+            _weaponController = heldByController;
+        }
+
+        /// <summary>
+        /// The control reaches here means the player/enemy does not require a reload. They have enough bullets and wish to Fire.
+        /// This function will definitely spawn or fetch a bullet from pool, setup, perform Fire and return the new WeaponAttack instance for tracking.
+        /// </summary>
+        public virtual WeaponAttack FireWeapon(Vector2 direction, BulletSource source)
         {
             Bullet bullet = Instantiate(m_BulletPrefab, m_FirePoint.position, Quaternion.identity);
             bullet.SetupScale(BulletSizeMultiplier, BulletColliderSizeMultiplier);
-            bullet.Fire(direction, BulletSpeed, source);
-            if (source == BulletSource.Player && crosshair != null)
-            {
-                _crosshair = crosshair;
-                _crosshair.SubscribeToBullet(bullet);
-            }
+            
+            WeaponAttack attack = new WeaponAttack();
+            bullet.Fire(direction, BulletSpeed, source, attack);
+            
+            return attack;
         }
     }
 }

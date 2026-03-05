@@ -33,19 +33,15 @@ namespace Movement
             _rb = GetComponent<Rigidbody2D>();
             _rb.gravityScale = 0;
             _rb.linearDamping = 0;
+            _rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         }
 
 #region Updates
 
         public void Tick()
         {
-            if (!_isDecaying) // keep velocity steady after decay
-            {
-                _rb.linearVelocity = _moveDirection * m_TargetSpeed;
-            }
-
-            if (Constants.EnvironmentConstants.IsMovementWithinScreenBounds)
-                CheckScreenBounce();
+            // Input and non-physics logic goes here.
+            // Physics modifications have been moved to FixedTick.
         }
 
         public void FixedTick()
@@ -62,6 +58,13 @@ namespace Movement
                 if (t >= 1f)
                     _isDecaying = false;
             }
+            else
+            { // keep velocity steady after decay
+                _rb.linearVelocity = _moveDirection * m_TargetSpeed;
+            }
+
+            if (Constants.EnvironmentConstants.IsMovementWithinScreenBounds)
+                CheckScreenBounce();
         }
 
         public void AssignParticleEmitter(RippleCausingParticleEmitter emitter)
