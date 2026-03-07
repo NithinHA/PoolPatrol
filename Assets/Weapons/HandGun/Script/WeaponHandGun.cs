@@ -89,11 +89,6 @@ namespace Weapon
                         if (direction == Vector3.zero)  // hit the same enemy who was shot.
                             continue;
 
-                        Dictionary<string, object> parameters = new Dictionary<string, object>()
-                        {
-                            { Constants.GameConstants.BULLET_COLLISION_Collider, col.gameObject },
-                            { Constants.GameConstants.BULLET_COLLISION_Direction, direction }
-                        };
                         EnemyDeathParameters enemyDeathParams = new EnemyDeathParameters()
                         {
                             CollidingObject = col.gameObject,

@@ -13,8 +13,6 @@ namespace Weapon
         [SerializeField] private CircleCollider2D m_Collider;
 
         private Renderer[] _cachedRenderers;
-
-
         private WeaponAttack _attack;
         private BulletSource _source;
 

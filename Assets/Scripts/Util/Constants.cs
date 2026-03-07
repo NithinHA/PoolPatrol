@@ -12,13 +12,6 @@ public class Constants
 
 #endregion
 
-#region Bullet collision parameters
-
-        public const string BULLET_COLLISION_Collider = "BulletCollisionCollider";
-        public const string BULLET_COLLISION_Direction = "BulletCollisionDirection";
-
-#endregion
-
     }
 
     public class EnvironmentConstants
