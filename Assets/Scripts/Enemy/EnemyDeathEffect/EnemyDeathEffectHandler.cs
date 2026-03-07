@@ -13,7 +13,7 @@ namespace Enemy.Death
             _effects = GetComponents<IOnDeathEffect>();
         }
 
-        public void TriggerDeathEffects(Dictionary<string, object> parameters)
+        public void TriggerDeathEffects(EnemyDeathParameters parameters)
         {
             foreach (var effect in _effects)
             {
@@ -24,6 +24,6 @@ namespace Enemy.Death
 
     public interface IOnDeathEffect
     {
-        void Execute(Dictionary<string, object> parameters);
+        void Execute(EnemyDeathParameters parameters);
     }
 }

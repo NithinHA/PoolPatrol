@@ -1,7 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Enemy;
+using Enemy.Death;
 using Player;
 using Pooling;
 using UnityEngine;
@@ -14,35 +12,47 @@ namespace Weapon
         [SerializeField] private TrailRenderer m_TrailRenderer;
         [SerializeField] private CircleCollider2D m_Collider;
 
+        private Renderer[] _cachedRenderers;
+
 
         private WeaponAttack _attack;
         private BulletSource _source;
 
         private WaitForSeconds _outOfBoundDelay = new WaitForSeconds(1f);
         private Vector3 _lastFrameVelocity;
+        private Vector3 _startPosition;
+        private float _sqrRange;
 
         private bool _isBulletHitSuccess = false;
+        private bool _isDestroying = false;
 
 #region Unity callbacks
 
-        private void Start()
+        private void Awake()
         {
-            StartCoroutine(OutOfBoundsCheckRoutine());
+            _cachedRenderers = GetComponentsInChildren<Renderer>();
         }
 
         private void FixedUpdate()
         {
             _lastFrameVelocity = m_Rb2D.linearVelocity;
+
+            if (IsExceedingRange())
+            {
+                InvokeHitFail(false);
+            }
+        }
+
+        private bool IsExceedingRange()
+        {
+            return (transform.position - _startPosition).sqrMagnitude > _sqrRange;
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.CompareTag(Constants.GameConstants.TAG_ScreenEdges))
             {
-                ObjectPoolManager.Instance.SpawnItem(PoolableItemType.BulletImpactParticles, transform.position, Quaternion.identity);
-                _attack?.OnAttackComplete?.Invoke();
-                if (!_isBulletHitSuccess)
-                    _attack?.OnHitFail?.Invoke();
+                InvokeHitFail(true);
             }
             else if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Player))
             {
@@ -59,16 +69,18 @@ namespace Weapon
             }
             else if (other.gameObject.CompareTag(Constants.GameConstants.TAG_Enemy))
             {
-                EnemyController enemy = other.gameObject.GetComponent<EnemyController>();
-                if (_source == BulletSource.Player || _source == BulletSource.Environment)
+                if (_source == BulletSource.Player || _source == BulletSource.Enemy)    // source==Enemy enables Enemy friendly fire.
                 {
-                    Dictionary<string, object> parameters = new Dictionary<string, object>()
+                    EnemyController enemy = other.gameObject.GetComponent<EnemyController>();
+                    
+                    EnemyDeathParameters enemyDeathParams = new EnemyDeathParameters()
                     {
-                        { Constants.GameConstants.BULLET_COLLISION_Collider, other.gameObject },
-                        { Constants.GameConstants.BULLET_COLLISION_Direction, _lastFrameVelocity.normalized }
+                        CollidingObject = other.gameObject,
+                        CollisionDirection = _lastFrameVelocity.normalized
                     };
+                    
                     _attack?.OnHitSuccess?.Invoke(enemy.transform.position);
-                    enemy.Die(parameters);
+                    enemy.Die(enemyDeathParams);
                     _isBulletHitSuccess = true;
                 }
 
@@ -89,27 +101,14 @@ namespace Weapon
             m_Collider.radius *= colliderSizeMultiplier;
         }
 
-        public void Fire(Vector2 direction, float speed, BulletSource source, WeaponAttack attack)
+        public void Fire(Vector2 direction, float speed, BulletSource source, WeaponAttack attack, float range, Vector3 startPosition)
         {
             _source = source;
             _attack = attack;
+            _startPosition = startPosition;
+            _sqrRange = range * range;
             direction.Normalize();
             m_Rb2D.AddForce(direction * speed, ForceMode2D.Impulse);
-        }
-
-        private IEnumerator OutOfBoundsCheckRoutine()
-        {
-            Vector3 viewportPos = Camera.main.WorldToViewportPoint(transform.position);
-
-            if (viewportPos.x < -1 || viewportPos.x > 2 ||
-                viewportPos.y < -1 || viewportPos.y > 2)
-            {
-                DestroyBullet(true);
-                yield break;
-            }
-
-            yield return _outOfBoundDelay;
-            StartCoroutine(OutOfBoundsCheckRoutine());
         }
 
         private void SetTrailSize(float multiplier)
@@ -123,19 +122,45 @@ namespace Weapon
             m_TrailRenderer.startColor = color;
         }
 
-        private void DestroyBullet(bool isOutOfBounds = false)
+        private void InvokeHitFail(bool hasBulletCollidedSomething)
         {
-            if (!isOutOfBounds)
-            {
-                ObjectPoolManager.Instance.SpawnItem(PoolableItemType.BulletImpactParticles, transform.position,
-                    Quaternion.identity);
-            }
+            if (!_isBulletHitSuccess)   // just a safety check to avoid cases like hit edge and enemy at the same frame; or hit enemy and out of range in the same frame.
+                _attack?.OnHitFail?.Invoke();
+            DestroyBullet(hasBulletCollidedSomething);
+        }
+
+        private void DestroyBullet(bool hasBulletCollidedSomething = true)
+        {
+            if (_isDestroying) return;
+            _isDestroying = true;
+
+            ObjectPoolManager.Instance.SpawnItem(hasBulletCollidedSomething
+                    ? PoolableItemType.BulletHitParticles
+                    : PoolableItemType.BulletMissedParticles, transform.position, Quaternion.identity);
 
             _attack?.OnAttackComplete?.Invoke();
             _attack?.Clear();
             _attack = null;
 
-            Destroy(this.gameObject);
+            // Soft destruction: Disable physics and visuals, let trail fade out
+            m_Rb2D.linearVelocity = Vector2.zero;
+            m_Rb2D.simulated = false; // Prevents further physics interactions
+            m_Collider.enabled = false;
+
+            if (m_TrailRenderer != null)
+                m_TrailRenderer.emitting = false;
+
+            // Hide all renderers except the trail itself
+            for (int i = 0; i < _cachedRenderers.Length; i++)
+            {
+                Renderer r = _cachedRenderers[i];
+                if (r != m_TrailRenderer)
+                    r.enabled = false;
+            }
+
+            // Destroy the bullet object after the trail duration has passed
+            float destroyDelay = m_TrailRenderer != null ? m_TrailRenderer.time : 0f;
+            Destroy(gameObject, destroyDelay);
         }
 
 

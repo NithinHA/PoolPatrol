@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Weapon
@@ -12,7 +13,19 @@ namespace Weapon
         public float BulletSpeed = 10;
         public float BulletSizeMultiplier = 1;
         public float BulletColliderSizeMultiplier = 1f;     // makes the bullet collider large/small
+        public float BulletRange = 20f;
 
+#region Unity callbacks
+
+        private void OnValidate()
+        {
+            PlayerWeaponController playerWeaponController = _weaponController as PlayerWeaponController;
+            if (playerWeaponController != null)
+                playerWeaponController.UpdateRangeIndicator();
+        }
+
+#endregion
+        
         public void Setup(WeaponControllerBase heldByController)
         {
             _weaponController = heldByController;
@@ -28,7 +41,7 @@ namespace Weapon
             bullet.SetupScale(BulletSizeMultiplier, BulletColliderSizeMultiplier);
             
             WeaponAttack attack = new WeaponAttack();
-            bullet.Fire(direction, BulletSpeed, source, attack);
+            bullet.Fire(direction, BulletSpeed, source, attack, BulletRange, _weaponController.transform.position);
             
             return attack;
         }

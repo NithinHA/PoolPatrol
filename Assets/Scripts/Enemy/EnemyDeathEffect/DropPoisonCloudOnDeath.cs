@@ -7,7 +7,7 @@ namespace Enemy.Death
     {
         public GameObject poisonCloudPrefab;
 
-        public void Execute(Dictionary<string, object> parameters)
+        public void Execute(EnemyDeathParameters parameters)
         {
             Instantiate(poisonCloudPrefab, transform.position, Quaternion.identity);
         }

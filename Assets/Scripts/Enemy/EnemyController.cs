@@ -42,7 +42,7 @@ namespace Enemy
             _movement?.FixedTick();
         }
 
-        public void Die(Dictionary<string, object> parameters)
+        public void Die(EnemyDeathParameters parameters)
         {
             // play enemy death SFX and VFX
             WaterRippleParticleEmitter.EmitParticles();     // TODO: Wouldn't do anything as the object would be destroyed this frame. Need to handle this elsewhere.

@@ -8,7 +8,7 @@ namespace Enemy.Death
         public GameObject gemPrefab;
         public int amount = 3;
 
-        public void Execute(Dictionary<string, object> parameters)
+        public void Execute(EnemyDeathParameters parameters)
         {
             for (int i = 0; i < amount; i++)
             {

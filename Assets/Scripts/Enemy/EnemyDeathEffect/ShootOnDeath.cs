@@ -11,7 +11,7 @@ namespace Enemy.Death
         public GameObject bulletPrefab;
         public int count = 3;
 
-        public void Execute(Dictionary<string, object> parameters)
+        public void Execute(EnemyDeathParameters parameters)
         {
             float angleStep = 360f / count;
             for (int i = 0; i < count; i++)

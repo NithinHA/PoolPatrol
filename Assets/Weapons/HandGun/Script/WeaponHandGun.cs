@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Player;
 using Enemy;
+using Enemy.Death;
 using Pooling;
-using Unity.Mathematics;
 
 namespace Weapon
 {
@@ -94,7 +94,12 @@ namespace Weapon
                             { Constants.GameConstants.BULLET_COLLISION_Collider, col.gameObject },
                             { Constants.GameConstants.BULLET_COLLISION_Direction, direction }
                         };
-                        enemy.Die(parameters);
+                        EnemyDeathParameters enemyDeathParams = new EnemyDeathParameters()
+                        {
+                            CollidingObject = col.gameObject,
+                            CollisionDirection = direction
+                        };
+                        enemy.Die(enemyDeathParams);
                     }
                 }
             }

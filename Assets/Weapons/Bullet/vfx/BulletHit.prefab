@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6132793711267316597}
   - component: {fileID: 1043333196264634635}
   m_Layer: 0
-  m_Name: BulletImpact
+  m_Name: BulletHit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4847,7 +4847,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6636559739562c4ea7abb992b731ac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ParticleSystem: {fileID: 5305731252951830730}
+  Particles: {fileID: 5305731252951830730}
 --- !u!1 &8376934001184874709
 GameObject:
   m_ObjectHideFlags: 0

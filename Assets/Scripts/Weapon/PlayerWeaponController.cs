@@ -10,6 +10,7 @@ namespace Weapon
         [SerializeField] private float m_WeaponRotateTweenDuration = .05f;
         [Header("References")]
         [SerializeField] private PlayerController m_PlayerController;
+        [SerializeField] private WeaponRangeIndicator m_RangeIndicator;
         
 #region Unity callbacks
 
@@ -17,6 +18,7 @@ namespace Weapon
         {
             base.Start();
             m_PlayerController.OnFireInput += OnFireInput;
+            UpdateRangeIndicator();
         }
 
         private void OnDestroy()
@@ -58,6 +60,15 @@ namespace Weapon
                     };
                 }
             });
+        }
+
+        public void UpdateRangeIndicator()
+        {
+            if (m_RangeIndicator != null && ActiveWeapon != null)
+            {
+                m_RangeIndicator.SetRange(ActiveWeapon.BulletRange);
+                m_RangeIndicator.Show();
+            }
         }
     }
 }

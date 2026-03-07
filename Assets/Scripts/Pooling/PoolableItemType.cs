@@ -8,7 +8,8 @@ namespace Pooling
     {
         Crosshair,
         EnemySpawnParticles,
-        BulletImpactParticles,
+        BulletHitParticles,
         BulletComboExplosion,
+        BulletMissedParticles,
     }
 }

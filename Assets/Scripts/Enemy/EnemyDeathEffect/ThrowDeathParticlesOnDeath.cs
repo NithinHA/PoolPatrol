@@ -8,18 +8,9 @@ namespace Enemy.Death
         [SerializeField] private ParticleSystem m_DeathParticlesPrefab;
         [SerializeField] private Color m_DeathParticlesColor = Color.white;
 
-        public void Execute(Dictionary<string, object> parameters)
+        public void Execute(EnemyDeathParameters parameters)
         {
-            GameObject collision = parameters.ContainsKey(Constants.GameConstants.BULLET_COLLISION_Collider)
-                ? parameters[Constants.GameConstants.BULLET_COLLISION_Collider] as GameObject : null;
-            if (collision == null)
-            {
-                Failure();
-                return;
-            }
-            Vector3? bulletRbDirection = parameters.ContainsKey(Constants.GameConstants.BULLET_COLLISION_Direction)
-                ? parameters[Constants.GameConstants.BULLET_COLLISION_Direction] as Vector3? : null;
-            if (bulletRbDirection == null)
+            if (parameters.CollidingObject == null)
             {
                 Failure();
                 return;
@@ -27,13 +18,13 @@ namespace Enemy.Death
 
             ParticleSystem deathParticles = Instantiate(m_DeathParticlesPrefab, transform.position, Quaternion.identity);
             SetParticleColor(deathParticles);
-            SetParticleThrowDirection(deathParticles, bulletRbDirection.Value);
+            SetParticleThrowDirection(deathParticles, parameters.CollisionDirection);
             deathParticles.Play();
         }
 
         private void Failure()
         {
-            Debug.Log("Something went wrong ni ThrowDeathParticlesOnDeath!");
+            Debug.Log("Something went wrong in ThrowDeathParticlesOnDeath!");
         }
 
         private void SetParticleColor(ParticleSystem deathParticles)
