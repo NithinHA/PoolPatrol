@@ -1,15 +1,15 @@
 using DG.Tweening;
 using Pooling;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Weapon;
 
 public class Crosshair : MonoBehaviour, IPoolableObject
 {
     [SerializeField] private Transform m_Gfx;
     [SerializeField] private Renderer m_Renderer;
-    [FormerlySerializedAs("m_StartColor")] [SerializeField] private Color m_DefaultColor;
+    [SerializeField] private Color m_DefaultColor;
     [SerializeField] private Color m_HitColor;
+    [SerializeField] private Color m_DisableColor;
     [Header("Lifetime Anim Values")]
     // Define target values
     [SerializeField] private float m_TargetDotSize = 0.05f;
@@ -104,6 +104,18 @@ public class Crosshair : MonoBehaviour, IPoolableObject
             _attack.OnAttackComplete -= OnAttackComplete;
             _attack = null;
         }
+    }
+
+    public void FailedAttack()
+    {
+        _propBlock.SetFloat(DotSizeProperty, m_StartDotSize);
+        _propBlock.SetFloat(RingCrossCutoutProperty, m_StartRingCrossCutout);
+        _propBlock.SetFloat(RingDistanceProperty, m_StartRingDistance);
+        _propBlock.SetFloat(LineLengthMinProperty, m_StartLineLengthMin);
+        _propBlock.SetFloat(LineLengthMaxProperty, m_StartLineLengthMax);
+        _propBlock.SetColor(ColorProperty, m_DisableColor);
+        m_Renderer.SetPropertyBlock(_propBlock);
+        OnAttackComplete();
     }
 
     private void AnimateOut()

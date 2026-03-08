@@ -31,20 +31,18 @@ namespace Weapon
         private void OnFireInput(Vector2 direction, Vector2 mousePos)
         {
             Crosshair crosshair = ObjectPoolManager.Instance.SpawnItem(PoolableItemType.Crosshair, mousePos, Quaternion.identity) as Crosshair;
+            if(!ActiveWeapon.Magazine.CanFire)
+                crosshair?.FailedAttack();
+
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 180;  // +180 because by default the gun is rotated 180 degree
             transform.DORotate(new Vector3(0,0,angle), m_WeaponRotateTweenDuration, RotateMode.Fast).OnComplete(() =>
             {
                 Vector2 directionPostRotation = (mousePos - (Vector2)transform.position).normalized;
                 WeaponAttack attack = ActiveWeapon.FireWeapon(directionPostRotation, BulletSource);
-                if (attack == null)
-                {
-                    // did not fire bullet due to a problem
-                    // invoke crosshair.animateOut
-                }
-                else
+                if (attack != null)
                 {
                     crosshair?.SubscribeToAttack(attack);
-                    
+
                     attack.OnHitSuccess += (hitPos) =>
                     {
                         m_PlayerController.PlayerCombo.AddCombo(hitPos);
@@ -54,10 +52,7 @@ namespace Weapon
                         }
                     };
 
-                    attack.OnHitFail += () =>
-                    {
-                        m_PlayerController.PlayerCombo.BreakCombo();
-                    };
+                    attack.OnHitFail += () => { m_PlayerController.PlayerCombo.BreakCombo(); };
                 }
             });
         }

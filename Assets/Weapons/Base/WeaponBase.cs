@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace Weapon
@@ -8,6 +7,15 @@ namespace Weapon
         [SerializeField] protected Transform m_FirePoint;
         [SerializeField] protected Bullet m_BulletPrefab;
 
+        [Header("Ammo / Reload / Cooldown")]
+        [SerializeField] private WeaponAmmoSettings m_AmmoSettings = new WeaponAmmoSettings
+        {
+            MagazineSize         = 6,
+            ReloadStyle          = ReloadStyle.MagazineAtOnce,
+            ReloadTimePerBullet  = 2f,
+            CooldownDuration     = 0f
+        };
+
         private WeaponControllerBase _weaponController;
 
         public float BulletSpeed = 10;
@@ -15,7 +23,23 @@ namespace Weapon
         public float BulletColliderSizeMultiplier = 1f;     // makes the bullet collider large/small
         public float BulletRange = 20f;
 
+        /// <summary>
+        /// Provides access to ammo count, reload progress, and cooldown progress.
+        /// UI classes should poll this directly — no events, no allocations.
+        /// </summary>
+        public WeaponMagazine Magazine { get; private set; }
+
 #region Unity callbacks
+
+        protected virtual void Awake()
+        {
+            Magazine = new WeaponMagazine(m_AmmoSettings);
+        }
+
+        protected virtual void Update()
+        {
+            Magazine.Tick(Time.deltaTime);
+        }
 
         private void OnValidate()
         {
@@ -25,24 +49,28 @@ namespace Weapon
         }
 
 #endregion
-        
+
         public void Setup(WeaponControllerBase heldByController)
         {
             _weaponController = heldByController;
         }
 
         /// <summary>
-        /// The control reaches here means the player/enemy does not require a reload. They have enough bullets and wish to Fire.
-        /// This function will definitely spawn or fetch a bullet from pool, setup, perform Fire and return the new WeaponAttack instance for tracking.
+        /// Attempts to fire the weapon.
+        /// Returns null if the weapon cannot fire (cooldown, reloading, or reload interrupted).
+        /// Subclasses should call base.FireWeapon first; if it returns null, they must also return null.
         /// </summary>
         public virtual WeaponAttack FireWeapon(Vector2 direction, BulletSource source)
         {
+            if (!Magazine.TryConsumeBullet())
+                return null;
+
             Bullet bullet = Instantiate(m_BulletPrefab, m_FirePoint.position, Quaternion.identity);
             bullet.SetupScale(BulletSizeMultiplier, BulletColliderSizeMultiplier);
-            
+
             WeaponAttack attack = new WeaponAttack();
             bullet.Fire(direction, BulletSpeed, source, attack, BulletRange, _weaponController.transform.position);
-            
+
             return attack;
         }
     }

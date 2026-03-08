@@ -26,10 +26,11 @@ namespace Weapon
 
         public override WeaponAttack FireWeapon(Vector2 direction, BulletSource source)
         {
-            // perform reload checks here.
-            // if can not fire => return null.  // this check can also be 
+            // Base class handles ammo consumption, cooldown, and reload.
+            // If it returns null the weapon could not fire (reloading / on cooldown).
             WeaponAttack attack = base.FireWeapon(direction, source);
-            AnimateOnFire();
+            if (attack != null)
+                AnimateOnFire();
             return attack;
         }
 
