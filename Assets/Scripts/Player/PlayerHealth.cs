@@ -11,6 +11,11 @@ namespace Player
         public float DamageCooldown = 1f;
         public bool IsPlayerAlive => CurrentHealth > 0;
 
+        /// <summary>
+        /// Fired whenever health changes (damage or heal). Passes (newHealth, maxHealth).
+        /// </summary>
+        public event Action<int, int> OnHealthChanged;
+
         private bool _isPlayerCooldownActive = false;
         private WaitForSeconds _waitForDamageCooldown;
 
@@ -26,15 +31,21 @@ namespace Player
                 return;
 
             CurrentHealth--;
-            // Debug.Log($"=> Player take damage: {CurrentHealth}");
+            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+
             if (!IsPlayerAlive)
-            {
                 KillPlayer();
-            }
             else
-            {
                 ActivateDamageCooldown();
-            }
+        }
+
+        /// <summary>
+        /// Restores one point of health, up to MaxHealth. Suitable for heart-drop pickups.
+        /// </summary>
+        public void Heal(int amount = 1)
+        {
+            CurrentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
+            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
         }
 
         private void KillPlayer()

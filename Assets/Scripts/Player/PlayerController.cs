@@ -8,6 +8,14 @@ namespace Player
 {
     public class PlayerController : MonoBehaviour
     {
+        /// <summary>
+        /// The local player on this device.
+        /// Set by LevelManager.SetLocalPlayer() at game-start.
+        /// In multiplayer, only the locally-controlled PlayerController has IsLocalPlayer = true.
+        /// </summary>
+        public static PlayerController Local { get; private set; }
+        public bool IsLocalPlayer { get; private set; }
+
         [Header("Player references")]
         public PlayerHealth PlayerHealth;
         public PlayerWeaponController PlayerWeaponController;
@@ -29,6 +37,20 @@ namespace Player
             _impulseMover = GetComponent<ImpulseMover>();
             _impulseMover.AssignParticleEmitter(WaterRippleParticleEmitter);
             _mainCam = Camera.main;
+        }
+
+        /// <summary>
+        /// Designates this instance as the local player for this session.
+        /// </summary>
+        public void SetLocal()
+        {
+            Local = this;
+            IsLocalPlayer = true;
+        }
+
+        private void OnDestroy()
+        {
+            if (Local == this) Local = null;
         }
 
         void Update()

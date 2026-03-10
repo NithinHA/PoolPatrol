@@ -14,9 +14,9 @@ namespace Weapon
         
 #region Unity callbacks
 
-        protected override void Start()
+        protected override void Awake()
         {
-            base.Start();
+            base.Awake();
             m_PlayerController.OnFireInput += OnFireInput;
             UpdateRangeIndicator();
         }

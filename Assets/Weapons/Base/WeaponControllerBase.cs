@@ -7,7 +7,7 @@ namespace Weapon
         public WeaponBase ActiveWeapon {get; private set;}
         public BulletSource BulletSource;
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             ActiveWeapon = GetComponentInChildren<WeaponBase>();
             ActiveWeapon.Setup(this);   // This must be called whenever the player changes their ActiveWeapon.

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Weapon
@@ -49,6 +50,26 @@ namespace Weapon
         public int MagazineSize { get; private set; }
         public bool IsReloading { get; private set; }
 
+        /// <summary>The reload style configured for this weapon.</summary>
+        public ReloadStyle ReloadStyle { get; private set; }
+
+        // ── Discrete events for UI animation ───────────────────────────────
+
+        /// <summary>A bullet was successfully consumed. Passes the new ammo count.</summary>
+        public event Action<int> OnBulletFired;
+
+        /// <summary>Auto-reload has begun (magazine is now empty).</summary>
+        public event Action OnReloadStarted;
+
+        /// <summary>
+        /// (BoltAction only) One bullet finished loading. Passes the new ammo count.
+        /// UI can light up that specific bullet icon.
+        /// </summary>
+        public event Action<int> OnBulletReloaded;
+
+        /// <summary>The full magazine is ready. Passes the restored ammo count.</summary>
+        public event Action<int> OnReloadComplete;
+
         /// <summary>
         /// Fire cooldown progress.  0 = just fired (locked), 1 = ready.
         /// Ramps smoothly from 0 to 1 every frame.
@@ -60,7 +81,20 @@ namespace Weapon
         /// Zero when not reloading.
         /// </summary>
         public float ReloadProgress { get; private set; }
-        public bool CanFire => !IsReloading && CooldownProgress >= 1f;
+        public bool CanFire
+        {
+            get
+            {
+                if (CooldownProgress < 1f) return false;
+                if (IsReloading)
+                {
+                    // BoltAction can fire mid-reload if at least one bullet is loaded.
+                    if (_reloadStyle == ReloadStyle.BoltAction && CurrentAmmo > 0) return true;
+                    return false;
+                }
+                return CurrentAmmo > 0;
+            }
+        }
 
         private readonly ReloadStyle _reloadStyle;
         private readonly float       _reloadTimePerBullet;   // seconds
@@ -72,6 +106,7 @@ namespace Weapon
         public WeaponMagazine(WeaponAmmoSettings settings)
         {
             MagazineSize         = settings.MagazineSize;
+            ReloadStyle          = settings.ReloadStyle;
             _reloadStyle         = settings.ReloadStyle;
             _reloadTimePerBullet = Mathf.Max(settings.ReloadTimePerBullet, 0.0001f); // avoid /0
             _cooldownDuration    = settings.CooldownDuration;
@@ -93,8 +128,6 @@ namespace Weapon
                 TickReload(deltaTime);
         }
 
-        // ── Called by WeaponBase.FireWeapon ─────────────────────────────────
-
         /// <summary>
         /// Attempts to consume one bullet.
         /// Returns true => bullet may be fired; ammo decremented; cooldown reset.
@@ -102,23 +135,46 @@ namespace Weapon
         /// </summary>
         public bool TryConsumeBullet()
         {
-            if (IsReloading)
-            {
-                // Interrupt: reset the in-progress bullet (or full-mag) timer.
-                InterruptReload();
-                return false;
-            }
-
             if (CooldownProgress < 1f)
                 return false;
+
+            if (IsReloading)
+            {
+                if (_reloadStyle == ReloadStyle.BoltAction && CurrentAmmo > 0)
+                {
+                    // Allowed to fire bolt action mid-reload if we have ammo.
+                    // This will consume one of the ALREADY loaded bullets. The bullet currently being loaded will have its timer reset.
+                    InterruptReload();
+                }
+                else
+                {
+                    // MagazineAtOnce OR BoltAction with 0 ammo.
+                    InterruptReload();
+                    return false;
+                }
+            }
+            else if (CurrentAmmo <= 0)
+            {
+                // Not reloading but empty? Trigger auto-reload.
+                BeginReload();
+                return false;
+            }
 
             // Shoot successful
             CurrentAmmo--;
             _cooldownTimer   = 0f;
             CooldownProgress = (_cooldownDuration <= 0f) ? 1f : 0f;
 
-            if (CurrentAmmo <= 0)
-                BeginReload();
+            OnBulletFired?.Invoke(CurrentAmmo);
+
+            // Ensure we are in/enter reloading state if magazine is no longer full (for BoltAction) 
+            // or if we just emptied it. 
+            // Note: MagazineAtOnce only auto-starts when empty (handled above or below).
+            if (IsReloading || CurrentAmmo <= 0)
+            {
+                if (!IsReloading)
+                    BeginReload();
+            }
 
             return true;
         }
@@ -147,15 +203,18 @@ namespace Weapon
                     CurrentAmmo    = MagazineSize;
                     IsReloading    = false;
                     ReloadProgress = 0f;
+                    OnReloadComplete?.Invoke(CurrentAmmo);
                     break;
 
                 case ReloadStyle.BoltAction:
                     CurrentAmmo++;
+                    OnBulletReloaded?.Invoke(CurrentAmmo);
                     if (CurrentAmmo >= MagazineSize)
                     {
                         // Magazine fully reloaded.
                         IsReloading    = false;
                         ReloadProgress = 0f;
+                        OnReloadComplete?.Invoke(CurrentAmmo);
                     }
                     else
                     {
@@ -172,6 +231,7 @@ namespace Weapon
             IsReloading    = true;
             _reloadTimer   = 0f;
             ReloadProgress = 0f;
+            OnReloadStarted?.Invoke();
         }
 
         private void InterruptReload()
