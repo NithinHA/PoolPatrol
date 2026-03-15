@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using Utils;
 
 namespace Player
 {
@@ -9,6 +10,10 @@ namespace Player
         public int MaxHealth = 5;
         public int CurrentHealth = 5;
         public float DamageCooldown = 1f;
+
+        [Header("Effects")]
+        [SerializeField] private ShakeIntensity m_DamageShake = ShakeIntensity.Medium;
+
         public bool IsPlayerAlive => CurrentHealth > 0;
 
         /// <summary>
@@ -32,6 +37,8 @@ namespace Player
 
             CurrentHealth--;
             OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+            
+            CameraShaker.Instance?.Shake(m_DamageShake);
 
             if (!IsPlayerAlive)
                 KillPlayer();

@@ -167,10 +167,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_FirePoint: {fileID: 7416028202912184634}
   m_BulletPrefab: {fileID: 8581976762867977616, guid: e986bd60b7f3a5f4d82cd532911968dc, type: 3}
+  m_AmmoSettings:
+    MagazineSize: 6
+    ReloadStyle: 0
+    ReloadTimePerBullet: 2
+    CooldownDuration: 0
   BulletSpeed: 30
   BulletSizeMultiplier: 1.8
   BulletColliderSizeMultiplier: 1
+  BulletRange: 20
   m_MuzzleFlash: {fileID: 7783737476914928977}
+  m_ExplosionVfx: {fileID: 0}
+  m_RangeLow: 0
+  m_RangeMid: 1.4
+  m_RangeHigh: 1.8
+  m_RangeMax: 2.2
+  m_ComboLowColor: {r: 0, g: 1, b: 1, a: 1}
+  m_ComboMidColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  m_ComboHighColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  m_ComboMaxColor: {r: 1, g: 0, b: 0, a: 1}
+  m_ComboShake:
+    Amplitude: 1.5
+    Frequency: 15
+    Duration: 0.15
 --- !u!1001 &3455662746814441647
 PrefabInstance:
   m_ObjectHideFlags: 0

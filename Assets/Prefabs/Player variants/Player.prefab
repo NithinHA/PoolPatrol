@@ -6235,6 +6235,7 @@ MonoBehaviour:
   MaxHealth: 5
   CurrentHealth: 5
   DamageCooldown: 1
+  m_DamageShake: 1
 --- !u!114 &9088755020692702791
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,6 +4,7 @@ using Player;
 using Enemy;
 using Enemy.Death;
 using Pooling;
+using Utils;
 
 namespace Weapon
 {
@@ -23,6 +24,10 @@ namespace Weapon
         [SerializeField] private Color m_ComboMidColor = Color.yellow;
         [SerializeField] private Color m_ComboHighColor = Color.yellow;
         [SerializeField] private Color m_ComboMaxColor = Color.red;
+        [Space]
+        [Header("Effects")]
+        [SerializeField] private ShakeIntensity m_ComboShakeBase = ShakeIntensity.Light;
+        [SerializeField] private float m_ComboShakeAmplitudePerHit = 0.5f; // Scales intensity per hit
 
         public override WeaponAttack FireWeapon(Vector2 direction, BulletSource source)
         {
@@ -79,6 +84,7 @@ namespace Weapon
 
             // Find and damage enemies in radius
             Collider2D[] colliders = Physics2D.OverlapCircleAll(hitPosition, range);
+            int enemiesHitCount = 0;
             foreach (Collider2D col in colliders)
             {
                 if (col.CompareTag(Constants.GameConstants.TAG_Enemy))
@@ -90,6 +96,7 @@ namespace Weapon
                         if (direction == Vector3.zero)  // hit the same enemy who was shot.
                             continue;
 
+                        enemiesHitCount++;
                         EnemyDeathParameters enemyDeathParams = new EnemyDeathParameters()
                         {
                             CollidingObject = col.gameObject,
@@ -99,6 +106,14 @@ namespace Weapon
                     }
                 }
             }
+            
+            // Dynamic Camera Shake based on hits
+            if (enemiesHitCount > 0)
+            {
+                float scale = 2f + ((enemiesHitCount - 1) * m_ComboShakeAmplitudePerHit);
+                CameraShaker.Instance?.Shake(m_ComboShakeBase, scale);
+            }
+            
         }
     }
 }

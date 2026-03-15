@@ -261,6 +261,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyType: 2
   WaterRippleParticleEmitter: {fileID: 4833293088431291558}
+  m_DeathShake:
+    Amplitude: 0.1
+    Frequency: 15
+    Duration: 0.05
   m_FrameRadius: 0.5
 --- !u!114 &7174442488397436681
 MonoBehaviour:

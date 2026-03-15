@@ -4,6 +4,7 @@ using Enemy.Attack;
 using Enemy.Death;
 using Unity.Cinemachine;
 using UnityEngine;
+using Utils;
 
 namespace Enemy
 {
@@ -13,6 +14,9 @@ namespace Enemy
         public RippleCausingParticleEmitter WaterRippleParticleEmitter;
         public Rigidbody2D RigidBody { get; private set; }
         
+        [Header("Effects")]
+        [SerializeField] private ShakeIntensity m_DeathShake = ShakeIntensity.Light;
+
         private EnemyMovement _movement;
         private EnemyAttack _attack;
         private EnemyDeathEffectHandler _deathHandler;
@@ -47,6 +51,9 @@ namespace Enemy
             // play enemy death SFX and VFX
             WaterRippleParticleEmitter.EmitParticles();     // TODO: Wouldn't do anything as the object would be destroyed this frame. Need to handle this elsewhere.
             _deathHandler?.TriggerDeathEffects(parameters);
+            
+            CameraShaker.Instance?.Shake(m_DeathShake);
+
             _targetGroup.RemoveMember(transform);
             Destroy(gameObject);
         }
