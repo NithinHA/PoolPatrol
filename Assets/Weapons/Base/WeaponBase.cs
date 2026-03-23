@@ -22,6 +22,10 @@ namespace Weapon
         public float BulletSizeMultiplier = 1;
         public float BulletColliderSizeMultiplier = 1f;     // makes the bullet collider large/small
         public float BulletRange = 20f;
+        
+        [Header("UI")]
+        [SerializeField] protected ProjectileIndicatorBase m_ProjectileIndicator;
+        public ProjectileIndicatorBase ProjectileIndicator => m_ProjectileIndicator;
 
         /// <summary>
         /// Provides access to ammo count, reload progress, and cooldown progress.

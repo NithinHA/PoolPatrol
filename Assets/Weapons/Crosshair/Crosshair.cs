@@ -78,6 +78,11 @@ public class Crosshair : MonoBehaviour, IPoolableObject
         m_Gfx.localRotation = Quaternion.identity;
 
         _propBlock.SetColor(ColorProperty, m_DefaultColor);
+        _propBlock.SetFloat(DotSizeProperty, m_StartDotSize);
+        _propBlock.SetFloat(RingCrossCutoutProperty, m_StartRingCrossCutout);
+        _propBlock.SetFloat(RingDistanceProperty, m_StartRingDistance);
+        _propBlock.SetFloat(LineLengthMinProperty, m_StartLineLengthMin);
+        _propBlock.SetFloat(LineLengthMaxProperty, m_StartLineLengthMax);
         m_Renderer.SetPropertyBlock(_propBlock);
     }
 

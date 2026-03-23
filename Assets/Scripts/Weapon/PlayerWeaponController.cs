@@ -12,49 +12,124 @@ namespace Weapon
         [SerializeField] private PlayerController m_PlayerController;
         [SerializeField] private WeaponRangeIndicator m_RangeIndicator;
         
+        private Crosshair _activeCrosshair;
+
 #region Unity callbacks
 
         protected override void Awake()
         {
             base.Awake();
-            m_PlayerController.OnFireInput += OnFireInput;
+            m_PlayerController.OnPointerDownEvent += OnPointerDown;
+            m_PlayerController.OnPointerUpdateEvent += OnPointerUpdate;
+            m_PlayerController.OnHoldStartEvent += OnHoldStart;
+            m_PlayerController.OnHoldUpdateEvent += OnHoldUpdate;
+            m_PlayerController.OnFireReleaseEvent += OnFireRelease;
             UpdateRangeIndicator();
+        }
+
+        private void Start()
+        {
+            if (ActiveWeapon != null)
+            {
+                ActiveWeapon.Magazine.OnReloadComplete += OnReloadProgress;
+                ActiveWeapon.Magazine.OnBulletReloaded += OnReloadProgress;
+            }
         }
 
         private void OnDestroy()
         {
-            m_PlayerController.OnFireInput -= OnFireInput;
+            if (m_PlayerController != null)
+            {
+                m_PlayerController.OnPointerDownEvent -= OnPointerDown;
+                m_PlayerController.OnPointerUpdateEvent -= OnPointerUpdate;
+                m_PlayerController.OnHoldStartEvent -= OnHoldStart;
+                m_PlayerController.OnHoldUpdateEvent -= OnHoldUpdate;
+                m_PlayerController.OnFireReleaseEvent -= OnFireRelease;
+            }
+            if (ActiveWeapon != null)
+            {
+                ActiveWeapon.Magazine.OnReloadComplete -= OnReloadProgress;
+                ActiveWeapon.Magazine.OnBulletReloaded -= OnReloadProgress;
+            }
+        }
+
+        private void OnReloadProgress(int currentAmmo)
+        {
+            if (ActiveWeapon != null && ActiveWeapon.ProjectileIndicator != null && ActiveWeapon.ProjectileIndicator.gameObject.activeSelf)
+            {
+                ActiveWeapon.ProjectileIndicator.UpdateColor(ActiveWeapon.Magazine.CanFire);
+            }
         }
 
 #endregion
 
-        private void OnFireInput(Vector2 direction, Vector2 mousePos)
+        private void OnPointerDown(Vector2 mousePos)
         {
-            Crosshair crosshair = ObjectPoolManager.Instance.SpawnItem(PoolableItemType.Crosshair, mousePos, Quaternion.identity) as Crosshair;
-            if(!ActiveWeapon.Magazine.CanFire)
-                crosshair?.FailedAttack();
+            _activeCrosshair = ObjectPoolManager.Instance.SpawnItem(PoolableItemType.Crosshair, mousePos, Quaternion.identity) as Crosshair;
+        }
 
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 180;  // +180 because by default the gun is rotated 180 degree
-            transform.DORotate(new Vector3(0,0,angle), m_WeaponRotateTweenDuration, RotateMode.Fast).OnComplete(() =>
+        private void OnPointerUpdate(Vector2 mousePos)
+        {
+            if (_activeCrosshair != null)
             {
-                Vector2 directionPostRotation = (mousePos - (Vector2)transform.position).normalized;
-                WeaponAttack attack = ActiveWeapon.FireWeapon(directionPostRotation, BulletSource);
-                if (attack != null)
+                _activeCrosshair.transform.position = mousePos;
+            }
+
+            Vector2 direction = (mousePos - (Vector2)transform.position).normalized;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 180;
+            transform.rotation = Quaternion.Euler(0, 0, angle);
+        }
+
+        private void OnHoldStart(Vector2 direction, Vector2 mousePos)
+        {
+            if (m_RangeIndicator != null) m_RangeIndicator.Hide();
+            if (ActiveWeapon != null && ActiveWeapon.ProjectileIndicator != null)
+            {
+                ActiveWeapon.ProjectileIndicator.Show(ActiveWeapon.Magazine.CanFire);
+                ActiveWeapon.ProjectileIndicator.UpdateAim(ActiveWeapon.transform.position, direction, ActiveWeapon.BulletRange);
+            }
+        }
+
+        private void OnHoldUpdate(Vector2 direction, Vector2 mousePos)
+        {
+            if (ActiveWeapon != null && ActiveWeapon.ProjectileIndicator != null)
+            {
+                ActiveWeapon.ProjectileIndicator.UpdateAim(ActiveWeapon.transform.position, direction, ActiveWeapon.BulletRange);
+            }
+        }
+
+        private void OnFireRelease(Vector2 direction, Vector2 mousePos)
+        {
+            if (m_RangeIndicator != null) m_RangeIndicator.Show();
+            if (ActiveWeapon != null && ActiveWeapon.ProjectileIndicator != null)
+            {
+                ActiveWeapon.ProjectileIndicator.Hide();
+            }
+
+            Crosshair localCrosshair = _activeCrosshair;
+            _activeCrosshair = null;
+
+            Vector2 directionPostRotation = (mousePos - (Vector2)transform.position).normalized;
+            WeaponAttack attack = ActiveWeapon.FireWeapon(directionPostRotation, BulletSource);
+            if (attack != null)
+            {
+                localCrosshair?.SubscribeToAttack(attack);
+
+                attack.OnHitSuccess += (hitPos) =>
                 {
-                    crosshair?.SubscribeToAttack(attack);
-
-                    attack.OnHitSuccess += (hitPos) =>
+                    m_PlayerController.PlayerCombo.AddCombo(hitPos);
+                    if (ActiveWeapon is IComboWeapon comboWeapon)
                     {
-                        m_PlayerController.PlayerCombo.AddCombo(hitPos);
-                        if (ActiveWeapon is IComboWeapon comboWeapon)
-                        {
-                            comboWeapon.PerformComboHitEffect(hitPos, m_PlayerController.PlayerCombo.CurrentComboLevel);
-                        }
-                    };
+                        comboWeapon.PerformComboHitEffect(hitPos, m_PlayerController.PlayerCombo.CurrentComboLevel);
+                    }
+                };
 
-                    attack.OnHitFail += () => { m_PlayerController.PlayerCombo.BreakCombo(); };
-                }
-            });
+                attack.OnHitFail += () => { m_PlayerController.PlayerCombo.BreakCombo(); };
+            }
+            else
+            {
+                localCrosshair?.FailedAttack();
+            }
         }
 
         public void UpdateRangeIndicator()

@@ -51,13 +51,13 @@ namespace Player.Floatie
                 m_Player = FindFirstObjectByType<PlayerController>();
 
             transform.position = m_Player.transform.position;
-            m_Player.OnFireInput += OnFireInput;
+            m_Player.OnFireReleaseEvent += OnFireInput;
             m_Player.ImpulseMover.OnBounce += OnPlayerBounce;
         }
 
         private void OnDestroy()
         {
-            m_Player.OnFireInput -= OnFireInput;
+            if (m_Player != null) m_Player.OnFireReleaseEvent -= OnFireInput;
             m_Player.ImpulseMover.OnBounce -= OnPlayerBounce;
         }
 
