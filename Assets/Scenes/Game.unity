@@ -639,7 +639,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4f2ce3c52ef31e641a3d1220efd1c969, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 39e7252c84f8c834291f456a8a46a984, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -2890,10 +2890,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 6414039551967786748, guid: 51de5c47efd038846b3f0f0b2a491938, type: 3}
-      propertyPath: m_DamageShake
-      value: 3
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3169,10 +3165,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AllEnemies:
+  - {fileID: 8294556068584543407, guid: 983f8244da7cacb4c9bba8222c8a84b8, type: 3}
   - {fileID: 9002047774425090281, guid: 1ebd31b783d87ae45a0091eb189399d7, type: 3}
   - {fileID: 451910388429490016, guid: e037176f071c95a4f86e92d5c18a604c, type: 3}
   - {fileID: 8425030537939918830, guid: bbba8f00c1748124abb910d59d0533db, type: 3}
-  - {fileID: 8294556068584543407, guid: 983f8244da7cacb4c9bba8222c8a84b8, type: 3}
   m_InitialSpawnInterval: 3
   m_MinSpawnInterval: 0.8
   m_SpawnDelay: 1.4

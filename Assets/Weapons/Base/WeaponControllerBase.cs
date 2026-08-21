@@ -4,7 +4,7 @@ namespace Weapon
 {
     public class WeaponControllerBase : MonoBehaviour
     {
-        public WeaponBase ActiveWeapon {get; private set;}
+        public WeaponBase ActiveWeapon {get; protected set;}
         public BulletSource BulletSource;
 
         protected virtual void Awake()

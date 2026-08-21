@@ -75,7 +75,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -705736231
   m_SortingLayer: 1
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 4f2ce3c52ef31e641a3d1220efd1c969, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -321,28 +321,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da99667fcbfc4388a544c75bb057fc33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirePoint: {fileID: 7416028202912184634}
+  FirePoint: {fileID: 7416028202912184634}
   m_BulletPrefab: {fileID: 8581976762867977616, guid: e986bd60b7f3a5f4d82cd532911968dc, type: 3}
   m_AmmoSettings:
     MagazineSize: 6
     ReloadStyle: 0
     ReloadTimePerBullet: 2
     CooldownDuration: 0
-  BulletSpeed: 30
-  BulletSizeMultiplier: 1.8
-  BulletColliderSizeMultiplier: 1
-  BulletRange: 20
+  BulletSpeed: 60
+  BulletSizeMultiplier: 2
+  BulletColliderSizeMultiplier: 1.2
+  BulletRange: 12
   m_ProjectileIndicator: {fileID: 2565024795620102861}
   m_MuzzleFlash: {fileID: 7783737476914928977}
-  m_ExplosionVfx: {fileID: 0}
+  m_ExplosionVfx: {fileID: 6546930976931813343, guid: 43973d81e6183e947824ea8dc8a65614, type: 3}
   m_RangeLow: 0
   m_RangeMid: 1.4
   m_RangeHigh: 1.8
   m_RangeMax: 2.2
-  m_ComboLowColor: {r: 0, g: 1, b: 1, a: 1}
-  m_ComboMidColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  m_ComboHighColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  m_ComboMaxColor: {r: 1, g: 0, b: 0, a: 1}
+  m_ComboLowColor: {r: 0.48235297, g: 1, b: 0.8762753, a: 1}
+  m_ComboMidColor: {r: 1, g: 0.8627451, b: 0.48235294, a: 1}
+  m_ComboHighColor: {r: 1, g: 0.68095505, b: 0.48235297, a: 1}
+  m_ComboMaxColor: {r: 0.89433956, g: 0.42354566, b: 0.5869952, a: 1}
   m_ComboShakeBase: 0
   m_ComboShakeAmplitudePerHit: 0.5
 --- !u!1001 &3455662746814441647

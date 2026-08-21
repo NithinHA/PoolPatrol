@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DG.Tweening;
 using Player;
 using Pooling;
@@ -12,6 +13,9 @@ namespace Weapon
         [SerializeField] private PlayerController m_PlayerController;
         [SerializeField] private WeaponRangeIndicator m_RangeIndicator;
         
+        [SerializeField] private List<WeaponBase> m_AvailableWeapons;
+        private int _selectedWeaponIndex = 0;
+        
         private Crosshair _activeCrosshair;
 
 #region Unity callbacks
@@ -24,6 +28,7 @@ namespace Weapon
             m_PlayerController.OnHoldStartEvent += OnHoldStart;
             m_PlayerController.OnHoldUpdateEvent += OnHoldUpdate;
             m_PlayerController.OnFireReleaseEvent += OnFireRelease;
+            m_PlayerController.PlayerCombo.OnComboLevelChanged += OnComboLevelChanged;
             UpdateRangeIndicator();
         }
 
@@ -45,6 +50,7 @@ namespace Weapon
                 m_PlayerController.OnHoldStartEvent -= OnHoldStart;
                 m_PlayerController.OnHoldUpdateEvent -= OnHoldUpdate;
                 m_PlayerController.OnFireReleaseEvent -= OnFireRelease;
+                m_PlayerController.PlayerCombo.OnComboLevelChanged -= OnComboLevelChanged;
             }
             if (ActiveWeapon != null)
             {
@@ -58,6 +64,14 @@ namespace Weapon
             if (ActiveWeapon != null && ActiveWeapon.ProjectileIndicator != null && ActiveWeapon.ProjectileIndicator.gameObject.activeSelf)
             {
                 ActiveWeapon.ProjectileIndicator.UpdateColor(ActiveWeapon.Magazine.CanFire);
+            }
+        }
+
+        private void OnComboLevelChanged(PlayerCombo.ComboLevel newLevel)
+        {
+            if (ActiveWeapon is IComboWeapon comboWeapon)
+            {
+                comboWeapon.OnComboLevelChanged(newLevel);
             }
         }
 
@@ -86,7 +100,7 @@ namespace Weapon
             if (ActiveWeapon != null && ActiveWeapon.ProjectileIndicator != null)
             {
                 ActiveWeapon.ProjectileIndicator.Show(ActiveWeapon.Magazine.CanFire);
-                ActiveWeapon.ProjectileIndicator.UpdateAim(ActiveWeapon.transform.position, direction, ActiveWeapon.BulletRange);
+                ActiveWeapon.ProjectileIndicator.UpdateAim(ActiveWeapon.FirePoint.position, direction, ActiveWeapon.BulletRange);
             }
         }
 
@@ -94,7 +108,7 @@ namespace Weapon
         {
             if (ActiveWeapon != null && ActiveWeapon.ProjectileIndicator != null)
             {
-                ActiveWeapon.ProjectileIndicator.UpdateAim(ActiveWeapon.transform.position, direction, ActiveWeapon.BulletRange);
+                ActiveWeapon.ProjectileIndicator.UpdateAim(ActiveWeapon.FirePoint.position, direction, ActiveWeapon.BulletRange);
             }
         }
 
@@ -139,6 +153,12 @@ namespace Weapon
                 m_RangeIndicator.SetRange(ActiveWeapon.BulletRange);
                 m_RangeIndicator.Show();
             }
+        }
+
+        public void SwitchWeapon()
+        {
+            _selectedWeaponIndex++;
+            ActiveWeapon = m_AvailableWeapons[_selectedWeaponIndex % m_AvailableWeapons.Count];
         }
     }
 }

@@ -35,6 +35,7 @@ namespace Player
         public void AddCombo(Vector2 vector2)
         {
             CurrentCombo++;
+            OnComboLevelChanged?.Invoke(CurrentComboLevel);
         }
 
         public void BreakCombo()

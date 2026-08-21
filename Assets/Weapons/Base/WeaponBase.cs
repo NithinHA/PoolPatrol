@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Weapon
 {
     public class WeaponBase : MonoBehaviour
     {
-        [SerializeField] protected Transform m_FirePoint;
+        public Transform FirePoint;
         [SerializeField] protected Bullet m_BulletPrefab;
 
         [Header("Ammo / Reload / Cooldown")]
@@ -16,7 +17,7 @@ namespace Weapon
             CooldownDuration     = 0f
         };
 
-        private WeaponControllerBase _weaponController;
+        protected WeaponControllerBase _weaponController;
 
         public float BulletSpeed = 10;
         public float BulletSizeMultiplier = 1;
@@ -69,7 +70,7 @@ namespace Weapon
             if (!Magazine.TryConsumeBullet())
                 return null;
 
-            Bullet bullet = Instantiate(m_BulletPrefab, m_FirePoint.position, Quaternion.identity);
+            Bullet bullet = Instantiate(m_BulletPrefab, FirePoint.position, Quaternion.identity);
             bullet.SetupScale(BulletSizeMultiplier, BulletColliderSizeMultiplier);
 
             WeaponAttack attack = new WeaponAttack();
