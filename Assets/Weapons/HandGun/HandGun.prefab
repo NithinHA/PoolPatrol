@@ -273,7 +273,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EnableColor: {r: 1, g: 1, b: 1, a: 1}
   m_DisableColor: {r: 1, g: 0, b: 0, a: 1}
+  m_HighlightColor: {r: 0.9863245, g: 1, b: 0.740566, a: 1}
   m_LineRenderer: {fileID: 6827310470264595023}
+  m_NormalWidth: 0.4
+  m_EnemyHitWidth: 1
+  m_EnemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &7779382468561926932
 GameObject:
   m_ObjectHideFlags: 0

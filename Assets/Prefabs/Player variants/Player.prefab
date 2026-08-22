@@ -21017,7 +21017,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EnableColor: {r: 1, g: 1, b: 1, a: 1}
   m_DisableColor: {r: 1, g: 0, b: 0, a: 1}
+  m_HighlightColor: {r: 0.9882353, g: 1, b: 0.7411765, a: 1}
   m_LineRenderer: {fileID: 8692356525901980291}
+  m_EnemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  m_NormalWidth: 0.4
+  m_EnemyHitWidth: 0.9
 --- !u!1 &5269307198944853266
 GameObject:
   m_ObjectHideFlags: 0
@@ -36563,6 +36569,14 @@ PrefabInstance:
     - target: {fileID: 2405621266333404259, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2565024795620102861, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
+      propertyPath: m_NormalWidth
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2565024795620102861, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
+      propertyPath: m_EnemyHitWidth
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 7779382468561926932, guid: 4e5af625b7a8d934a89051ad9531e723, type: 3}
       propertyPath: m_Name
