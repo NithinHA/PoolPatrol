@@ -35,6 +35,9 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
+        // Reset run-scoped economy (gems) so nothing carries over from a previous run.
+        ServiceLocator.GetEconomyService()?.BeginRun();
+
         // Transition the game into the active-play state
         ServiceLocator.GetGameManager()?.SwitchState(GameState.InGame);
 

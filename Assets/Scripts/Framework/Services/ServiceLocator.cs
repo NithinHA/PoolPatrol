@@ -73,6 +73,11 @@ namespace PTL.Framework
             return HasService(typeof(IHighscore)) ? GetService<IHighscore>() : null;
         }
 
+        public static IEconomyService GetEconomyService()
+        {
+            return HasService(typeof(IEconomyService)) ? GetService<IEconomyService>() : null;
+        }
+
 #endregion
     }
 }

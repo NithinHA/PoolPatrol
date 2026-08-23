@@ -349,7 +349,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 5c5baf0946908c640a2cb049868c3d38, type: 3}
-  m_Color: {r: 0.9245283, g: 0.920043, b: 0.42388743, a: 1}
+  m_Color: {r: 0.9254902, g: 0.6093718, b: 0.42352948, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -490,7 +490,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DeathParticlesPrefab: {fileID: 1223208520723655088, guid: 5ddef8137735c4e42889ec54ef013a38, type: 3}
-  m_DeathParticlesColor: {r: 0.83176076, g: 0.8415094, b: 0.14448556, a: 1}
+  m_DeathParticlesColor: {r: 0.84313726, g: 0.5023515, b: 0.14509805, a: 1}
 --- !u!1 &5636092574225249648
 GameObject:
   m_ObjectHideFlags: 0

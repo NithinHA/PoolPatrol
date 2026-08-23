@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using PTL.Framework.Services;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace PTL.Framework
 {
@@ -30,6 +31,7 @@ namespace PTL.Framework
                 { typeof(IGameService), new GameManager() },
                 { typeof(IHighscore), new HighscoreService() },
                 { typeof(ISceneService), new SceneService() },
+                { typeof(IEconomyService), new EconomyService() },
             };
 
             foreach (KeyValuePair<Type, IService> item in map)
@@ -43,6 +45,11 @@ namespace PTL.Framework
         private IEnumerator OnInitialized()
         {
             yield return new WaitForSeconds(1);
+            if (SceneManager.GetActiveScene().name == Constants.SceneNames.GAME)
+            {
+                yield break;
+            }
+
             ServiceLocator.GetService<ISceneService>().LoadScene(Constants.SceneNames.GAME, () =>
             {
                 ServiceLocator.GetGameManager().SwitchState(GameState.MainMenu);

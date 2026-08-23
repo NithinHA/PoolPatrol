@@ -74,7 +74,7 @@ namespace UI.HUD
             for (int i = 0; i < _icons.Count; i++)
             {
                 bool shouldBeVisible = i < newHealth;
-                bool isVisible       = _icons[i].gameObject.activeSelf;
+                bool isVisible       = _icons[i].IsActive;
 
                 if (shouldBeVisible && !isVisible)
                     _icons[i].Appear(animate: true);
