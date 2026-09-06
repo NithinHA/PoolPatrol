@@ -23,11 +23,11 @@ The arena selection interface uses a horizontal carousel/swipe system inspired b
 * **Visual Theme:** Classic rectangular public pool featuring light blue tiles, lane markers, floating ropes, and a pool ladder.
 * **Environmental Hazards:** None (serves as the mechanics learning ground).
 * **Enemy Roster:**
-  * **White Duck:** Base enemy. Idle/slow drift behaviour.
-  * **Pink Duck:** Unpredictable, random directional movements.
+  * **White Duck:** Base enemy. Idle behaviour.
+  * **Orange Duck:** Random movements.
   * **Purple Duck:** Aggressive tracking behavior; directly chases the player.
   * **Red Duck:** Stationary or slow moving; periodically fires basic projectile bubbles at the player.
-  * **Yellow Duck:** Rare reward enemy. High movement speed; drops coins/currency when hit.
+  * **Yellow Duck:** Rare reward enemy. High movement speed; drops gems/heart when hit.
 
 ---
 

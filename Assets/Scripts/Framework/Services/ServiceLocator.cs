@@ -78,6 +78,16 @@ namespace PTL.Framework
             return HasService(typeof(IEconomyService)) ? GetService<IEconomyService>() : null;
         }
 
+        public static IRunModifierService GetRunModifierService()
+        {
+            return HasService(typeof(IRunModifierService)) ? GetService<IRunModifierService>() : null;
+        }
+
+        public static IAbilityService GetAbilityService()
+        {
+            return HasService(typeof(IAbilityService)) ? GetService<IAbilityService>() : null;
+        }
+
 #endregion
     }
 }

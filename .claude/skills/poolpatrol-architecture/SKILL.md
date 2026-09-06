@@ -1,6 +1,6 @@
 ---
 name: poolpatrol-architecture
-description: Overview of the PoolPatrol Unity project — architecture map, coding conventions, namespaces, and where each system lives. Use this FIRST when working anywhere in this repo, when unsure where code belongs, or to route to a more specific skill (add-enemy-type, add-weapon, add-poolable-item, add-game-service).
+description: Overview of the PoolPatrol Unity project — architecture map, coding conventions, namespaces, and where each system lives. Use this FIRST when working anywhere in this repo, when unsure where code belongs, or to route to a more specific skill (add-enemy-type, add-weapon, add-poolable-item, add-game-service, enemy-spawning).
 ---
 
 # PoolPatrol architecture & conventions
@@ -27,7 +27,7 @@ PoolPatrol is a top-down 2D arcade shooter built in **Unity 6 (6000.0.36f1)** wi
 | Object pooling | `Assets/Scripts/Pooling` | `ObjectPoolManager` + `IPoolableObject`. See **add-poolable-item**. |
 | Enemies | `Assets/Scripts/Enemy/**` | `EnemyController` + composable `EnemyComponentBase` parts. See **add-enemy-type**. |
 | Weapons | `Assets/Weapons/**` + `Assets/Scripts/Weapon` | `WeaponBase` + `WeaponControllerBase` + `WeaponMagazine`. See **add-weapon**. |
-| Spawning / waves | `Assets/Scripts/SpawningLogic` | `PhaseData` (Wave/Cooldown/Boss), `EnemySpawner`. |
+| Spawning / waves | `Assets/Scripts/SpawningLogic` | `ArenaDirector` + ScriptableObject sections (`CooldownSectionSO`, `WaveSectionSO`). See **enemy-spawning**. |
 | Player | `Assets/Scripts/Player/**` | `PlayerController` (input events), `PlayerCombo`, `PlayerHealth`. |
 | UI / HUD | `Assets/Scripts/UI/HUD` | Polls weapon/player state; some listen to `WeaponMagazine` events. |
 | Movement | `Assets/Scripts/Movement` | `ImpulseMover`, `BounceMovementHandler`. |

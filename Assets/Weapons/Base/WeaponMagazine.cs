@@ -96,25 +96,64 @@ namespace Weapon
             }
         }
 
-        private readonly ReloadStyle _reloadStyle;
-        private readonly float       _reloadTimePerBullet;   // seconds
-        private readonly float       _cooldownDuration;       // seconds
+        private ReloadStyle _reloadStyle;
+        private float       _reloadTimePerBullet;   // seconds
+        private float       _cooldownDuration;      // seconds
 
         private float _cooldownTimer;   // counts up to _cooldownDuration
         private float _reloadTimer;     // counts up to _reloadTimePerBullet
 
         public WeaponMagazine(WeaponAmmoSettings settings)
         {
-            MagazineSize         = settings.MagazineSize;
-            ReloadStyle          = settings.ReloadStyle;
-            _reloadStyle         = settings.ReloadStyle;
-            _reloadTimePerBullet = Mathf.Max(settings.ReloadTimePerBullet, 0.0001f); // avoid /0
-            _cooldownDuration    = settings.CooldownDuration;
+            ApplySettings(settings);
 
             CurrentAmmo      = MagazineSize;
             CooldownProgress = 1f;   // ready to fire from the start
             ReloadProgress   = 0f;
             IsReloading      = false;
+        }
+
+        /// <summary>
+        /// Re-applies tuning at runtime (used by run upgrades: +1 magazine, faster reload).
+        /// Ammo is preserved and clamped to the new size; any in-progress reload is restarted so
+        /// the new timings take effect immediately. Grown magazines do not auto-fill — the extra
+        /// round is earned by reloading.
+        /// </summary>
+        public void Reconfigure(WeaponAmmoSettings settings)
+        {
+            ApplySettings(settings);
+
+            CurrentAmmo = Mathf.Min(CurrentAmmo, MagazineSize);
+
+            if (IsReloading)
+            {
+                _reloadTimer   = 0f;
+                ReloadProgress = 0f;
+            }
+            else if (CurrentAmmo < MagazineSize && CurrentAmmo == 0)
+            {
+                // Still empty under the new settings — make sure a reload is running.
+                BeginReload();
+            }
+        }
+
+        private void ApplySettings(WeaponAmmoSettings settings)
+        {
+            MagazineSize         = Mathf.Max(1, settings.MagazineSize);
+            ReloadStyle          = settings.ReloadStyle;
+            _reloadStyle         = settings.ReloadStyle;
+            _reloadTimePerBullet = Mathf.Max(settings.ReloadTimePerBullet, 0.0001f); // avoid /0
+            _cooldownDuration    = Mathf.Max(0f, settings.CooldownDuration);
+        }
+
+        /// <summary>Instantly refills the magazine and cancels any reload (RefillMagazine effect).</summary>
+        public void Refill()
+        {
+            CurrentAmmo    = MagazineSize;
+            IsReloading    = false;
+            _reloadTimer   = 0f;
+            ReloadProgress = 0f;
+            OnReloadComplete?.Invoke(CurrentAmmo);
         }
 
         /// <summary>

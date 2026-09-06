@@ -260,6 +260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyType: 2
+  ThreatCost: 3
   WaterRippleParticleEmitter: {fileID: 4833293088431291558}
   m_DeathShake: 0
   m_FrameRadius: 0.5

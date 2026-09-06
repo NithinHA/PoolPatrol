@@ -1,6 +1,7 @@
 using Player;
 using PTL.Framework;
 using PTL.Framework.Services;
+using SpawningLogic;
 using UnityEngine;
 
 /// <summary>
@@ -13,8 +14,13 @@ public class LevelManager : MonoBehaviour
     [Tooltip("Assign the PlayerController prefab instance here, or leave empty to auto-find.")]
     [SerializeField] private PlayerController m_PlayerController;
 
+    [Header("Arena")]
+    [Tooltip("If assigned, the level ends when this director's arena is cleared instead of on a fixed timer.")]
+    [SerializeField] private ArenaDirector m_ArenaDirector;
+
     [Header("Level Settings")]
-    [SerializeField] private float m_LevelDuration = 180f;   // 0 = endless until player dies
+    [Tooltip("Fallback timer, only used when no ArenaDirector is assigned above. 0 = endless until player dies.")]
+    [SerializeField] private float m_LevelDuration = 180f;
 
     private float         _elapsed;
     private bool          _levelEnded;
@@ -35,8 +41,11 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        // Reset run-scoped economy (gems) so nothing carries over from a previous run.
+        // Reset everything run-scoped so nothing carries over from a previous run:
+        // gems, acquired abilities, and the stat modifiers they applied.
         ServiceLocator.GetEconomyService()?.BeginRun();
+        ServiceLocator.GetAbilityService()?.ResetRun();
+        ServiceLocator.GetRunModifierService()?.ResetRun();
 
         // Transition the game into the active-play state
         ServiceLocator.GetGameManager()?.SwitchState(GameState.InGame);
@@ -44,13 +53,18 @@ public class LevelManager : MonoBehaviour
         // Subscribe to player death
         if (m_PlayerController != null)
             m_PlayerController.PlayerHealth.OnHealthChanged += OnPlayerHealthChanged;
+
+        if (m_ArenaDirector != null)
+            m_ArenaDirector.OnArenaComplete += OnLevelComplete;
     }
 
     private void Update()
     {
         if (_levelEnded) return;
 
-        if (m_LevelDuration > 0f)
+        // The ArenaDirector (when assigned) owns win-condition timing via OnArenaComplete; the
+        // fixed timer below only applies when no director is wired up.
+        if (m_ArenaDirector == null && m_LevelDuration > 0f)
         {
             _elapsed += Time.deltaTime;
             if (_elapsed >= m_LevelDuration)
@@ -62,6 +76,9 @@ public class LevelManager : MonoBehaviour
     {
         if (m_PlayerController != null)
             m_PlayerController.PlayerHealth.OnHealthChanged -= OnPlayerHealthChanged;
+
+        if (m_ArenaDirector != null)
+            m_ArenaDirector.OnArenaComplete -= OnLevelComplete;
     }
 
     private void SetLocalPlayer()

@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccba0cb02c0a4444aaaa85ab2ed40ee3, type: 3}
+  m_Name: Ability_move_speed
+  m_EditorClassIdentifier: 
+  Id: move_speed
+  DisplayName: Swift Swimmer
+  Icon: {fileID: 0}
+  Rarity: 0
+  Category: 0
+  WeaponFilter: -1
+  ArenaFilter: -1
+  RunRequirement: 0
+  Levels:
+  - Cost: 60
+    Description: Move speed +15%
+    Modifiers:
+    - Stat: 0
+      Type: 1
+      Value: 0.15
+    InstantEffects: 
+  - Cost: 70
+    Description: Move speed +30%
+    Modifiers:
+    - Stat: 0
+      Type: 1
+      Value: 0.15
+    InstantEffects: 
+  - Cost: 80
+    Description: Move speed +45%
+    Modifiers:
+    - Stat: 0
+      Type: 1
+      Value: 0.15
+    InstantEffects: 
+  Prerequisites: []
+  Conflicts: []
+  SelectionWeight: 1

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccba0cb02c0a4444aaaa85ab2ed40ee3, type: 3}
+  m_Name: Ability_storm_immunity
+  m_EditorClassIdentifier: 
+  Id: storm_immunity
+  DisplayName: Storm Immunity
+  Icon: {fileID: 0}
+  Rarity: 1
+  Category: 2
+  WeaponFilter: -1
+  ArenaFilter: 32
+  RunRequirement: 0
+  Levels:
+  - Cost: 100
+    Description: Immune to lightning zones
+    Modifiers:
+    - Stat: 16
+      Type: 2
+      Value: 1
+    InstantEffects: 
+  Prerequisites: []
+  Conflicts: []
+  SelectionWeight: 1

@@ -5,6 +5,9 @@ namespace Weapon
 {
     public class WeaponBase : MonoBehaviour
     {
+        [Tooltip("Identity used to filter weapon-specific abilities offered by the Pool Goddess.")]
+        [SerializeField] private Abilities.WeaponKind m_Kind = Abilities.WeaponKind.Handgun;
+
         public Transform FirePoint;
         [SerializeField] protected Bullet m_BulletPrefab;
 
@@ -33,6 +36,21 @@ namespace Weapon
         /// UI classes should poll this directly — no events, no allocations.
         /// </summary>
         public WeaponMagazine Magazine { get; private set; }
+
+        /// <summary>Which weapon this is, for ability filtering.</summary>
+        public Abilities.WeaponKind Kind => m_Kind;
+
+        /// <summary>Inspector-authored ammo tuning, before any run upgrades are applied.</summary>
+        public WeaponAmmoSettings BaseAmmoSettings => m_AmmoSettings;
+
+        /// <summary>
+        /// Rebuilds magazine tuning from upgraded values. Called by WeaponStatBinder whenever
+        /// run modifiers change; do not call this from UI.
+        /// </summary>
+        public void ApplyAmmoSettings(WeaponAmmoSettings settings)
+        {
+            Magazine?.Reconfigure(settings);
+        }
 
 #region Unity callbacks
 

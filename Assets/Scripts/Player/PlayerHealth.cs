@@ -35,7 +35,9 @@ namespace Player
             if (_isPlayerCooldownActive)
                 return;
 
-            CurrentHealth--;
+            if (CurrentHealth > 0)
+                CurrentHealth--;
+
             OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
             
             CameraShaker.Instance?.Shake(m_DamageShake);
@@ -52,6 +54,21 @@ namespace Player
         public void Heal(int amount = 1)
         {
             CurrentHealth = Mathf.Min(CurrentHealth + amount, MaxHealth);
+            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+        }
+
+        /// <summary>
+        /// Raises or lowers the maximum health (e.g. the "+1 Max Life" ability) and notifies
+        /// listeners so the HUD can add/remove icons. Current health is clamped but never healed.
+        /// </summary>
+        public void SetMaxHealth(int newMax)
+        {
+            newMax = Mathf.Max(1, newMax);
+            if (newMax == MaxHealth)
+                return;
+
+            MaxHealth = newMax;
+            CurrentHealth = Mathf.Min(CurrentHealth, MaxHealth);
             OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
         }
 
