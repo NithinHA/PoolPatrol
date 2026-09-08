@@ -10,17 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0db3e9758da44894bc791ed222c19d6, type: 3}
-  m_Name: DefaultArenaSpawnConfig
+  m_Name: DefaultArena_Level1_SpawnConfig
   m_EditorClassIdentifier: 
   Sections:
   - {fileID: 11400000, guid: 8c24c24708b874638bb51e8c85dc5f6b, type: 2}
   - {fileID: 11400000, guid: c8b2acad7d43b41648f526b39158b8e5, type: 2}
   - {fileID: 11400000, guid: 4c82f426e2f634875b59b095f03bd072, type: 2}
-  - {fileID: 11400000, guid: 389dc14bdb1e644399694501bdde156e, type: 2}
   - {fileID: 11400000, guid: 69a57890c97854583b571d2842a0e66d, type: 2}
   - {fileID: 11400000, guid: 10b84effcb7a24ee19032adb51daaa3e, type: 2}
-  - {fileID: 11400000, guid: 1393df897a14f4b63981d0f3cf3027ad, type: 2}
-  - {fileID: 11400000, guid: 07e4f0eac85634795be35f24a589029a, type: 2}
   Rewards:
     GemDropperPrefab: {fileID: 8526437909133313751, guid: 4beb6780aeca84308a4e5b5af136090b, type: 3}
     TargetGemDropperCount: 40

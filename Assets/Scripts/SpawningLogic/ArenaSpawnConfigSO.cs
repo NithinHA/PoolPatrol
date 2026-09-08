@@ -6,9 +6,9 @@ using UnityEngine;
 namespace SpawningLogic
 {
     /// <summary>
-    /// The full spawn timeline for one arena: an ordered list of cooldown/wave sections, plus a
-    /// reward economy budget that is spawned independently of the combat difficulty system.
-    /// One asset per arena, assigned to that arena's <see cref="ArenaDirector"/>.
+    /// The full spawn timeline for one level within an arena: an ordered list of cooldown/wave
+    /// sections, plus a reward economy budget. One asset per level, referenced by
+    /// <see cref="ArenaDefinitionSO"/> and assigned at runtime to <see cref="ArenaDirector"/>.
     /// </summary>
     [CreateAssetMenu(menuName = "PoolPatrol/Spawning/Arena Spawn Config", fileName = "ArenaSpawnConfig")]
     public class ArenaSpawnConfigSO : ScriptableObject

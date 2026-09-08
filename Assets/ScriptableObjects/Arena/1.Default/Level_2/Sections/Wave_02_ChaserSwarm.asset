@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06ab0cd41d27d479795ab22f25ec8420, type: 3}
+  m_Name: Wave_02_ChaserSwarm
+  m_EditorClassIdentifier: 
+  EnemyBucket:
+  - Prefab: {fileID: 8425030537939918830, guid: bbba8f00c1748124abb910d59d0533db, type: 3}
+    Weight: 3
+  - Prefab: {fileID: 8294556068584543407, guid: 983f8244da7cacb4c9bba8222c8a84b8, type: 3}
+    Weight: 1
+  - Prefab: {fileID: 451910388429490016, guid: e037176f071c95a4f86e92d5c18a604c, type: 3}
+    Weight: 1
+  MaxConcurrentEnemies: 8
+  SpawnIntervalMin: 1
+  SpawnIntervalMax: 2
+  PressureBias: 0.75
+  EnemyCount: 12
+  SpawnBurstSize: 1
+  IsBoss: 0

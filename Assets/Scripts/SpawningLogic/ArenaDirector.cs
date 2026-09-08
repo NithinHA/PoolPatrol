@@ -49,17 +49,40 @@ namespace SpawningLogic
         private float _arenaProgress;
         private bool _inWave;
         private bool _arenaRunning;
+        private bool _began;
 
         private void OnEnable() => EnemyController.OnAnyEnemyDied += HandleEnemyDied;
         private void OnDisable() => EnemyController.OnAnyEnemyDied -= HandleEnemyDied;
 
         private void Start()
         {
+            // Config may already be assigned in the inspector (standalone scene testing), or set
+            // externally via Configure() before this Start() runs — either way, begin exactly once.
+            if (m_Config != null)
+                Begin();
+        }
+
+        /// <summary>
+        /// Assigns the level's spawn config and starts the arena. Called by <see cref="LevelManager"/>
+        /// once it knows which level the player selected, before this component's own Start() runs.
+        /// </summary>
+        public void Configure(ArenaSpawnConfigSO config)
+        {
+            m_Config = config;
+            Begin();
+        }
+
+        private void Begin()
+        {
+            if (_began) return;
+
             if (m_Config == null || m_Config.Sections == null || m_Config.Sections.Count == 0)
             {
                 Debug.LogError("[ArenaDirector] No arena config assigned, or it has no sections.");
                 return;
             }
+
+            _began = true;
 
             _totalProgressWeight = 0f;
             foreach (var section in m_Config.Sections)

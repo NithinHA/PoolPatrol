@@ -38,6 +38,7 @@ public class Constants
     public static class SceneNames
     {
         public const string BOOTSTRAP = "Bootstrap";
+        public const string MENU = "Menu";
         public const string GAME = "Game";
     }
 

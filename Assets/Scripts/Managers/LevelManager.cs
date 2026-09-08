@@ -2,6 +2,7 @@ using Player;
 using PTL.Framework;
 using PTL.Framework.Services;
 using SpawningLogic;
+using UI.PostGame;
 using UnityEngine;
 
 /// <summary>
@@ -22,6 +23,12 @@ public class LevelManager : MonoBehaviour
     [Tooltip("Fallback timer, only used when no ArenaDirector is assigned above. 0 = endless until player dies.")]
     [SerializeField] private float m_LevelDuration = 180f;
 
+    [Header("Post-Game")]
+    [Tooltip("Shown on win or loss, offering Retry / Main Menu.")]
+    [SerializeField] private PostGameUI m_PostGameUI;
+
+    private int           _arenaIndex;
+    private int           _levelIndex;
     private float         _elapsed;
     private bool          _levelEnded;
 
@@ -37,6 +44,18 @@ public class LevelManager : MonoBehaviour
         }
 
         SetLocalPlayer();
+
+        // Read the arena/level the player picked in the Menu scene and hand its config to the
+        // ArenaDirector before its own Start() runs (Awake always precedes Start scene-wide).
+        _arenaIndex = GameSession.SelectedArenaIndex;
+        _levelIndex = GameSession.SelectedLevelIndex;
+
+        if (m_ArenaDirector != null)
+        {
+            var config = ServiceLocator.GetProgressionService()?.GetLevelConfig(_arenaIndex, _levelIndex);
+            if (config != null)
+                m_ArenaDirector.Configure(config);
+        }
     }
 
     private void Start()
@@ -101,8 +120,8 @@ public class LevelManager : MonoBehaviour
         _levelEnded = true;
 
         Debug.Log("[LevelManager] Level complete!");
-        // TODO: show end screen, store score, then:
-        // ServiceLocator.GetService<ISceneService>().LoadScene(Constants.SceneNames.MAIN_MENU);
+        ServiceLocator.GetProgressionService()?.CompleteLevel(_arenaIndex, _levelIndex);
+        m_PostGameUI?.Show(won: true);
     }
 
     private void OnGameOver()
@@ -111,7 +130,6 @@ public class LevelManager : MonoBehaviour
         _levelEnded = true;
 
         Debug.Log("[LevelManager] Game Over.");
-        // TODO: show game-over screen, then:
-        // ServiceLocator.GetService<ISceneService>().LoadScene(Constants.SceneNames.MAIN_MENU);
+        m_PostGameUI?.Show(won: false);
     }
 }

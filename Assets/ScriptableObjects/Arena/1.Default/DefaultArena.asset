@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c0934292f6e14314b6d6893c6fe50d1, type: 3}
+  m_Name: DefaultArena
+  m_EditorClassIdentifier: 
+  ArenaName: DefaultArena
+  Description: "Deafult arena\t"
+  CardPreview: {fileID: 21300000, guid: ae63df15770bd9c45b85360281c53fab, type: 3}
+  Levels:
+  - {fileID: 11400000, guid: df863a69dfa3b4187a602520a874d62b, type: 2}
+  - {fileID: 11400000, guid: acf4b91fdb58c42c98e43ebe1cd42f78, type: 2}
+  - {fileID: 11400000, guid: c569f29f3a5f9495ab5b6056292ff322, type: 2}

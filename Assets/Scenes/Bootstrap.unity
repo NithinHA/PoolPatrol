@@ -149,6 +149,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DontDestroyOnLoad: 1
+  m_AbilityDatabase: {fileID: 11400000, guid: e63282aec46cd43598a555c4e73d1dd9, type: 2}
+  m_Arenas:
+  - {fileID: 11400000, guid: c06fd6144af5f4d4e9785b0934e95720, type: 2}
 --- !u!4 &2004694566
 Transform:
   m_ObjectHideFlags: 0
