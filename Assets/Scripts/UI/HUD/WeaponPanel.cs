@@ -9,7 +9,7 @@ namespace UI.HUD
     public class WeaponPanel : MonoBehaviour
     {
         [SerializeField] private BulletIcon      m_BulletIconPrefab;
-        [SerializeField] private Transform       m_BulletsLayout;     // Vertical Layout Group parent
+        [SerializeField] private Transform       m_BulletContainer;   // BulletRingLayout parent under WeaponIndicator
         [SerializeField] private Image           m_WeaponIcon;        // Swapped when weapon changes
         [SerializeField] private CooldownIndicator m_CooldownIndicator;
 
@@ -112,7 +112,7 @@ namespace UI.HUD
             // Add missing icons
             while (_icons.Count < magazineSize)
             {
-                BulletIcon icon = Instantiate(m_BulletIconPrefab, m_BulletsLayout);
+                BulletIcon icon = Instantiate(m_BulletIconPrefab, m_BulletContainer);
                 _icons.Add(icon);
             }
 
