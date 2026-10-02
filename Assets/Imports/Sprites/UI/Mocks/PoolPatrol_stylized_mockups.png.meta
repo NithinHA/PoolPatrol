@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7d246357eb4340843a599c4f326f9b5c
+guid: df26104e81ad49a4e9baf7969b8336b8
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6600221624202601497
-    second: RubberDuck_body_0
+      213: 7356486759310903146
+    second: PoolPatrol_stylized_mockups_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -111,40 +111,93 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: RubberDuck_body_0
+      name: mock_16x9_arena_select
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 512
-        height: 512
+        x: 6
+        y: 7
+        width: 406
+        height: 235
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 914a2750992b89b50800000000000000
-      internalID: 6600221624202601497
+      spriteID: a6747933bbd771660800000000000000
+      internalID: 7356486759310903146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mock_16x9_level_select
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 8
+        width: 321
+        height: 233
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a2bb3fe4cd1a504eb8f7c901d17ab06
+      internalID: 1434352662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mock_16x9_loadout_select
+      rect:
+        serializedVersion: 2
+        x: 752
+        y: 7
+        width: 402
+        height: 236
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 637edcd2a7b41c643873b0e3f62da7b5
+      internalID: 2015609316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mock_16x9_settings
+      rect:
+        serializedVersion: 2
+        x: 1163
+        y: 7
+        width: 243
+        height: 234
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 554c9b7af5b2cb64889afac1326443ed
+      internalID: -2039016059
       vertices: []
       indices: 
       edges: []
@@ -153,7 +206,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 91fb9e875e6ca124fbfe2385c9b1f3d4
     internalID: 0
     vertices: []
     indices: 
@@ -162,7 +215,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      mock_16x9_arena_select: 7356486759310903146
+      mock_16x9_level_select: 1434352662
+      mock_16x9_loadout_select: 2015609316
+      mock_16x9_settings: -2039016059
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
