@@ -57,6 +57,7 @@ namespace PTL.Framework
                 { typeof(IHighscore), new HighscoreService() },
                 { typeof(ISceneService), new SceneService() },
                 { typeof(IEconomyService), new EconomyService() },
+                { typeof(IPauseService), new PauseService() },
                 { typeof(IRunModifierService), new RunModifierService() },
                 { typeof(IAbilityService), new AbilityService() },
                 { typeof(IProgression), new ProgressionService(arenas) },

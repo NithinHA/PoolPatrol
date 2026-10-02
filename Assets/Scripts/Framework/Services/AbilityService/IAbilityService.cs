@@ -38,6 +38,28 @@ namespace PTL.Framework.Services
     }
 
     /// <summary>
+    /// An ability the player owns that is still exerting a lasting effect on the run (doc §26 item
+    /// 3 — "whether it is permanent for the run"). Purely exhaustible abilities such as "+1 Life",
+    /// which spend themselves the instant they are bought, never appear here.
+    /// </summary>
+    public readonly struct ActiveAbility
+    {
+        public readonly AbilityDefinition Definition;
+        /// <summary>1-based level currently owned.</summary>
+        public readonly int Level;
+
+        public ActiveAbility(AbilityDefinition definition, int level)
+        {
+            Definition = definition;
+            Level = level;
+        }
+
+        public string DisplayTitle => Definition == null
+            ? string.Empty
+            : Definition.IsStackable ? $"{Definition.DisplayName} {Level}" : Definition.DisplayName;
+    }
+
+    /// <summary>
     /// Owns which abilities the player has acquired this run, decides what the Goddess may offer
     /// (doc §12 eligibility, §17 offer pipeline, §18 weighted selection), and performs purchases
     /// through the economy + run-modifier services.
@@ -50,8 +72,19 @@ namespace PTL.Framework.Services
         /// <summary>Raised for each one-shot effect of a purchased level; binders execute these.</summary>
         event Action<InstantEffectType> OnInstantEffect;
 
-        /// <summary>Abilities owned this run and their current level.</summary>
+        /// <summary>Raised whenever <see cref="ActiveAbilities"/> changes (purchase or run reset).</summary>
+        event Action OnActiveAbilitiesChanged;
+
+        /// <summary>Every ability owned this run and its current level, including exhausted one-shots.</summary>
         IReadOnlyDictionary<AbilityDefinition, int> OwnedAbilities { get; }
+
+        /// <summary>
+        /// The subset of <see cref="OwnedAbilities"/> whose effects persist for the rest of the
+        /// run (bigger bullets, +1 max life, …). This is the list a HUD or debug overlay should
+        /// show as "currently active". Cleared by <see cref="ResetRun"/> on level complete or
+        /// game over.
+        /// </summary>
+        IReadOnlyList<ActiveAbility> ActiveAbilities { get; }
 
         /// <summary>Supplies the ability pool. Called once during setup.</summary>
         void SetDatabase(AbilityDatabase database);
@@ -59,8 +92,14 @@ namespace PTL.Framework.Services
         /// <summary>Supplies live lives/max-lives for <see cref="RunRequirement"/> checks.</summary>
         void SetRunStateProvider(IRunStateProvider provider);
 
-        /// <summary>Sets the filter context. Call when the arena loads and whenever the weapon changes.</summary>
+        /// <summary>Sets both filter axes at once. Call once when the arena loads.</summary>
         void SetContext(WeaponKind weapon, ArenaFlags arena);
+
+        /// <summary>Sets only the weapon axis, leaving the arena untouched. Call on weapon switch.</summary>
+        void SetWeaponContext(WeaponKind weapon);
+
+        /// <summary>Sets only the arena axis, leaving the weapon untouched. Call when the level loads.</summary>
+        void SetArenaContext(ArenaFlags arena);
 
         /// <summary>Current level of an ability; 0 when not owned.</summary>
         int GetLevel(AbilityDefinition ability);

@@ -25,6 +25,11 @@ namespace Enemy.Movement
 
         public override void FixedTick()
         {
+            // ImpulseMover.FixedTick() unconditionally writes velocity every step; let an
+            // external push (e.g. Damage Revenge) play out before letting it resume.
+            if (TickKnockback(Time.fixedDeltaTime))
+                return;
+
             _mover.FixedTick();
         }
 

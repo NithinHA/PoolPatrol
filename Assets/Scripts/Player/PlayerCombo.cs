@@ -8,20 +8,35 @@ namespace Player
         public int CurrentCombo;
         [SerializeField] private PlayerController m_PlayerController;
 
+        [Serializable]
+        private struct ComboThresholdSet
+        {
+            [Tooltip("Hits needed to reach Mid / High / Max at this \"Faster Combo\" level, in order.")]
+            public int[] Thresholds;
+        }
+
         [Header("Combo thresholds")]
-        [Tooltip("Hits needed to leave Low / Mid / High. Reduced by the \"Faster Combo\" ability.")]
+        [Tooltip("Hits needed to leave Low / Mid / High before any \"Faster Combo\" level is owned.")]
         [SerializeField] private int[] m_Thresholds = { 3, 6, 9 };
+
+        [Tooltip("Threshold curve for each \"Faster Combo\" level (index 0 = level 1). Each level " +
+                 "fully replaces the thresholds above rather than subtracting from them uniformly, " +
+                 "so the curve can be hand-tuned per level instead of flattening every gap by the " +
+                 "same amount.")]
+        [SerializeField] private ComboThresholdSet[] m_FasterComboLevels =
+        {
+            new() { Thresholds = new[] { 3, 5, 8 } },
+            new() { Thresholds = new[] { 2, 4, 7 } },
+            new() { Thresholds = new[] { 2, 3, 5 } },
+        };
 
         public enum ComboLevel
         {
             Low, Mid, High, Max
         }
 
-        /// <summary>
-        /// Flat reduction applied to every threshold, set by the run-modifier binder.
-        /// Thresholds never fall below 1.
-        /// </summary>
-        public int ThresholdReduction { get; private set; }
+        /// <summary>Current "Faster Combo" level (0 = not owned), set by the run-modifier binder.</summary>
+        public int FasterComboLevel { get; private set; }
 
         public ComboLevel CurrentComboLevel
         {
@@ -36,23 +51,36 @@ namespace Player
 
         private int Threshold(int index)
         {
-            int configured = (m_Thresholds != null && index < m_Thresholds.Length)
-                ? m_Thresholds[index]
+            int[] active = ActiveThresholds();
+            int configured = (active != null && index < active.Length)
+                ? active[index]
                 : (index + 1) * 3;
-            return Mathf.Max(1, configured - ThresholdReduction);
+            return Mathf.Max(1, configured);
+        }
+
+        /// <summary>Picks the default thresholds, or the owned "Faster Combo" level's override curve.</summary>
+        private int[] ActiveThresholds()
+        {
+            if (FasterComboLevel <= 0 || m_FasterComboLevels == null || m_FasterComboLevels.Length == 0)
+                return m_Thresholds;
+
+            int levelIndex = Mathf.Min(FasterComboLevel, m_FasterComboLevels.Length) - 1;
+            int[] overrideThresholds = m_FasterComboLevels[levelIndex].Thresholds;
+            return overrideThresholds is { Length: > 0 } ? overrideThresholds : m_Thresholds;
         }
 
         /// <summary>
-        /// Applies the "Faster Combo" upgrade. Re-raises the level event so listeners
-        /// (weapons, UI) pick up a level change caused purely by the new thresholds.
+        /// Applies the "Faster Combo" upgrade level (1-based; 0 = not owned). Re-raises the level
+        /// event so listeners (weapons, UI) pick up a level change caused purely by the new
+        /// thresholds.
         /// </summary>
-        public void SetThresholdReduction(int reduction)
+        public void SetFasterComboLevel(int level)
         {
-            reduction = Mathf.Max(0, reduction);
-            if (reduction == ThresholdReduction)
+            level = Mathf.Max(0, level);
+            if (level == FasterComboLevel)
                 return;
 
-            ThresholdReduction = reduction;
+            FasterComboLevel = level;
             OnComboLevelChanged?.Invoke(CurrentComboLevel);
         }
 

@@ -29,7 +29,16 @@ namespace Enemy
 
         public RippleCausingParticleEmitter WaterRippleParticleEmitter;
         public Rigidbody2D RigidBody { get; private set; }
-        
+
+        /// <summary>
+        /// This enemy's movement component, for systems that need to influence it externally
+        /// (e.g. the "Damage Revenge" ability's knockback). Exposed rather than touching
+        /// <see cref="RigidBody"/> directly, since most movement types drive velocity every tick
+        /// and would otherwise instantly overwrite an external push — <see cref="Movement.EnemyMovement.PushBack"/>
+        /// is the one path every movement type respects.
+        /// </summary>
+        public EnemyMovement Movement => _movement;
+
         [Header("Effects")]
         [SerializeField] private ShakeIntensity m_DeathShake = ShakeIntensity.Light;
 

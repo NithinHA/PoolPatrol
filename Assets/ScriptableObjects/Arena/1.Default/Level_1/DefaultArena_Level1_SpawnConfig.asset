@@ -20,10 +20,20 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 10b84effcb7a24ee19032adb51daaa3e, type: 2}
   Rewards:
     GemDropperPrefab: {fileID: 8526437909133313751, guid: 4beb6780aeca84308a4e5b5af136090b, type: 3}
-    TargetGemDropperCount: 40
+    TargetGemDropperCount: 120
     GemMinInterval: 4
     HeartDropperPrefab: {fileID: 5011922556510066043, guid: e8cb5f6e70da84d21b9b4ba5a29c4e61, type: 3}
     MaxHeartDroppers: 5
     BarelyHurtDelay: 60
     CriticalDelay: 10
     PostSpawnCooldown: 45
+  Goddess:
+    VisitCount: 3
+    AvailabilityWindow: 15
+    ScheduleJitter: 0.06
+    MinSecondsBetweenVisits: 60
+    OfferCount: 3
+    RefreshCost: 30
+    RefreshCostIncrement: 25
+    MaxRefreshesPerVisit: 3
+    ReentryGraceSeconds: 3

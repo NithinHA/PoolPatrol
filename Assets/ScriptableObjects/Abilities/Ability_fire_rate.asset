@@ -21,21 +21,21 @@ MonoBehaviour:
   ArenaFilter: -1
   RunRequirement: 0
   Levels:
-  - Cost: 90
+  - Cost: 15
     Description: Fire rate +15%
     Modifiers:
     - Stat: 10
       Type: 1
       Value: 0.15
     InstantEffects: 
-  - Cost: 100
+  - Cost: 20
     Description: Fire rate +30%
     Modifiers:
     - Stat: 10
       Type: 1
       Value: 0.15
     InstantEffects: 
-  - Cost: 110
+  - Cost: 25
     Description: Fire rate +45%
     Modifiers:
     - Stat: 10

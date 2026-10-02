@@ -21,21 +21,21 @@ MonoBehaviour:
   ArenaFilter: -1
   RunRequirement: 0
   Levels:
-  - Cost: 80
+  - Cost: 15
     Description: Reload 20% faster
     Modifiers:
     - Stat: 8
       Type: 1
       Value: 0.2
     InstantEffects: 
-  - Cost: 90
+  - Cost: 25
     Description: Reload 40% faster
     Modifiers:
     - Stat: 8
       Type: 1
       Value: 0.2
     InstantEffects: 
-  - Cost: 100
+  - Cost: 30
     Description: Reload 60% faster
     Modifiers:
     - Stat: 8

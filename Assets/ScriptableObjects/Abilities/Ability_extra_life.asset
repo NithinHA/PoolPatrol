@@ -21,26 +21,26 @@ MonoBehaviour:
   ArenaFilter: -1
   RunRequirement: 1
   Levels:
+  - Cost: 10
+    Description: Restore one life
+    Modifiers: []
+    InstantEffects: 00000000i
+  - Cost: 10
+    Description: Restore one life
+    Modifiers: []
+    InstantEffects: 00000000i
+  - Cost: 10
+    Description: Restore one life
+    Modifiers: []
+    InstantEffects: 00000000i
   - Cost: 50
     Description: Restore one life
     Modifiers: []
-    InstantEffects: 00000000
+    InstantEffects: 00000000i
   - Cost: 50
     Description: Restore one life
     Modifiers: []
-    InstantEffects: 00000000
-  - Cost: 50
-    Description: Restore one life
-    Modifiers: []
-    InstantEffects: 00000000
-  - Cost: 50
-    Description: Restore one life
-    Modifiers: []
-    InstantEffects: 00000000
-  - Cost: 50
-    Description: Restore one life
-    Modifiers: []
-    InstantEffects: 00000000
+    InstantEffects: 00000000i
   Prerequisites: []
   Conflicts: []
   SelectionWeight: 1.2

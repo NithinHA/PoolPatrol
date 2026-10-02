@@ -94,8 +94,11 @@ namespace Player
                 _mover.m_ImpulseStrength = _modifiers.GetFloat(StatId.Propulsion, _baseImpulseStrength);
             }
 
+            // Each "Faster Combo" level is Flat +1 on this stat (see CreateStarterAbilities), so the
+            // accumulated sum IS the owned level (1, 2, 3, …) — PlayerCombo looks that level up
+            // against its own hand-tuned threshold curve rather than subtracting it.
             if (_combo != null)
-                _combo.SetThresholdReduction(Mathf.RoundToInt(_modifiers.GetFlatSum(StatId.ComboThresholdReduction)));
+                _combo.SetFasterComboLevel(Mathf.RoundToInt(_modifiers.GetFlatSum(StatId.ComboThresholdReduction)));
         }
 
         private void OnInstantEffect(InstantEffectType effect)

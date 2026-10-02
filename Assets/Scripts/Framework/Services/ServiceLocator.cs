@@ -88,6 +88,11 @@ namespace PTL.Framework
             return HasService(typeof(IAbilityService)) ? GetService<IAbilityService>() : null;
         }
 
+        public static IPauseService GetPauseService()
+        {
+            return HasService(typeof(IPauseService)) ? GetService<IPauseService>() : null;
+        }
+
         public static IProgression GetProgressionService()
         {
             return HasService(typeof(IProgression)) ? GetService<IProgression>() : null;

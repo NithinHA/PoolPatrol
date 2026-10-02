@@ -20,6 +20,10 @@ namespace SpawningLogic
                  "affordability and healing stay predictable regardless of which combat enemies roll.")]
         public RewardBudget Rewards = new();
 
+        [Tooltip("How often the Pool Goddess surfaces during this level and how long the player has " +
+                 "to reach her (doc §25).")]
+        public GoddessEncounters Goddess = new();
+
         /// <summary>
         /// Controls the reward-dropper economy for an arena, decoupled from the combat difficulty
         /// bucket. Gems are budget-driven (a fixed target count distributed across the run, so players
@@ -61,6 +65,51 @@ namespace SpawningLogic
                      "before it can start accumulating again. Gives the player struggling space " +
                      "instead of spawning multiple hearts back-to-back.")]
             [Min(0f)] public float PostSpawnCooldown = 45f;
+        }
+
+        /// <summary>
+        /// Per-level Pool Goddess pacing (doc §4, §6, §25). Visits are placed along the arena's
+        /// weighted progress rather than on a wall clock, so they land at the same points in the
+        /// fight whether the player clears waves fast or slow — but the exact moment stays hidden
+        /// from the player thanks to the jitter and the minimum-interval guard.
+        /// </summary>
+        [Serializable]
+        public class GoddessEncounters
+        {
+            [Tooltip("How many times she surfaces during this level. 0 disables her entirely " +
+                     "(short arena ~2, medium ~3, long ~4).")]
+            [Min(0)] public int VisitCount = 3;
+
+            [Tooltip("Seconds she stays reachable before retreating (doc §6).")]
+            [Min(1f)] public float AvailabilityWindow = 15f;
+
+            [Tooltip("Random shift applied to each visit's scheduled position on the progress bar, " +
+                     "so repeated runs don't feel scripted. 0.05 = up to 5% of the run either way.")]
+            [Range(0f, 0.25f)] public float ScheduleJitter = 0.06f;
+
+            [Tooltip("Hard floor on seconds between the end of one visit and the start of the next " +
+                     "(doc §25 recommends 90-120s for a full-length arena).")]
+            [Min(0f)] public float MinSecondsBetweenVisits = 60f;
+
+            [Tooltip("How many offers she holds out. The doc's mock shows two; three fits the " +
+                     "current ShopScreen layout.")]
+            [Range(1, 4)] public int OfferCount = 3;
+
+            [Tooltip("Gem cost to discard both offers and roll new ones (doc §20). 0 hides the " +
+                     "refresh button.")]
+            [Min(0)] public int RefreshCost = 50;
+
+            [Tooltip("Extra gems added to the refresh cost after each use within a single visit. " +
+                     "0 keeps refresh at a flat price.")]
+            [Min(0)] public int RefreshCostIncrement = 25;
+
+            [Tooltip("Refreshes allowed per visit. 0 = unlimited (cost escalation is then the " +
+                     "only brake).")]
+            [Min(0)] public int MaxRefreshesPerVisit = 3;
+
+            [Tooltip("Seconds of damage immunity granted when the shop closes, so the player can " +
+                     "re-read the board before taking a hit.")]
+            [Min(0f)] public float ReentryGraceSeconds = 3f;
         }
     }
 }

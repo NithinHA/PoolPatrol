@@ -23,6 +23,7 @@ namespace PTL.Framework.Services
         };
 
         private readonly Dictionary<AbilityDefinition, int> _owned = new();
+        private readonly List<ActiveAbility> _active = new();
 
         // Reusable scratch buffers so offer generation does not allocate per call.
         private readonly List<AbilityDefinition> _candidates = new();
@@ -35,8 +36,11 @@ namespace PTL.Framework.Services
 
         public event Action<AbilityDefinition, int> OnAbilityPurchased;
         public event Action<InstantEffectType> OnInstantEffect;
+        public event Action OnActiveAbilitiesChanged;
 
         public IReadOnlyDictionary<AbilityDefinition, int> OwnedAbilities => _owned;
+
+        public IReadOnlyList<ActiveAbility> ActiveAbilities => _active;
 
 #region Default callbacks
 
@@ -46,7 +50,9 @@ namespace PTL.Framework.Services
         {
             OnAbilityPurchased = null;
             OnInstantEffect = null;
+            OnActiveAbilitiesChanged = null;
             _owned.Clear();
+            _active.Clear();
         }
 
 #endregion
@@ -62,6 +68,10 @@ namespace PTL.Framework.Services
             _weapon = weapon;
             _arena = arena;
         }
+
+        public void SetWeaponContext(WeaponKind weapon) => _weapon = weapon;
+
+        public void SetArenaContext(ArenaFlags arena) => _arena = arena;
 
 #endregion
 
@@ -264,12 +274,14 @@ namespace PTL.Framework.Services
             ServiceLocator.GetRunModifierService()?.AddRange(data.Modifiers);
 
             _owned[offer.Definition] = offer.Level;
+            RebuildActiveAbilities();
 
             // One-shot effects are executed by whoever owns the target (e.g. PlayerStatBinder).
             foreach (InstantEffectType effect in data.InstantEffects)
                 OnInstantEffect?.Invoke(effect);
 
             OnAbilityPurchased?.Invoke(offer.Definition, offer.Level);
+            OnActiveAbilitiesChanged?.Invoke();
             return true;
         }
 
@@ -277,7 +289,40 @@ namespace PTL.Framework.Services
 
         public void ResetRun()
         {
+            if (_owned.Count == 0)
+                return;
+
             _owned.Clear();
+            _active.Clear();
+            OnActiveAbilitiesChanged?.Invoke();
+        }
+
+        /// <summary>
+        /// Recomputes the "still in effect" view. An ability qualifies when any level the player
+        /// owns contributed at least one lasting <see cref="StatModifier"/>; an ability made up
+        /// purely of <see cref="InstantEffectType"/> entries (e.g. "+1 Life") spends itself at
+        /// purchase and is deliberately left out.
+        /// </summary>
+        private void RebuildActiveAbilities()
+        {
+            _active.Clear();
+
+            foreach (KeyValuePair<AbilityDefinition, int> pair in _owned)
+            {
+                if (HasLastingEffect(pair.Key, pair.Value))
+                    _active.Add(new ActiveAbility(pair.Key, pair.Value));
+            }
+        }
+
+        private static bool HasLastingEffect(AbilityDefinition ability, int ownedLevel)
+        {
+            for (int level = 1; level <= ownedLevel; level++)
+            {
+                if (ability.TryGetLevel(level, out AbilityLevel data)
+                    && data.Modifiers != null && data.Modifiers.Count > 0)
+                    return true;
+            }
+            return false;
         }
     }
 }

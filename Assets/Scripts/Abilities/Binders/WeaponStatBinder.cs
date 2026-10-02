@@ -104,17 +104,9 @@ namespace Weapon
 
         private void UpdateAbilityContext(WeaponBase weapon)
         {
-            if (_abilities == null)
-                return;
-
-            // Preserve whatever arena the director set; only the weapon changes here.
-            _abilities.SetContext(weapon.Kind, CurrentArena);
+            // Only the weapon axis changes here — the arena axis is owned by LevelManager, which
+            // sets it once from the selected ArenaDefinitionSO.
+            _abilities?.SetWeaponContext(weapon.Kind);
         }
-
-        /// <summary>
-        /// Arena currently being played. Layer 2's ArenaDirector will own this; until then every
-        /// arena-agnostic ability remains eligible.
-        /// </summary>
-        public static ArenaFlags CurrentArena { get; set; } = ArenaFlags.Any;
     }
 }

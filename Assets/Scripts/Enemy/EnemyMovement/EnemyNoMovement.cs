@@ -14,6 +14,11 @@ namespace Enemy.Movement
 
         public override void Tick()
         {
+            // This movement type never writes velocity itself, so nothing else would ever clear
+            // an external push (e.g. Damage Revenge) or stop it drifting forever — still tick the
+            // window so TickKnockback can zero it out once it expires.
+            TickKnockback(Time.deltaTime);
+
             // periodically make a wave animation
             if (_nextWaveTime <= Time.time)
             {

@@ -21,21 +21,21 @@ MonoBehaviour:
   ArenaFilter: -1
   RunRequirement: 0
   Levels:
-  - Cost: 70
+  - Cost: 10
     Description: Recoil propulsion +20%
     Modifiers:
     - Stat: 1
       Type: 1
       Value: 0.2
     InstantEffects: 
-  - Cost: 80
+  - Cost: 20
     Description: Recoil propulsion +40%
     Modifiers:
     - Stat: 1
       Type: 1
       Value: 0.2
     InstantEffects: 
-  - Cost: 90
+  - Cost: 25
     Description: Recoil propulsion +60%
     Modifiers:
     - Stat: 1

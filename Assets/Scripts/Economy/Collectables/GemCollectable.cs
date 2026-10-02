@@ -1,3 +1,4 @@
+using Abilities;
 using PTL.Framework;
 using PTL.Framework.Services;
 using UnityEngine;
@@ -14,6 +15,9 @@ namespace Economy
         [SerializeField] private int m_Value = 1;
 
         protected override CollectionTargetId TargetId => CollectionTargetId.GemWallet;
+
+        /// <summary>The "Gem Magnet" ability widens this item's pickup range (doc §9).</summary>
+        protected override StatId? MagnetRadiusStat => StatId.GemMagnetRadius;
 
         protected override void Grant()
         {

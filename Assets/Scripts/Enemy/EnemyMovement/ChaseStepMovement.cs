@@ -24,6 +24,11 @@ namespace Enemy.Movement
             if (!_target)
                 LockTarget();
 
+            // Let an external push (e.g. Damage Revenge) play out before taking our next step,
+            // which would otherwise zero the velocity we were just given.
+            if (TickKnockback(Time.deltaTime))
+                return;
+
             if (Time.time >= _nextMoveTime)
             {
                 MoveDirection = (_target.position - transform.position).normalized;

@@ -71,6 +71,14 @@ namespace Weapon
         public event Action<int> OnReloadComplete;
 
         /// <summary>
+        /// Capacity changed via <see cref="Reconfigure"/> (e.g. the "Extended Mag" ability).
+        /// Passes the new size. UI should rebuild its per-bullet icons in response — capacity
+        /// doesn't change every tick like ammo/reload does, so this is its own event rather than
+        /// folded into the others.
+        /// </summary>
+        public event Action<int> OnMagazineSizeChanged;
+
+        /// <summary>
         /// Fire cooldown progress.  0 = just fired (locked), 1 = ready.
         /// Ramps smoothly from 0 to 1 every frame.
         /// </summary>
@@ -121,9 +129,14 @@ namespace Weapon
         /// </summary>
         public void Reconfigure(WeaponAmmoSettings settings)
         {
+            int previousSize = MagazineSize;
+
             ApplySettings(settings);
 
             CurrentAmmo = Mathf.Min(CurrentAmmo, MagazineSize);
+
+            if (MagazineSize != previousSize)
+                OnMagazineSizeChanged?.Invoke(MagazineSize);
 
             if (IsReloading)
             {

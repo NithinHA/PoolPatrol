@@ -21,7 +21,7 @@ MonoBehaviour:
   ArenaFilter: -1
   RunRequirement: 0
   Levels:
-  - Cost: 100
+  - Cost: 25
     Description: Bullets pierce shields and barriers
     Modifiers:
     - Stat: 14

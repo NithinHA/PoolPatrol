@@ -1,5 +1,7 @@
 using System;
 using Movement;
+using PTL.Framework;
+using PTL.Framework.Services;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Weapon;
@@ -39,6 +41,7 @@ namespace Player
         private Vector2 _currentPointerPos;
 
         private Camera _mainCam;
+        private IPauseService _pause;
 
 #region Unity callbacks
         
@@ -48,6 +51,11 @@ namespace Player
             _impulseMover = GetComponent<ImpulseMover>();
             _impulseMover.AssignParticleEmitter(WaterRippleParticleEmitter);
             _mainCam = Camera.main;
+        }
+
+        private void Start()
+        {
+            _pause = ServiceLocator.GetPauseService();
         }
 
         /// <summary>
@@ -66,6 +74,16 @@ namespace Player
 
         void Update()
         {
+            // A timescale freeze stops physics and every deltaTime-driven system, but Update still
+            // runs - so input has to be gated explicitly or the player could shoot from inside the
+            // Goddess shop. Any half-finished press is dropped so releasing over the UI cannot fire.
+            if (_pause != null && _pause.IsPaused)
+            {
+                _isPointerDown = false;
+                _isHolding = false;
+                return;
+            }
+
             _impulseMover.Tick();
 
             if (Pointer.current != null)

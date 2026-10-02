@@ -31,7 +31,10 @@ namespace UI.HUD
         {
             _activeTween?.Kill();
             if (animate)
-                _activeTween = m_Image.DOColor(m_ActiveColor, m_AnimDuration).SetEase(Ease.OutQuad);
+                // Unscaled: Extra Life / +1 Max Life are usually bought from the Goddess shop,
+                // which freezes Time.timeScale while it's open. Without this the tween would start
+                // but never progress, so the heart only visibly updates once the shop closes.
+                _activeTween = m_Image.DOColor(m_ActiveColor, m_AnimDuration).SetEase(Ease.OutQuad).SetUpdate(true);
             else
                 m_Image.color = m_ActiveColor;
 
@@ -43,7 +46,7 @@ namespace UI.HUD
         {
             _activeTween?.Kill();
             if (animate)
-                _activeTween = m_Image.DOColor(m_InactiveColor, m_AnimDuration).SetEase(Ease.InQuad);
+                _activeTween = m_Image.DOColor(m_InactiveColor, m_AnimDuration).SetEase(Ease.InQuad).SetUpdate(true);
             else
                 m_Image.color = m_InactiveColor;
 

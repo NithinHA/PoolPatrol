@@ -1,6 +1,9 @@
 using System;
+using Abilities;
 using DG.Tweening;
 using Player;
+using PTL.Framework;
+using PTL.Framework.Services;
 using UnityEngine;
 
 namespace Economy
@@ -40,6 +43,13 @@ namespace Economy
         /// <summary>UI destination this item flies toward after being granted.</summary>
         protected abstract CollectionTargetId TargetId { get; }
 
+        /// <summary>
+        /// Run-modifier stat that widens this item's outer collection radius, or null when the
+        /// item is not magnetisable. <see cref="GemCollectable"/> returns
+        /// <see cref="StatId.GemMagnetRadius"/> so the "Gem Magnet" ability actually reaches here.
+        /// </summary>
+        protected virtual StatId? MagnetRadiusStat => null;
+
         /// <summary>Applies the actual reward (economy grant, heal, …). Called once at grant.</summary>
         protected abstract void Grant();
 
@@ -47,10 +57,53 @@ namespace Economy
 
         private State _state = State.Idle;
         private Camera _camera;
+        private IRunModifierService _modifiers;
+        private float _effectiveCollectionRadius;
 
         protected virtual void Awake()
         {
             _camera = Camera.main;
+        }
+
+        /// <summary>
+        /// Runtime setup lives in OnEnable/OnDisable rather than Start/OnDestroy, so this component
+        /// works correctly both the normal way (Instantiate/Destroy) and once these are pooled
+        /// (SetActive toggling, same instance reused for a later drop): OnEnable re-runs every time
+        /// an instance comes back into play and must reset all per-collection state itself, since
+        /// Awake will not run again for a reused pooled instance.
+        /// </summary>
+        protected virtual void OnEnable()
+        {
+            _state = State.Idle;
+            _effectiveCollectionRadius = m_CollectionRadius;
+            transform.localScale = Vector3.one;
+
+            if (MagnetRadiusStat == null)
+                return;
+
+            _modifiers ??= ServiceLocator.GetRunModifierService();
+            if (_modifiers == null)
+                return;
+
+            // Re-read on change so a magnet bought mid-flight widens items already on the ground.
+            _modifiers.OnModifiersChanged += RefreshCollectionRadius;
+            RefreshCollectionRadius();
+        }
+
+        protected virtual void OnDisable()
+        {
+            if (_modifiers != null)
+                _modifiers.OnModifiersChanged -= RefreshCollectionRadius;
+
+            transform.DOKill();
+        }
+
+        /// <summary>Recomputes the outer radius from the inspector value plus any magnet bonus.</summary>
+        private void RefreshCollectionRadius()
+        {
+            _effectiveCollectionRadius = MagnetRadiusStat is { } stat && _modifiers != null
+                ? m_CollectionRadius + _modifiers.GetFlatSum(stat)
+                : m_CollectionRadius;
         }
 
         protected virtual void Update()
@@ -68,7 +121,7 @@ namespace Economy
             switch (_state)
             {
                 case State.Idle:
-                    if (sqrDistance <= m_CollectionRadius * m_CollectionRadius)
+                    if (sqrDistance <= _effectiveCollectionRadius * _effectiveCollectionRadius)
                         _state = State.Homing;
                     break;
 
@@ -79,11 +132,6 @@ namespace Economy
                         Collect();
                     break;
             }
-        }
-
-        protected virtual void OnDestroy()
-        {
-            transform.DOKill();
         }
 
         private void Collect()
@@ -120,7 +168,8 @@ namespace Economy
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, m_CollectionRadius);
+            Gizmos.DrawWireSphere(transform.position,
+                Application.isPlaying ? _effectiveCollectionRadius : m_CollectionRadius);
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(transform.position, m_GrantRadius);
         }

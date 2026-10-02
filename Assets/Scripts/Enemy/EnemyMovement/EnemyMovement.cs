@@ -20,8 +20,14 @@ namespace Enemy.Movement
         [SerializeField] private Sprite m_SpriteLeft135; // moving up-left   (NW)
         [Space]
 
+        [Header("Knockback")]
+        [Tooltip("How long an externally applied push (e.g. Damage Revenge) overrides this " +
+                 "enemy's own movement before it resumes driving its own velocity.")]
+        [SerializeField] private float m_KnockbackRecoveryTime = 0.3f;
+
         protected Vector2 MoveDirection;
         private Tween _rotationTween;
+        private float _knockbackTimeRemaining;
 
 #region Unity callbacks
         
@@ -43,9 +49,43 @@ namespace Enemy.Movement
         public abstract void Tick();
         public abstract void FixedTick();
 
+        /// <summary>True while an external push is overriding this enemy's own movement logic.</summary>
+        public bool IsKnockedBack => _knockbackTimeRemaining > 0f;
+
+        /// <summary>
+        /// Applies an external knockback (e.g. "Damage Revenge"). Sets velocity directly rather
+        /// than <c>AddForce</c>, so it also works on Kinematic rigidbodies (idle-type enemies),
+        /// which ignore forces entirely. Every concrete movement type drives its rigidbody's
+        /// velocity itself each tick, so without the knockback window below that velocity would
+        /// be overwritten within the same or next physics step — subclasses must call
+        /// <see cref="TickKnockback"/> and skip their own velocity write while it returns true.
+        /// </summary>
         public void PushBack(float pushBackForce, Vector2 direction)
         {
-            Controller.RigidBody.AddForce(direction * pushBackForce, ForceMode2D.Impulse);
+            if (Controller == null || Controller.RigidBody == null || direction.sqrMagnitude < 0.0001f)
+                return;
+
+            _knockbackTimeRemaining = m_KnockbackRecoveryTime;
+            Controller.RigidBody.linearVelocity = direction.normalized * pushBackForce;
+        }
+
+        /// <summary>
+        /// Call once per Tick/FixedTick (whichever drives this movement type's velocity) before
+        /// deciding whether to write velocity normally. Returns true while knockback is still in
+        /// effect. Zeroes the rigidbody's velocity the instant the window ends, so a movement type
+        /// that doesn't touch velocity every frame (e.g. <c>EnemyNoMovement</c>) doesn't drift
+        /// forever — a Kinematic/Dynamic body given a velocity has nothing else to stop it.
+        /// </summary>
+        protected bool TickKnockback(float dt)
+        {
+            if (_knockbackTimeRemaining <= 0f)
+                return false;
+
+            _knockbackTimeRemaining -= dt;
+            if (_knockbackTimeRemaining <= 0f && Controller != null && Controller.RigidBody != null)
+                Controller.RigidBody.linearVelocity = Vector2.zero;
+
+            return true;
         }
 
         protected virtual void SetRandomDirection()

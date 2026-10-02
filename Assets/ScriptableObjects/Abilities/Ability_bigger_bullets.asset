@@ -21,21 +21,21 @@ MonoBehaviour:
   ArenaFilter: -1
   RunRequirement: 0
   Levels:
-  - Cost: 90
+  - Cost: 10
     Description: Bullet size +25%
     Modifiers:
     - Stat: 7
       Type: 1
       Value: 0.25
     InstantEffects: 
-  - Cost: 90
+  - Cost: 10
     Description: Bullet size +50%
     Modifiers:
     - Stat: 7
       Type: 1
       Value: 0.25
     InstantEffects: 
-  - Cost: 90
+  - Cost: 10
     Description: Bullet size +75%
     Modifiers:
     - Stat: 7

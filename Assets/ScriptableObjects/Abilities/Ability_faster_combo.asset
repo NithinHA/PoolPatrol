@@ -21,21 +21,21 @@ MonoBehaviour:
   ArenaFilter: -1
   RunRequirement: 0
   Levels:
-  - Cost: 60
+  - Cost: 15
     Description: Combo thresholds -1
     Modifiers:
     - Stat: 3
       Type: 0
       Value: 1
     InstantEffects: 
-  - Cost: 70
+  - Cost: 20
     Description: Combo thresholds -2
     Modifiers:
     - Stat: 3
       Type: 0
       Value: 1
     InstantEffects: 
-  - Cost: 80
+  - Cost: 30
     Description: Combo thresholds -3
     Modifiers:
     - Stat: 3

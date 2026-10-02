@@ -21,21 +21,21 @@ MonoBehaviour:
   ArenaFilter: -1
   RunRequirement: 0
   Levels:
-  - Cost: 100
+  - Cost: 15
     Description: Magazine +1
     Modifiers:
     - Stat: 9
       Type: 0
       Value: 1
     InstantEffects: 
-  - Cost: 100
+  - Cost: 20
     Description: Magazine +2
     Modifiers:
     - Stat: 9
       Type: 0
       Value: 1
     InstantEffects: 
-  - Cost: 100
+  - Cost: 25
     Description: Magazine +3
     Modifiers:
     - Stat: 9

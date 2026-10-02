@@ -21,7 +21,7 @@ MonoBehaviour:
   ArenaFilter: -1
   RunRequirement: 0
   Levels:
-  - Cost: 100
+  - Cost: 30
     Description: Enemies pushed away when you lose a life
     Modifiers:
     - Stat: 19

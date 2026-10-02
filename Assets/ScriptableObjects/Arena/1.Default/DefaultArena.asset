@@ -15,6 +15,7 @@ MonoBehaviour:
   ArenaName: DefaultArena
   Description: "Deafult arena\t"
   CardPreview: {fileID: 21300000, guid: ae63df15770bd9c45b85360281c53fab, type: 3}
+  Arena: 1
   Levels:
   - {fileID: 11400000, guid: df863a69dfa3b4187a602520a874d62b, type: 2}
   - {fileID: 11400000, guid: acf4b91fdb58c42c98e43ebe1cd42f78, type: 2}

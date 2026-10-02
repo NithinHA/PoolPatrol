@@ -21,7 +21,7 @@ MonoBehaviour:
   ArenaFilter: -1
   RunRequirement: 0
   Levels:
-  - Cost: 120
+  - Cost: 30
     Description: Bullets bounce off walls
     Modifiers:
     - Stat: 13

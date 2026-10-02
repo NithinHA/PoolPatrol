@@ -21,21 +21,21 @@ MonoBehaviour:
   ArenaFilter: -1
   RunRequirement: 0
   Levels:
-  - Cost: 50
+  - Cost: 15
     Description: Gem pickup range +1
     Modifiers:
     - Stat: 4
       Type: 0
       Value: 1
     InstantEffects: 
-  - Cost: 60
+  - Cost: 20
     Description: Gem pickup range +2
     Modifiers:
     - Stat: 4
       Type: 0
       Value: 1
     InstantEffects: 
-  - Cost: 70
+  - Cost: 25
     Description: Gem pickup range +3
     Modifiers:
     - Stat: 4

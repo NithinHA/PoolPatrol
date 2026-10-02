@@ -83,6 +83,7 @@ namespace UI.HUD
             _magazine.OnReloadStarted += OnReloadStarted;
             _magazine.OnBulletReloaded += OnBulletReloaded;
             _magazine.OnReloadComplete += OnReloadComplete;
+            _magazine.OnMagazineSizeChanged += OnMagazineSizeChanged;
 
             m_CooldownIndicator?.Bind(_magazine);
         }
@@ -95,9 +96,21 @@ namespace UI.HUD
             _magazine.OnReloadStarted -= OnReloadStarted;
             _magazine.OnBulletReloaded -= OnBulletReloaded;
             _magazine.OnReloadComplete -= OnReloadComplete;
+            _magazine.OnMagazineSizeChanged -= OnMagazineSizeChanged;
 
             m_CooldownIndicator?.Bind(null);
             _magazine = null;
+        }
+
+        /// <summary>
+        /// Capacity changed at runtime (e.g. "Extended Mag" purchased in the Goddess shop).
+        /// RebuildIcons only adds/removes the delta and leaves existing icons' state alone, so
+        /// this is safe to call mid-reload. Plain Instantiate + direct SetLive/SetSpent calls, no
+        /// tweens, so it reflects instantly even while the shop has Time.timeScale frozen.
+        /// </summary>
+        private void OnMagazineSizeChanged(int newSize)
+        {
+            RebuildIcons(newSize, _magazine.CurrentAmmo);
         }
 
         private void RebuildIcons(int magazineSize, int currentAmmo)

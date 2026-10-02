@@ -21,21 +21,21 @@ MonoBehaviour:
   ArenaFilter: -1
   RunRequirement: 2
   Levels:
-  - Cost: 120
+  - Cost: 20
     Description: Maximum lives +1
     Modifiers:
     - Stat: 2
       Type: 0
       Value: 1
     InstantEffects: 
-  - Cost: 120
+  - Cost: 25
     Description: Maximum lives +1
     Modifiers:
     - Stat: 2
       Type: 0
       Value: 1
     InstantEffects: 
-  - Cost: 120
+  - Cost: 30
     Description: Maximum lives +1
     Modifiers:
     - Stat: 2

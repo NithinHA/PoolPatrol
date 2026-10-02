@@ -2,14 +2,14 @@
 
 ## Architecture Overview
 
-The ability system is a 3-layer stack. **Layer 1 (data + services)** is built. Layers 2 and 3 are not yet implemented.
+The ability system is a 3-layer stack. All three layers are built.
 
 ```
-Layer 3 — Pool Goddess UI          (not built)
-   Goddess spawns mid-arena, player touches her, shop opens
-   ↓ calls
-Layer 2 — Arena Director            (not built)
-   Drives waves, spawn timing, decides when Goddess appears
+Layer 3 — Pool Goddess + Shop UI    ✅ built
+   PoolGoddess (world) → AbilityShopUI → AbilityOfferCard
+   ↓ opened by
+Layer 2 — Encounter / Arena Director ✅ built
+   ArenaDirector drives waves + progress; GoddessEncounterDirector schedules visits
    ↓ feeds context to
 Layer 1 — Data + Services           ✅ built
    AbilityDefinition (SO) → AbilityService → RunModifierService → Binders → live components
@@ -27,6 +27,23 @@ Layer 1 — Data + Services           ✅ built
 | `Services/RunModifierService/RunModifierService.cs` | Stat accumulator: `(base + flat) × (1 + percent)`, plus boolean flags |
 | `Abilities/Binders/PlayerStatBinder.cs` | Pushes modifiers → PlayerHealth, ImpulseMover, PlayerCombo |
 | `Abilities/Binders/WeaponStatBinder.cs` | Pushes modifiers → WeaponBase, WeaponMagazine |
+
+### Layer 2 components
+
+| File | Role |
+|---|---|
+| `Scripts/SpawningLogic/ArenaDirector.cs` | Wave/cooldown timeline. Exposes `ArenaProgress`, `IsInWave`, `IsRunning`, `OnArenaBegan` |
+| `Scripts/SpawningLogic/ArenaSpawnConfigSO.cs` | Per-level data, incl. the new `GoddessEncounters` block (visit count, window, refresh pricing, grace) |
+| `Scripts/Abilities/Goddess/GoddessEncounterDirector.cs` | Schedules visits along arena progress, places her centrally, owns the encounter lifecycle |
+
+### Layer 3 components
+
+| File | Role |
+|---|---|
+| `Scripts/Abilities/Goddess/PoolGoddess.cs` | Emerge/retreat animation, 15s window, touch trigger |
+| `Scripts/UI/Shop/AbilityShopUI.cs` | The ShopScreen panel: pause, offers, purchase, refresh, exit |
+| `Scripts/UI/Shop/AbilityOfferCard.cs` | One offer slot (name, description, price, level, rarity tint, sold state) |
+| `Services/PauseService/PauseService.cs` | Reference-counted `Time.timeScale` freeze with `OnPauseChanged` |
 
 ### Data flow
 
@@ -200,15 +217,18 @@ Just close the shop UI and unpause. No service calls needed.
 
 ### 6. Pause/unpause
 
-The shop should pause gameplay. Until a `PauseService` is built:
+`PauseService` owns this. Never touch `Time.timeScale` directly.
 
 ```csharp
-// Open shop
-Time.timeScale = 0f;
-
-// Close shop (buy, skip, or timeout)
-Time.timeScale = 1f;
+IPauseService pause = ServiceLocator.GetPauseService();
+pause.Pause(this);    // freeze; safe to call twice from the same source
+pause.Resume(this);   // resumes only once every source has released
 ```
+
+Pause requests are reference-counted per source, so two systems can hold the game
+frozen at once. Because it is a timescale freeze, anything driven by `Time.deltaTime`,
+`FixedUpdate` or a scaled `WaitForSeconds` stops for free. `Update` still runs, so any
+input reader must check `IsPaused` — `PlayerController` already does.
 
 ### 7. Listen for balance changes (wallet display)
 
@@ -232,14 +252,96 @@ foreach (var (def, level) in owned)
 
 ---
 
-## What's not built yet
+## Which stats actually do something
 
-| Feature | Needed for | Notes |
+| StatId | Consumer | Status |
 |---|---|---|
-| **ArenaDirector** (Layer 2) | Triggering Goddess appearances at the right time | Will call into a `PoolGoddess` component |
-| **PoolGoddess** (Layer 3) | Emerge/retreat animation, touch-to-open trigger | Spawns in center, 15s window, pauses on touch |
-| **GoddessShopUI** (Layer 3) | The actual UI panel | Calls `GenerateOffers`, `TryPurchase`, refresh/skip |
-| **PauseService** | Clean pause/unpause | `Time.timeScale` toggle with event hooks |
-| **GemMagnet wiring** | `GemMagnetRadius` stat actually affecting pickup | `CollectableBase` needs to read `GetFlatSum(GemMagnetRadius)` |
-| **DamageRevenge execution** | Pushback on hit | Needs implementation in `PlayerHealth` or a new component |
-| **BulletRebound / PiercingShot** | Bullet behavior changes | Bullet script needs to check `GetFlag()` |
+| `MaxLives` | `PlayerStatBinder` → `PlayerHealth.SetMaxHealth` | ✅ |
+| `MoveSpeed`, `Propulsion` | `PlayerStatBinder` → `ImpulseMover` | ✅ |
+| `ComboThresholdReduction` | `PlayerStatBinder` → `PlayerCombo.SetThresholdReduction` | ✅ |
+| `GemMagnetRadius` | `CollectableBase` (via `GemCollectable.MagnetRadiusStat`) | ✅ |
+| `BulletRange`, `BulletSpeed`, `BulletSize` | `WeaponStatBinder` → `WeaponBase` | ✅ |
+| `ReloadSpeed`, `FireRate`, `MagazineSize` | `WeaponStatBinder` → `WeaponMagazine` | ✅ |
+| `DamageRevenge` | `DamageRevengeHandler` on the player | ✅ |
+| `PiercingShot`, `BulletRebound` | `WeaponBase.BuildBulletTraits` → `Bullet.Configure` | ✅ |
+| `ToxicImmunity`, `StormImmunity`, `FoamBreaker`, `VineCutter` | — | ⏳ the arena hazards they counter don't exist yet. The flags are set correctly; whoever builds those hazards reads `GetFlag(...)`. |
+| `ExplosionRadius`, `HomingDuration` | — | ⏳ no grenade launcher yet. |
+
+Instant effects (`RestoreOneLife`, `RefillMagazine`) are handled in `PlayerStatBinder.OnInstantEffect`.
+
+## Exhaustible vs persistent abilities
+
+The distinction is in the data, not in a separate flag:
+
+* An ability level whose `InstantEffects` list is non-empty **spends itself at purchase**
+  (`+1 Life` heals immediately and is gone).
+* An ability level whose `Modifiers` list is non-empty **lasts for the rest of the run**
+  (Bigger Bullets, +1 Max Life). It is recorded in `RunModifierService` and re-applied by
+  the binders on every change.
+
+`IAbilityService.ActiveAbilities` is the list of abilities still exerting a lasting
+effect — that's what a HUD or debug overlay should show. `OwnedAbilities` is the raw
+purchase ledger and includes spent one-shots. Both are cleared by `ResetRun()`, which
+`LevelManager` calls at the start of every run, so nothing survives level complete or
+game over.
+
+---
+
+## Scene wiring checklist
+
+Code-side everything is done; these are the Editor steps.
+
+### Already wired for you
+
+* `Prefabs/AbilitySelection/PoolGoddess.prefab` — `PoolGoddess` component added, with
+  `Visual` = the `gfx` child and `Touch Trigger` = the root `CircleCollider2D`.
+  Optionally assign `Emerge Effect` / `Retreat Effect` particle systems.
+* `Prefabs/Player variants/Player.prefab` — `WeaponStatBinder` added to `WeaponHolder`
+  (it was missing, so no weapon upgrade did anything), and `DamageRevengeHandler` added
+  to the `Player` root.
+
+### Game scene — ShopScreen
+
+1. Add **AbilityShopUI** to the `ShopScreen` GameObject itself, and set **Root** to that
+   same GameObject (it initialises lazily, so it is fine that it starts inactive).
+2. Add **AbilityOfferCard** to `Option_1`, `Option_2`, `Option_3` and fill in:
+   * `Button` → the Button on the option root
+   * `Name Text` → `name_text`
+   * `Description Text` → `desc_text`
+   * `Price Text` → `pricetag`
+   * `Icon` → `icon`
+   * `Background` → the Image on the option root (for the rarity tint)
+   * `Level Text` / `Sold Overlay` → optional, create if you want them
+3. Drag the three cards into `AbilityShopUI.Cards`, in display order.
+4. **Add an Exit button** to `ShopScreen` (does not exist yet) and assign it to
+   `AbilityShopUI.Exit Button`. Nothing else closes the shop.
+5. Optional: a Refresh button + its cost label → `Refresh Button` / `Refresh Cost Text`;
+   a gem balance label → `Wallet Text`; a "nothing left to offer" object →
+   `Nothing Left Message`.
+
+### Game scene — encounter director
+
+6. Create an empty GameObject (e.g. `GoddessDirector`) and add
+   **GoddessEncounterDirector**. Assign:
+   * `Goddess Prefab` → `Prefabs/AbilitySelection/PoolGoddess`
+   * `Arena Director` → the `EnemySpawner` object (auto-found if left empty)
+   * `Shop UI` → the `ShopScreen` object (auto-found if left empty)
+7. On `LevelManager`, assign **Shop UI** → `ShopScreen` (auto-found if left empty). This
+   is what force-closes the shop on win/loss so the game can never stay frozen.
+8. Delete the leftover inactive `GoddessOnMap` object — the director spawns her now.
+
+### Data
+
+9. On each `ArenaDefinitionSO`, set the new **Arena** flag (ShallowEnd, RitzRipples, …).
+   Until this is set the arena stays `Any` and arena-specific abilities are all eligible.
+10. On each `ArenaSpawnConfigSO`, tune the new **Goddess** block: `Visit Count`,
+    `Availability Window` (15s), `Offer Count` (3 for the current layout),
+    `Refresh Cost` / `Refresh Cost Increment` / `Max Refreshes Per Visit`,
+    `Min Seconds Between Visits`, `Reentry Grace Seconds`.
+11. Make sure `Bootstrap` still has the `AbilityDatabase` asset assigned.
+
+### Player-facing collider note
+
+The goddess trigger fires against anything tagged `Player`. The player root carries the
+Rigidbody2D, so the trigger works without adding one to the goddess. She has no
+Rigidbody2D on purpose — enemies, bullets and the player all pass through her.

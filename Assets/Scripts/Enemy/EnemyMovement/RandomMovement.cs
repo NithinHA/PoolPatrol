@@ -34,10 +34,15 @@ namespace Enemy.Movement
 
         public override void FixedTick()
         {
+            // Let an external push (e.g. Damage Revenge) play out before resuming our own
+            // velocity write, which would otherwise overwrite it this same physics step.
+            if (TickKnockback(Time.fixedDeltaTime))
+                return;
+
             Vector2 velocity = MoveDirection * m_Speed;
             Controller.RigidBody.linearVelocity = velocity;
             _bounceMovementHandler.FixedTick(velocity);
-            
+
         }
     }
 }

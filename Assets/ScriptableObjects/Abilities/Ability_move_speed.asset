@@ -21,21 +21,21 @@ MonoBehaviour:
   ArenaFilter: -1
   RunRequirement: 0
   Levels:
-  - Cost: 60
+  - Cost: 10
     Description: Move speed +15%
     Modifiers:
     - Stat: 0
       Type: 1
       Value: 0.15
     InstantEffects: 
-  - Cost: 70
+  - Cost: 15
     Description: Move speed +30%
     Modifiers:
     - Stat: 0
       Type: 1
       Value: 0.15
     InstantEffects: 
-  - Cost: 80
+  - Cost: 20
     Description: Move speed +45%
     Modifiers:
     - Stat: 0

@@ -1,3 +1,6 @@
+using Abilities;
+using PTL.Framework;
+using PTL.Framework.Services;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -27,6 +30,13 @@ namespace Weapon
         public float BulletColliderSizeMultiplier = 1f;     // makes the bullet collider large/small
         public float BulletRange = 20f;
         
+        [Header("Run upgrades")]
+        [Tooltip("Enemies a bullet passes through once the \"Piercing Shot\" ability is owned.")]
+        [Min(0)] [SerializeField] private int m_PierceCountWhenUpgraded = 2;
+
+        [Tooltip("Wall bounces a bullet gets once the \"Ricochet\" ability is owned.")]
+        [Min(0)] [SerializeField] private int m_BounceCountWhenUpgraded = 2;
+
         [Header("UI")]
         [SerializeField] protected ProjectileIndicatorBase m_ProjectileIndicator;
         public ProjectileIndicatorBase ProjectileIndicator => m_ProjectileIndicator;
@@ -90,11 +100,30 @@ namespace Weapon
 
             Bullet bullet = Instantiate(m_BulletPrefab, FirePoint.position, Quaternion.identity);
             bullet.SetupScale(BulletSizeMultiplier, BulletColliderSizeMultiplier);
+            bullet.Configure(BuildBulletTraits(source));
 
             WeaponAttack attack = new WeaponAttack();
             bullet.Fire(direction, BulletSpeed, source, attack, BulletRange, _weaponController.transform.position);
 
             return attack;
+        }
+
+        /// <summary>
+        /// Translates the run-modifier flag state into per-bullet behaviour. Only the player's
+        /// shots are upgraded — enemy fire ignores the player's abilities.
+        /// </summary>
+        protected BulletTraits BuildBulletTraits(BulletSource source)
+        {
+            if (source != BulletSource.Player)
+                return BulletTraits.Default;
+
+            IRunModifierService modifiers = ServiceLocator.GetRunModifierService();
+            if (modifiers == null)
+                return BulletTraits.Default;
+
+            int pierces = modifiers.GetFlag(StatId.PiercingShot) ? m_PierceCountWhenUpgraded : 0;
+            int bounces = modifiers.GetFlag(StatId.BulletRebound) ? m_BounceCountWhenUpgraded : 0;
+            return new BulletTraits(pierces, bounces);
         }
     }
 }

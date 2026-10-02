@@ -13564,6 +13564,7 @@ GameObject:
   - component: {fileID: 6414039551967786748}
   - component: {fileID: 9088755020692702791}
   - component: {fileID: 1565795608125620264}
+  - component: {fileID: 1010101010101010201}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -13771,6 +13772,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1579527376344162507}
   - component: {fileID: 6514116320804890438}
+  - component: {fileID: 1010101010101010101}
   m_Layer: 0
   m_Name: WeaponHolder
   m_TagString: Untagged
@@ -19139,3 +19141,31 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7153147666202598281, guid: da8777fbe3dd883459f3773b9a1d73a4, type: 3}
   m_PrefabInstance: {fileID: 8593077870862828701}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1010101010101010101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6501449473021579967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79633cab488e24c168923b80f7d6ea1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1010101010101010201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5279379673753254852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c10ab77785174f7eae1cf071e695a242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Radius: 4
+  m_Force: 18
+  m_SpawnEffect: 1
+  m_Effect: 3

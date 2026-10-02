@@ -51,6 +51,21 @@ namespace SpawningLogic
         private bool _arenaRunning;
         private bool _began;
 
+        /// <summary>How far the weighted progress bar has filled, 0..1. Read by the goddess director.</summary>
+        public float ArenaProgress => _arenaProgress;
+
+        /// <summary>True while a wave section is gating progress.</summary>
+        public bool IsInWave => _inWave;
+
+        /// <summary>True between <see cref="Begin"/> and <see cref="OnArenaComplete"/>.</summary>
+        public bool IsRunning => _arenaRunning;
+
+        /// <summary>The config currently being run. Null until configured.</summary>
+        public ArenaSpawnConfigSO Config => m_Config;
+
+        /// <summary>Raised once the arena's spawn timeline has actually started.</summary>
+        public event Action OnArenaBegan;
+
         private void OnEnable() => EnemyController.OnAnyEnemyDied += HandleEnemyDied;
         private void OnDisable() => EnemyController.OnAnyEnemyDied -= HandleEnemyDied;
 
@@ -93,6 +108,7 @@ namespace SpawningLogic
             BuildProgressMarkers();
 
             _arenaRunning = true;
+            OnArenaBegan?.Invoke();
             StartCoroutine(RunArena());
             StartCoroutine(RunRewardDirector());
         }
