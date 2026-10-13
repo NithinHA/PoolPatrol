@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DefaultArena
   m_EditorClassIdentifier: 
   ArenaName: DefaultArena
-  Description: "Deafult arena\t"
-  CardPreview: {fileID: 21300000, guid: ae63df15770bd9c45b85360281c53fab, type: 3}
+  Description: Shallow End
+  CardPreview: {fileID: 21300000, guid: b520a79e1bd2a6647a02308aad5de3dd, type: 3}
   Arena: 1
   Levels:
   - {fileID: 11400000, guid: df863a69dfa3b4187a602520a874d62b, type: 2}

@@ -98,6 +98,21 @@ namespace PTL.Framework
             return HasService(typeof(IProgression)) ? GetService<IProgression>() : null;
         }
 
+        public static ILoadoutService GetLoadoutService()
+        {
+            return HasService(typeof(ILoadoutService)) ? GetService<ILoadoutService>() : null;
+        }
+
+        public static IRunStatsService GetRunStatsService()
+        {
+            return HasService(typeof(IRunStatsService)) ? GetService<IRunStatsService>() : null;
+        }
+
+        public static ISettingsService GetSettingsService()
+        {
+            return HasService(typeof(ISettingsService)) ? GetService<ISettingsService>() : null;
+        }
+
 #endregion
     }
 }

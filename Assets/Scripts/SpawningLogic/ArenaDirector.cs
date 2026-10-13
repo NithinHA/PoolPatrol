@@ -50,6 +50,8 @@ namespace SpawningLogic
         private bool _inWave;
         private bool _arenaRunning;
         private bool _began;
+        private int _currentWave;
+        private int _totalWaves;
 
         /// <summary>How far the weighted progress bar has filled, 0..1. Read by the goddess director.</summary>
         public float ArenaProgress => _arenaProgress;
@@ -62,6 +64,15 @@ namespace SpawningLogic
 
         /// <summary>The config currently being run. Null until configured.</summary>
         public ArenaSpawnConfigSO Config => m_Config;
+
+        /// <summary>How many wave sections this arena contains. 0 until <see cref="Begin"/> has run.</summary>
+        public int TotalWaves => _totalWaves;
+
+        /// <summary>
+        /// 1-based number of the wave currently gating progress, or the last one cleared between
+        /// waves. 0 before the first wave starts. This is the "Wave 3 / 8" the HUD and pause menu show.
+        /// </summary>
+        public int CurrentWave => _currentWave;
 
         /// <summary>Raised once the arena's spawn timeline has actually started.</summary>
         public event Action OnArenaBegan;
@@ -100,9 +111,15 @@ namespace SpawningLogic
             _began = true;
 
             _totalProgressWeight = 0f;
+            _totalWaves = 0;
+            _currentWave = 0;
             foreach (var section in m_Config.Sections)
+            {
                 if (section is CooldownSectionSO cooldown)
                     _totalProgressWeight += Mathf.Max(0.01f, cooldown.ProgressWeight);
+                else if (section is WaveSectionSO)
+                    _totalWaves++;
+            }
             _totalProgressWeight = Mathf.Max(_totalProgressWeight, 0.01f); // guard div-by-zero
 
             BuildProgressMarkers();
@@ -209,6 +226,8 @@ namespace SpawningLogic
             // The bar itself doesn't move for the whole wave - it's already sitting at this marker's
             // position from the end of the previous cooldown. The marker pulsates to show it's active.
             _inWave = true;
+            _currentWave = markerIndex + 1;
+            PTL.Framework.ServiceLocator.GetRunStatsService()?.SetWaveProgress(_currentWave, _totalWaves);
             m_ProgressBar?.SetMarkerActive(markerIndex);
 
             int spawned = 0;

@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0db3e9758da44894bc791ed222c19d6, type: 3}
+  m_Name: LuxuryArena_Level1_SpawnConfig
+  m_EditorClassIdentifier: 
+  Sections:
+  - {fileID: 11400000, guid: fb168367720caa24e8c0c7347df3726d, type: 2}
+  - {fileID: 11400000, guid: 027223c033234fb40877bfe335a249ab, type: 2}
+  - {fileID: 11400000, guid: b7b2f78b69482994e90d0589733e1640, type: 2}
+  - {fileID: 11400000, guid: b847f18d94e2bd4439a03496a5740d43, type: 2}
+  - {fileID: 11400000, guid: eb59f253455faab47857af0d939ef488, type: 2}
+  Rewards:
+    GemDropperPrefab: {fileID: 8526437909133313751, guid: 4beb6780aeca84308a4e5b5af136090b, type: 3}
+    TargetGemDropperCount: 120
+    GemMinInterval: 4
+    HeartDropperPrefab: {fileID: 5011922556510066043, guid: e8cb5f6e70da84d21b9b4ba5a29c4e61, type: 3}
+    MaxHeartDroppers: 5
+    BarelyHurtDelay: 60
+    CriticalDelay: 10
+    PostSpawnCooldown: 45
+  Goddess:
+    VisitCount: 3
+    AvailabilityWindow: 15
+    ScheduleJitter: 0.06
+    MinSecondsBetweenVisits: 60
+    OfferCount: 3
+    RefreshCost: 30
+    RefreshCostIncrement: 25
+    MaxRefreshesPerVisit: 3
+    ReentryGraceSeconds: 3

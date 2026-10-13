@@ -1,14 +1,16 @@
+using Pooling;
 using UnityEngine;
 
 namespace Enemy.Death
 {
     public class DropHeartOnDeath : MonoBehaviour, IOnDeathEffect
     {
-        public GameObject m_HeartPrefab;
+        public PoolableItemType m_HeartType = PoolableItemType.DroppedHeart;
 
         public void Execute(EnemyDeathParameters parameters)
         {
-            Instantiate(m_HeartPrefab, transform.position, Quaternion.identity);
+            ObjectPoolManager.Instance.SpawnItem(
+                m_HeartType, transform.position, Quaternion.identity);
         }
     }
 }

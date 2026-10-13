@@ -38,6 +38,18 @@ Register(CurrencyType.Coins, exhaustible: false, persistentKey: "Economy_Coins")
 1. Player enters **`m_CollectionRadius`** (outer) → item homes toward player at `m_HomingSpeed`.
 2. Item reaches **`m_GrantRadius`** (inner) → `Grant()` runs → `OnAnyCollected` fires → item tweens to HUD target and despawns.
 
+### Lifetime (items sink)
+
+An idle item is only around for **`m_IdleLifetime`** seconds (gems 15, hearts 20), then it sinks —
+drifts down, shrinks, fades — and despawns **ungranted**. It flashes for the last
+`m_SinkWarningTime` seconds as a warning.
+
+The clock ticks **only in the `Idle` state**. Homing is a one-way door, so an item that has started
+travelling toward the player can never sink, however long the flight takes. States `Sinking` and
+`Collected` are both terminal and mutually exclusive — that is what guarantees exactly one despawn
+per drop (the pool throws on a double release). Pause freezes the clock for free, since it is
+`Time.deltaTime`-driven.
+
 Subclass only needs:
 ```csharp
 protected override CollectionTargetId TargetId => CollectionTargetId.GemWallet;
@@ -49,6 +61,15 @@ Existing subclasses:
 - **`HeartCollectable`** — calls `PlayerHealth.Heal(m_HealAmount)`. Attach to heart prefabs.
 
 `OnAnyCollected` is a **static event** — unsubscribe in `OnDestroy`.
+
+### Pooling
+
+`CollectableBase` implements `IPoolableObject`, so every drop comes from `ObjectPoolManager`
+(`PoolableItemType.DroppedGem` / `DroppedHeart`) and `Despawn()` returns it to the pool — never
+`Instantiate`/`Destroy`. `DropGemsOnDeath` / `DropHeartOnDeath` take a `PoolableItemType`, not a
+prefab; the prefab lives in the scene's `ObjectPoolManager` pool config. All per-drop state resets in
+`OnEnable` (which the pool triggers by activating the object), **not** `Awake` — a reused instance
+never runs `Awake` again. See **add-poolable-item**.
 
 ## UI target registry (`CollectionTargets`)
 
@@ -62,8 +83,9 @@ Decouples world-space pickups from the HUD hierarchy. A UI element registers its
 
 1. Create a `MonoBehaviour` that extends `CollectableBase`.
 2. Override `TargetId` and `Grant()`.
-3. Optionally override `Despawn()` if the prefab is pooled (call `ReturnToPool()` instead of `Destroy`).
-4. Attach to the prefab and configure radii in the inspector.
+3. Add a `PoolableItemType` entry and register the prefab in the scene's `ObjectPoolManager` config.
+4. Attach to the prefab root, wire `m_Gfx` (the sprite that fades/flashes), and configure the radii
+   and `m_IdleLifetime` in the inspector.
 
 ## Conventions reminder
 

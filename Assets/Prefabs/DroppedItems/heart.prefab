@@ -4970,4 +4970,10 @@ MonoBehaviour:
   m_HomingSpeed: 6
   m_FlyToUiDuration: 1
   m_FlyToUiEase: 3
+  m_IdleLifetime: 20
+  m_SinkWarningTime: 3
+  m_SinkDuration: 0.7
+  m_SinkDepth: 0.6
+  m_SinkScale: 0.45
+  m_Gfx: {fileID: 8303699298678305753}
   m_HealAmount: 1

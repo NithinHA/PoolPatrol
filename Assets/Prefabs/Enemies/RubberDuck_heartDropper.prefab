@@ -5359,7 +5359,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 466fb94e7334c1f49844abee83ff6824, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HeartPrefab: {fileID: 9186532080520112789, guid: 05a88e9275cea4452ab1b98649fe0f70, type: 3}
+  m_HeartType: 6
 --- !u!1001 &3484402315802260671
 PrefabInstance:
   m_ObjectHideFlags: 0

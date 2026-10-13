@@ -1,0 +1,446 @@
+fileFormatVersion: 2
+guid: 5ff642f4338402d4f8d5db2169fd8368
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5657801494330753019
+    second: Glassy UI Panels and Bubble Sprites_0
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: button_bg_transparent_large_3_c
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 549
+        width: 631
+        height: 202
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 116, y: 0, z: 111, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bff32479b7c848e40800000000000000
+      internalID: 5657801494330753019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: button_bg_transparent_large_3
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 760
+        width: 631
+        height: 202
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 116, y: 0, z: 111, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98ae4823fb021e146a04d9093f2cdc64
+      internalID: 366497383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: button_bg_transparent_medium_3
+      rect:
+        serializedVersion: 2
+        x: 666
+        y: 834
+        width: 421
+        height: 124
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 79, y: 0, z: 79, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90d025fc97645c54c8bfd756d8ffaea4
+      internalID: -1410640163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: button_bg_transparent_medium_2
+      rect:
+        serializedVersion: 2
+        x: 686
+        y: 599
+        width: 384
+        height: 98
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 72, y: 0, z: 64, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3c8bdb2e6c7e6b1438d83789c46969ba
+      internalID: -1136582630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glassy UI Panels and Bubble Sprites_9
+      rect:
+        serializedVersion: 2
+        x: 697
+        y: 409
+        width: 383
+        height: 176
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 79, y: 69, z: 76, w: 71}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f720d16477391b74d8aa2b2c75df8ea2
+      internalID: 1095046706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: button_bg_transparent_large_1
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 278
+        width: 632
+        height: 109
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 86, y: 0, z: 88, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6eecc36535bd04d46b61d7f4e13d4128
+      internalID: 1553255101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: button_bg_transparent_large_2
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 394
+        width: 634
+        height: 148
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 116, y: 0, z: 111, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 93e74b40e9888fa45880456807dcefc2
+      internalID: -260070910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rounded_square_transparent_large
+      rect:
+        serializedVersion: 2
+        x: 1310
+        y: 749
+        width: 202
+        height: 200
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 60, y: 60, z: 60, w: 60}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f48c22be05d2774790b17ecd37f79c4
+      internalID: -1655430086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rounded_square_transparent_medium
+      rect:
+        serializedVersion: 2
+        x: 1322
+        y: 570
+        width: 173
+        height: 161
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 45, y: 45, z: 45, w: 45}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bb767ca157930a7498ffe7e560920819
+      internalID: 1461261961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rounded_square_transparent_small
+      rect:
+        serializedVersion: 2
+        x: 1338
+        y: 427
+        width: 140
+        height: 129
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 45, y: 45, z: 45, w: 45}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d2629b91fe256e649840499120d13ec9
+      internalID: -1282507847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_oval_transparent
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 76
+        width: 257
+        height: 165
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f872183a6b5ac4489d8cc88bd67c6b8
+      internalID: 1055035404
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_hex_transparent
+      rect:
+        serializedVersion: 2
+        x: 551
+        y: 68
+        width: 202
+        height: 187
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e7c941823ccad194fb75fd7f2549f955
+      internalID: -1371874668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rounded_triangle_transparent
+      rect:
+        serializedVersion: 2
+        x: 760
+        y: 92
+        width: 174
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f76cb87ed0a8012448ba56c24113c20e
+      internalID: 1636370670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: d15cc0219ef787a4fbc944c5517ce93d
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":691.0,"y":115.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Glassy UI Panels and Bubble Sprites_1: -2088175025
+      Glassy UI Panels and Bubble Sprites_10: 380258971
+      Glassy UI Panels and Bubble Sprites_11: -621132546
+      Glassy UI Panels and Bubble Sprites_13: -606746260
+      Glassy UI Panels and Bubble Sprites_14: 1362724096
+      Glassy UI Panels and Bubble Sprites_15: -746172811
+      Glassy UI Panels and Bubble Sprites_4: 1843024829
+      Glassy UI Panels and Bubble Sprites_5: 207225694
+      Glassy UI Panels and Bubble Sprites_6: -992935742
+      Glassy UI Panels and Bubble Sprites_8: -101338954
+      Glassy UI Panels and Bubble Sprites_9: 1095046706
+      bg_hex_transparent: -1371874668
+      bg_oval_transparent: 1055035404
+      button_bg_transparent_large_1: 1553255101
+      button_bg_transparent_large_2: -260070910
+      button_bg_transparent_large_3: 366497383
+      button_bg_transparent_large_3_c: 5657801494330753019
+      button_bg_transparent_medium_2: -1136582630
+      button_bg_transparent_medium_3: -1410640163
+      rounded_square_transparent_large: -1655430086
+      rounded_square_transparent_medium: 1461261961
+      rounded_square_transparent_small: -1282507847
+      rounded_triangle_transparent: 1636370670
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

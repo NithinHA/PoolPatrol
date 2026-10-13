@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using PTL.Framework;
 using Player;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +20,8 @@ namespace UI.HUD
 
         private bool _pollReload;   // True only while a reload is in progress — gates the Update poll.
 
+        private PlayerWeaponController _weaponController;
+
         private void Start()
         {
             PlayerController localPlayer = PlayerController.Local;
@@ -29,13 +32,19 @@ namespace UI.HUD
                 return;
             }
 
-            BindWeapon(localPlayer.PlayerWeaponController.ActiveWeapon);
+            _weaponController = localPlayer.PlayerWeaponController;
+            _weaponController.OnWeaponChanged += BindWeapon;
 
-            // TODO: subscribe to weapon-switch event on WeaponController when that feature is added.
+            // Bind whatever is active right now — correct whether the loadout applier has already
+            // switched weapons (Start-order dependent) or switches later, since BindWeapon also runs
+            // off OnWeaponChanged above.
+            BindWeapon(_weaponController.ActiveWeapon);
         }
 
         private void OnDestroy()
         {
+            if (_weaponController != null)
+                _weaponController.OnWeaponChanged -= BindWeapon;
             UnbindMagazine();
         }
 
@@ -78,6 +87,7 @@ namespace UI.HUD
             _reloadStyle  = _magazine.ReloadStyle;
 
             RebuildIcons(_magazine.MagazineSize, _magazine.CurrentAmmo);
+            UpdateWeaponIcon(weapon);
 
             _magazine.OnBulletFired += OnBulletFired;
             _magazine.OnReloadStarted += OnReloadStarted;
@@ -86,6 +96,28 @@ namespace UI.HUD
             _magazine.OnMagazineSizeChanged += OnMagazineSizeChanged;
 
             m_CooldownIndicator?.Bind(_magazine);
+        }
+
+        /// <summary>
+        /// Looks up the loadout catalog entry matching this weapon's Kind and swaps the HUD portrait to
+        /// its icon. No-op (keeps whatever icon is currently shown) if the catalog or a match isn't
+        /// found, so the panel still degrades gracefully without the Loadout service.
+        /// </summary>
+        private void UpdateWeaponIcon(WeaponBase weapon)
+        {
+            if (m_WeaponIcon == null) return;
+
+            var loadout = ServiceLocator.GetLoadoutService();
+            if (loadout == null) return;
+
+            foreach (var definition in loadout.Weapons)
+            {
+                if (definition.Kind == weapon.Kind)
+                {
+                    if (definition.Icon != null) m_WeaponIcon.sprite = definition.Icon;
+                    return;
+                }
+            }
         }
 
         private void UnbindMagazine()

@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0db3e9758da44894bc791ed222c19d6, type: 3}
+  m_Name: TropicalArena_Level1_SpawnConfig
+  m_EditorClassIdentifier: 
+  Sections:
+  - {fileID: 11400000, guid: 09cec366e958bd7469c31699ac815f0e, type: 2}
+  - {fileID: 11400000, guid: bfff0ebfdb20b604ab36956146c9768f, type: 2}
+  - {fileID: 11400000, guid: 6945b886ca6a2194c9d2a882d25a46a4, type: 2}
+  - {fileID: 11400000, guid: 242d2d4cf5d47d642bbc78c029de1e93, type: 2}
+  - {fileID: 11400000, guid: cf0801b1ff158a04db2a3a08b51b8e8e, type: 2}
+  Rewards:
+    GemDropperPrefab: {fileID: 8526437909133313751, guid: 4beb6780aeca84308a4e5b5af136090b, type: 3}
+    TargetGemDropperCount: 120
+    GemMinInterval: 4
+    HeartDropperPrefab: {fileID: 5011922556510066043, guid: e8cb5f6e70da84d21b9b4ba5a29c4e61, type: 3}
+    MaxHeartDroppers: 5
+    BarelyHurtDelay: 60
+    CriticalDelay: 10
+    PostSpawnCooldown: 45
+  Goddess:
+    VisitCount: 3
+    AvailabilityWindow: 15
+    ScheduleJitter: 0.06
+    MinSecondsBetweenVisits: 60
+    OfferCount: 3
+    RefreshCost: 30
+    RefreshCostIncrement: 25
+    MaxRefreshesPerVisit: 3
+    ReentryGraceSeconds: 3

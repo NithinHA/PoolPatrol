@@ -21,13 +21,26 @@ namespace PTL.Framework.Services
 
         public void LoadScene(string sceneName, Action onComplete = null)
         {
-            CoroutineRunner.instance.StartCoroutine(LoadSceneAsync(sceneName, onComplete));
+            CoroutineRunner.instance.StartCoroutine(LoadSceneAsync(sceneName, null, onComplete));
         }
-        
-        private IEnumerator LoadSceneAsync(string sceneName, Action onComplete)
+
+        public void LoadScene(string sceneName, Action<float> onProgress, Action onComplete = null)
+        {
+            CoroutineRunner.instance.StartCoroutine(LoadSceneAsync(sceneName, onProgress, onComplete));
+        }
+
+        private IEnumerator LoadSceneAsync(string sceneName, Action<float> onProgress, Action onComplete)
         {
             AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
-            yield return new WaitUntil(() => operation.isDone);
+
+            // Unity stalls activation at 0.9; normalise so the bar can reach 1.
+            while (!operation.isDone)
+            {
+                onProgress?.Invoke(Mathf.Clamp01(operation.progress / 0.9f));
+                yield return null;
+            }
+
+            onProgress?.Invoke(1f);
             onComplete?.Invoke();
         }
     }

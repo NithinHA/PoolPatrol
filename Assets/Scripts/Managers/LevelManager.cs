@@ -32,10 +32,12 @@ public class LevelManager : MonoBehaviour
     [Tooltip("Shop panel. Force-closed if the run ends while it is open, so the game never stays frozen.")]
     [SerializeField] private AbilityShopUI m_ShopUI;
 
-    private int           _arenaIndex;
-    private int           _levelIndex;
-    private float         _elapsed;
-    private bool          _levelEnded;
+    private int             _arenaIndex;
+    private int             _levelIndex;
+    private float           _elapsed;
+    private bool            _levelEnded;
+    private IPauseService   _pause;
+    private IRunStatsService _runStats;
 
     private void Awake()
     {
@@ -82,6 +84,15 @@ public class LevelManager : MonoBehaviour
         ServiceLocator.GetEconomyService()?.BeginRun();
         ServiceLocator.GetAbilityService()?.ResetRun();
         ServiceLocator.GetRunModifierService()?.ResetRun();
+        ServiceLocator.GetRunStatsService()?.BeginRun();
+
+        _pause     = ServiceLocator.GetPauseService();
+        _runStats  = ServiceLocator.GetRunStatsService();
+
+        // The director counted its wave sections back in Awake, before BeginRun() above wiped the
+        // stats; seed them here so the pause menu reads "Wave 0 / 8" rather than "0 / 0" pre-wave-1.
+        if (m_ArenaDirector != null)
+            _runStats?.SetWaveProgress(m_ArenaDirector.CurrentWave, m_ArenaDirector.TotalWaves);
 
         // Transition the game into the active-play state
         ServiceLocator.GetGameManager()?.SwitchState(GameState.InGame);
@@ -97,6 +108,12 @@ public class LevelManager : MonoBehaviour
     private void Update()
     {
         if (_levelEnded) return;
+
+        // Run clock. Unscaled so a timescale-slowed moment still reads as real elapsed time, but
+        // held while anything (shop, pause menu) is pausing the simulation — a run's "time elapsed"
+        // should mean time actually played.
+        if (_pause == null || !_pause.IsPaused)
+            _runStats?.Tick(Time.unscaledDeltaTime);
 
         // The ArenaDirector (when assigned) owns win-condition timing via OnArenaComplete; the
         // fixed timer below only applies when no director is wired up.
@@ -162,6 +179,7 @@ public class LevelManager : MonoBehaviour
         if (m_ShopUI != null)
             m_ShopUI.ForceClose();
 
+        ServiceLocator.GetRunStatsService()?.EndRun();
         ServiceLocator.GetPauseService()?.ClearAll();
     }
 }

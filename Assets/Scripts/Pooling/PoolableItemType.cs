@@ -11,5 +11,7 @@ namespace Pooling
         BulletHitParticles,
         BulletComboExplosion,
         BulletMissedParticles,
+        DroppedGem,
+        DroppedHeart,
     }
 }

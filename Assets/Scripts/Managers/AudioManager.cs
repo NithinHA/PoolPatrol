@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using PTL.Framework.Services;
 using UnityEngine;
 
 namespace PTL.Framework
@@ -6,6 +7,11 @@ namespace PTL.Framework
 	public class AudioManager : Singleton<AudioManager>
 	{
 		public Sound[] Sounds;
+
+		// Category multipliers from the SettingsService (looping sounds = music, one-shots = SFX).
+		private float _musicVolume = 1f;
+		private float _sfxVolume = 1f;
+		private ISettingsService _settings;
 
 		protected override void Awake()
 		{
@@ -19,6 +25,47 @@ namespace PTL.Framework
 				sound.Source.loop = sound.IsLooping;
 				sound.Source.volume = sound.Volume;
 				sound.Source.pitch = sound.Pitch;
+			}
+		}
+
+		protected override void Start()
+		{
+			base.Start();
+
+			_settings = ServiceLocator.GetSettingsService();
+			if (_settings != null)
+			{
+				_musicVolume = _settings.EffectiveMusicVolume;
+				_sfxVolume = _settings.EffectiveSFXVolume;
+				_settings.OnSettingsChanged += OnSettingsChanged;
+			}
+
+			ApplyVolumes();
+		}
+
+		protected override void OnDestroy()
+		{
+			base.OnDestroy();
+			if (_settings != null)
+				_settings.OnSettingsChanged -= OnSettingsChanged;
+		}
+
+		private void OnSettingsChanged()
+		{
+			_musicVolume = _settings.EffectiveMusicVolume;
+			_sfxVolume = _settings.EffectiveSFXVolume;
+			ApplyVolumes();
+		}
+
+		/// <summary>Re-applies each source's volume as its authored volume times its category multiplier.</summary>
+		private void ApplyVolumes()
+		{
+			if (Sounds == null) return;
+			foreach (Sound sound in Sounds)
+			{
+				if (sound.Source == null) continue;
+				float category = sound.IsLooping ? _musicVolume : _sfxVolume;
+				sound.Source.volume = sound.Volume * category;
 			}
 		}
 

@@ -338,7 +338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9c8db6d6c22f7343b59e0367fd6f94c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_GemPrefab: {fileID: 2400058866133959527, guid: fba3a91ab04314431834a37666c44550, type: 3}
+  m_GemType: 5
   m_Amount: 2
   m_DropRadius: 1
 --- !u!1 &5821463530709985178

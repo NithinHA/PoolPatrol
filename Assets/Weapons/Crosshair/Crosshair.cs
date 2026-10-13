@@ -1,5 +1,7 @@
 using DG.Tweening;
 using Pooling;
+using PTL.Framework;
+using PTL.Framework.Services;
 using UnityEngine;
 using Weapon;
 
@@ -45,10 +47,37 @@ public class Crosshair : MonoBehaviour, IPoolableObject
     private Sequence _hitTween;
     private readonly float _hitTweenDuration = .2f;
 
+    private IPauseService _pauseService;
+
     private void Awake()
     {
         _propBlock = new MaterialPropertyBlock();
         m_Renderer.GetPropertyBlock(_propBlock);
+
+        _pauseService = ServiceLocator.GetPauseService();
+        if (_pauseService != null)
+            _pauseService.OnPauseChanged += OnPauseStateChanged;
+    }
+
+    private void OnDestroy()
+    {
+        if (_pauseService != null)
+            _pauseService.OnPauseChanged -= OnPauseStateChanged;
+    }
+
+    /// <summary>
+    /// A paused run freezes every scaled-time tween, which would otherwise leave this crosshair
+    /// stuck mid-animation over the pause/ability UI. Drop it back to the pool immediately instead.
+    /// </summary>
+    private void OnPauseStateChanged(bool isPaused)
+    {
+        if (!isPaused || !gameObject.activeInHierarchy)
+            return;
+
+        _generalAnimationSequence?.Kill();
+        _hitTween?.Kill();
+        UnsubscribeFromAttack();
+        ReturnToPool();
     }
 
     public void Initialize(PoolableItemType type)

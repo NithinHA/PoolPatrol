@@ -18,10 +18,14 @@ namespace PTL.Framework
         [Tooltip("All arena definitions in order. Each contains up to 5 level configs.")]
         [SerializeField] private List<ArenaDefinitionSO> m_Arenas = new();
 
+        [Header("Loadout")]
+        [Tooltip("Every character / floatie / weapon / pool texture the player can equip.")]
+        [SerializeField] private Loadout.LoadoutCatalogSO m_LoadoutCatalog;
+
         protected override void Awake()
         {
             base.Awake();
-            InitializeAllServices(m_Arenas, () => StartCoroutine(OnInitialized()));
+            InitializeAllServices(m_Arenas, m_LoadoutCatalog, () => StartCoroutine(OnInitialized()));
             ConfigureServices();
         }
 
@@ -49,7 +53,7 @@ namespace PTL.Framework
         /// <summary>
         /// Initialize all the persistent core game services here-
         /// </summary>
-        private static void InitializeAllServices(List<ArenaDefinitionSO> arenas, Action onComplete = null)
+        private static void InitializeAllServices(List<ArenaDefinitionSO> arenas, Loadout.LoadoutCatalogSO loadoutCatalog, Action onComplete = null)
         {
             Dictionary<Type, IService> map = new Dictionary<Type, IService>()
             {
@@ -61,6 +65,9 @@ namespace PTL.Framework
                 { typeof(IRunModifierService), new RunModifierService() },
                 { typeof(IAbilityService), new AbilityService() },
                 { typeof(IProgression), new ProgressionService(arenas) },
+                { typeof(ISettingsService), new SettingsService() },
+                { typeof(IRunStatsService), new RunStatsService() },
+                { typeof(ILoadoutService), new LoadoutService(loadoutCatalog) },
             };
 
             foreach (KeyValuePair<Type, IService> item in map)
@@ -81,10 +88,15 @@ namespace PTL.Framework
                 yield break;
             }
 
-            ServiceLocator.GetService<ISceneService>().LoadScene(Constants.SceneNames.MENU, () =>
-            {
-                ServiceLocator.GetGameManager().SwitchState(GameState.MainMenu);
-            });
+            void GoToMainMenu() => ServiceLocator.GetGameManager().SwitchState(GameState.MainMenu);
+
+            // Route the first load through the persistent transition canvas (loading bar + splash) if
+            // one exists in the Bootstrap scene; otherwise load directly.
+            UI.Transition.SceneTransitionController transition = UI.Transition.SceneTransitionController.Instance;
+            if (transition != null)
+                transition.LoadWithLoadingScreen(Constants.SceneNames.MENU, GoToMainMenu);
+            else
+                ServiceLocator.GetService<ISceneService>().LoadScene(Constants.SceneNames.MENU, GoToMainMenu);
         }
 
     }

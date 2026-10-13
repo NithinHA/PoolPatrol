@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Abilities;
 using DG.Tweening;
 using Player;
 using Pooling;
@@ -12,11 +14,23 @@ namespace Weapon
         [Header("References")]
         [SerializeField] private PlayerController m_PlayerController;
         [SerializeField] private WeaponRangeIndicator m_RangeIndicator;
-        
+
         [SerializeField] private List<WeaponBase> m_AvailableWeapons;
         private int _selectedWeaponIndex = 0;
-        
+
+        // The weapon whose magazine events we are currently subscribed to, so re-binding on a weapon
+        // switch never double-subscribes or leaks.
+        private WeaponBase _boundWeapon;
+
         private Crosshair _activeCrosshair;
+
+        /// <summary>
+        /// Fired whenever the active weapon changes (switch, or the loadout equipping one at game
+        /// start). UI that caches per-weapon state (HUD ammo icons, weapon portrait) should rebind here
+        /// instead of only reading <see cref="ActiveWeapon"/> once in Start — Start order between the
+        /// loadout applier and that UI isn't guaranteed.
+        /// </summary>
+        public event Action<WeaponBase> OnWeaponChanged;
 
 #region Unity callbacks
 
@@ -34,11 +48,9 @@ namespace Weapon
 
         private void Start()
         {
-            if (ActiveWeapon != null)
-            {
-                ActiveWeapon.Magazine.OnReloadComplete += OnReloadProgress;
-                ActiveWeapon.Magazine.OnBulletReloaded += OnReloadProgress;
-            }
+            // Sync the selected index to whatever weapon base.Awake made active, then bind its events.
+            _selectedWeaponIndex = Mathf.Max(0, IndexOf(ActiveWeapon));
+            BindActiveWeaponEvents();
         }
 
         private void OnDestroy()
@@ -52,11 +64,7 @@ namespace Weapon
                 m_PlayerController.OnFireReleaseEvent -= OnFireRelease;
                 m_PlayerController.PlayerCombo.OnComboLevelChanged -= OnComboLevelChanged;
             }
-            if (ActiveWeapon != null)
-            {
-                ActiveWeapon.Magazine.OnReloadComplete -= OnReloadProgress;
-                ActiveWeapon.Magazine.OnBulletReloaded -= OnReloadProgress;
-            }
+            UnbindActiveWeaponEvents();
         }
 
         private void OnReloadProgress(int currentAmmo)
@@ -157,8 +165,80 @@ namespace Weapon
 
         public void SwitchWeapon()
         {
-            _selectedWeaponIndex++;
-            ActiveWeapon = m_AvailableWeapons[_selectedWeaponIndex % m_AvailableWeapons.Count];
+            if (m_AvailableWeapons == null || m_AvailableWeapons.Count == 0) return;
+            SetActiveWeapon(_selectedWeaponIndex + 1);
+        }
+
+        /// <summary>
+        /// Equips the available weapon whose <see cref="WeaponBase.Kind"/> matches, driven by the
+        /// player's loadout at game start. No-op (with a warning) if that weapon isn't available.
+        /// </summary>
+        public void SelectWeaponByKind(WeaponKind kind)
+        {
+            if (m_AvailableWeapons == null || m_AvailableWeapons.Count == 0) return;
+
+            for (int i = 0; i < m_AvailableWeapons.Count; i++)
+            {
+                if (m_AvailableWeapons[i] != null && m_AvailableWeapons[i].Kind == kind)
+                {
+                    SetActiveWeapon(i);
+                    return;
+                }
+            }
+
+            Debug.LogWarning($"[PlayerWeaponController] No available weapon of kind {kind}; keeping current.");
+        }
+
+        /// <summary>
+        /// Makes the weapon at <paramref name="index"/> the active one: shows only it, re-runs Setup,
+        /// and re-binds magazine events. Index wraps so it is safe for cycling.
+        /// </summary>
+        private void SetActiveWeapon(int index)
+        {
+            int count = m_AvailableWeapons.Count;
+            index = ((index % count) + count) % count;
+            _selectedWeaponIndex = index;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (m_AvailableWeapons[i] != null)
+                    m_AvailableWeapons[i].gameObject.SetActive(i == index);
+            }
+
+            ActiveWeapon = m_AvailableWeapons[index];
+            ActiveWeapon.Setup(this);
+            BindActiveWeaponEvents();
+            UpdateRangeIndicator();
+            OnWeaponChanged?.Invoke(ActiveWeapon);
+        }
+
+        private int IndexOf(WeaponBase weapon)
+        {
+            if (m_AvailableWeapons == null || weapon == null) return -1;
+            return m_AvailableWeapons.IndexOf(weapon);
+        }
+
+        private void BindActiveWeaponEvents()
+        {
+            UnbindActiveWeaponEvents();
+            if (ActiveWeapon == null || ActiveWeapon.Magazine == null) return;
+
+            ActiveWeapon.Magazine.OnReloadComplete += OnReloadProgress;
+            ActiveWeapon.Magazine.OnBulletReloaded += OnReloadProgress;
+            _boundWeapon = ActiveWeapon;
+        }
+
+        private void UnbindActiveWeaponEvents()
+        {
+            if (_boundWeapon == null || _boundWeapon.Magazine == null)
+            {
+                _boundWeapon = null;
+                return;
+            }
+
+            _boundWeapon.Magazine.OnReloadComplete -= OnReloadProgress;
+            _boundWeapon.Magazine.OnBulletReloaded -= OnReloadProgress;
+            _boundWeapon = null;
         }
     }
 }

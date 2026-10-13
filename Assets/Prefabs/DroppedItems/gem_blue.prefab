@@ -4860,6 +4860,12 @@ MonoBehaviour:
   m_HomingSpeed: 6
   m_FlyToUiDuration: 1
   m_FlyToUiEase: 3
+  m_IdleLifetime: 15
+  m_SinkWarningTime: 3
+  m_SinkDuration: 0.7
+  m_SinkDepth: 0.6
+  m_SinkScale: 0.45
+  m_Gfx: {fileID: 3256961651672404473}
   m_Value: 1
 --- !u!1 &7307981308220334194
 GameObject:

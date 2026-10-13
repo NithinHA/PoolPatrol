@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74f790c322abdf646975658c6abf0e95, type: 3}
+  m_Name: LoadoutCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::Loadout.LoadoutCatalogSO
+  Characters:
+  - {fileID: 11400000, guid: fa3de284d3ab9a344b347d4539be74df, type: 2}
+  - {fileID: 11400000, guid: 1e500fdc96415f94894ea86b6da6940a, type: 2}
+  - {fileID: 11400000, guid: 065fb257ae21c4c4caa8f6ddca79181c, type: 2}
+  - {fileID: 11400000, guid: 84e062e566bddbf41842e1bafe76b03d, type: 2}
+  - {fileID: 11400000, guid: 8af06620108394846b8f941edd0d51bd, type: 2}
+  - {fileID: 11400000, guid: b11c3e6e131a15e4bbc43f43bbcd59c7, type: 2}
+  Floaties:
+  - {fileID: 11400000, guid: ee158142977384c4cabdf483a8445b4f, type: 2}
+  - {fileID: 11400000, guid: 682cb15703c350742a5d8788806154a4, type: 2}
+  - {fileID: 11400000, guid: 1dfde684c9621a541bcea8d27615334f, type: 2}
+  - {fileID: 11400000, guid: 2f5c1d3846b195a40ac2de385799d81e, type: 2}
+  - {fileID: 11400000, guid: 66cecd89b85da4649b39eb9149bd2213, type: 2}
+  Weapons:
+  - {fileID: 11400000, guid: 347952ca3e1c3ac409a02facb263f435, type: 2}
+  - {fileID: 11400000, guid: be3731219d119f443b817341167c509e, type: 2}
+  PoolTextures:
+  - {fileID: 11400000, guid: 7403c41e51e066846801b3380c844472, type: 2}
+  - {fileID: 11400000, guid: 3761f60dfa571e042aedefcc757b45ae, type: 2}
+  - {fileID: 11400000, guid: f330552d032a62148a7a8da3b0c0687d, type: 2}
+  - {fileID: 11400000, guid: 49347066ce3e2f5419cecca89dca5c5c, type: 2}
