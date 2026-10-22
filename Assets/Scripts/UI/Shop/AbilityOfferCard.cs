@@ -41,6 +41,10 @@ namespace UI.Shop
         [Tooltip("Tinted by rarity when Use Rarity Tint is on.")]
         [SerializeField] private Image m_Background;
 
+        [Tooltip("Bubble art, swapped between the shop's bright/dark sprites by affordability. " +
+                 "Falls back to the button's target graphic.")]
+        [SerializeField] private Image m_Bubble;
+
         [Tooltip("Shown once this card has been bought during the current visit.")]
         [SerializeField] private GameObject m_SoldOverlay;
 
@@ -57,6 +61,8 @@ namespace UI.Shop
         private Color _affordableColor = Color.white;
         private Action<AbilityOfferCard> _onClicked;
         private bool _priceColorCaptured;
+        private Sprite _affordableSprite;
+        private Sprite _unaffordableSprite;
 
         /// <summary>The offer this card is showing. Only meaningful while <see cref="IsBound"/>.</summary>
         public AbilityOffer Offer { get; private set; }
@@ -70,6 +76,9 @@ namespace UI.Shop
         {
             if (m_Button != null)
                 m_Button.onClick.AddListener(HandleClick);
+
+            if (m_Bubble == null && m_Button != null)
+                m_Bubble = m_Button.targetGraphic as Image;
 
             if (m_PriceText != null && !_priceColorCaptured)
             {
@@ -128,7 +137,20 @@ namespace UI.Shop
                 m_SoldOverlay.SetActive(false);
         }
 
-        /// <summary>Greys the card out when the player cannot currently afford it.</summary>
+        /// <summary>
+        /// Bubble sprites for the two affordability states. Either may be null, in which case the
+        /// authored sprite is left alone for that state.
+        /// </summary>
+        public void SetBubbleSprites(Sprite affordable, Sprite unaffordable)
+        {
+            _affordableSprite = affordable;
+            _unaffordableSprite = unaffordable;
+        }
+
+        /// <summary>
+        /// Disables the button, reddens the price and darkens the bubble when the player cannot
+        /// currently afford it.
+        /// </summary>
         public void SetAffordable(bool affordable)
         {
             if (IsSold)
@@ -139,6 +161,10 @@ namespace UI.Shop
 
             if (m_PriceText != null)
                 m_PriceText.color = affordable ? _affordableColor : m_UnaffordableColor;
+
+            Sprite bubble = affordable ? _affordableSprite : _unaffordableSprite;
+            if (m_Bubble != null && bubble != null)
+                m_Bubble.sprite = bubble;
         }
 
         /// <summary>Locks the card after a successful purchase (doc §15 — it cannot be bought twice).</summary>

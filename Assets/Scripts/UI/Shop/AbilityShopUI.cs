@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Abilities;
+using DG.Tweening;
 using PTL.Framework;
 using PTL.Framework.Services;
 using SpawningLogic;
@@ -25,6 +26,13 @@ namespace UI.Shop
     ///         grace period and retreats the Goddess).</item>
     /// </list>
     ///
+    /// Presentation is split out: each card's <see cref="OfferBubble"/> moves it,
+    /// <see cref="AbilityShopChrome"/> handles the backdrop, buttons and gem wallet, and
+    /// <see cref="GoddessShopkeeper"/> drives the NPC. This class only decides <i>when</i>.
+    ///
+    /// The cards are fixed scene objects reused across visits and refreshes — a bubble that "leaves"
+    /// is deactivated and rebound, never destroyed.
+    ///
     /// Attach this to the ShopScreen GameObject itself and point <c>Root</c> at that same object —
     /// it initialises lazily, so it works fine while the object starts out disabled.
     /// </summary>
@@ -37,11 +45,19 @@ namespace UI.Shop
         [Tooltip("One per offer slot. Extra slots hide themselves when there are fewer offers.")]
         [SerializeField] private List<AbilityOfferCard> m_Cards = new();
 
+        [Tooltip("Bubble sprite for an offer the player can afford.")]
+        [SerializeField] private Sprite m_CardBrightSprite;
+
+        [Tooltip("Bubble sprite for an offer the player cannot afford.")]
+        [SerializeField] private Sprite m_CardDarkSprite;
+
         [Header("Buttons")]
         [Tooltip("Optional. Discards the current offers and rolls new ones for gems (doc §20).")]
         [SerializeField] private Button m_RefreshButton;
-
         [SerializeField] private TMP_Text m_RefreshCostText;
+
+        [Tooltip("Closes the shop. Wired here by code — no Inspector onClick needed.")]
+        [SerializeField] private Button m_CloseButton;
 
         [Header("Labels (optional)")]
         [Tooltip("Live gem balance while shopping.")]
@@ -50,12 +66,27 @@ namespace UI.Shop
         [Tooltip("Shown instead of the cards when the Goddess has nothing left to offer.")]
         [SerializeField] private GameObject m_NothingLeftMessage;
 
+        [Header("Presentation")]
+        [Tooltip("Backdrop, buttons and gem wallet. Falls back to one on this GameObject.")]
+        [SerializeField] private AbilityShopChrome m_Chrome;
+
+        [Tooltip("The Goddess NPC. Falls back to one under Root.")]
+        [SerializeField] private GoddessShopkeeper m_Goddess;
+
+        [Tooltip("Delay before the first bubble floats in.")]
+        [SerializeField] private float m_FirstBubbleDelay = 0.15f;
+
+        [Tooltip("Delay between consecutive bubbles floating in.")]
+        [SerializeField] private float m_BubbleStagger = 0.08f;
+
         /// <summary>Raised whenever a purchase completes, for SFX/feedback hooks.</summary>
         public event Action<AbilityDefinition, int> OnPurchased;
 
+        /// <summary>True from <see cref="Open"/> until the close animation has fully finished.</summary>
         public bool IsOpen { get; private set; }
 
         private readonly List<AbilityDefinition> _lastOfferedDefinitions = new();
+        private readonly List<OfferBubble> _bubbles = new();
 
         private IAbilityService _abilities;
         private IEconomyService _economy;
@@ -67,12 +98,20 @@ namespace UI.Shop
         private bool _initialised;
         private bool _subscribedToEconomy;
 
+        // Transition state. While either flag is set the panel ignores refresh and purchase input.
+        private bool _swapping;
+        private bool _closing;
+        private bool _waitingForGoddess;
+        private Tween _pendingStep;
+
         private void Awake() => EnsureInitialised();
 
         private void OnDestroy()
         {
             if (_economy != null)
                 _economy.OnBalanceChanged -= OnBalanceChanged;
+
+            _pendingStep?.Kill();
 
             // A scene teardown while the shop is open must not leave timeScale at 0.
             _pause?.Resume(this);
@@ -95,7 +134,32 @@ namespace UI.Shop
             if (m_RefreshButton != null)
                 m_RefreshButton.onClick.AddListener(Refresh);
 
+            if (m_CloseButton != null)
+                m_CloseButton.onClick.AddListener(Close);
+
+            if (m_Chrome == null)
+                m_Chrome = GetComponent<AbilityShopChrome>();
+
+            if (m_Goddess == null)
+                m_Goddess = m_Root.GetComponentInChildren<GoddessShopkeeper>(true);
+
+            foreach (AbilityOfferCard card in m_Cards)
+            {
+                OfferBubble bubble = null;
+                if (card != null)
+                {
+                    if (!card.TryGetComponent(out bubble))
+                        bubble = card.gameObject.AddComponent<OfferBubble>();
+
+                    card.SetBubbleSprites(m_CardBrightSprite, m_CardDarkSprite);
+                }
+
+                // Kept index-aligned with m_Cards, nulls included.
+                _bubbles.Add(bubble);
+            }
+
             ResolveServices();
+            if (m_Chrome != null) m_Chrome.ResetHidden();
             m_Root.SetActive(false);
         }
 
@@ -119,10 +183,10 @@ namespace UI.Shop
 #region Open / close
 
         /// <summary>
-        /// Pauses the game and shows a fresh set of offers.
+        /// Pauses the game, plays the arrival animation and shows a fresh set of offers.
         /// </summary>
         /// <param name="settings">Pacing/pricing for this arena. Null falls back to sane defaults.</param>
-        /// <param name="onClosed">Invoked after the panel hides and the game resumes.</param>
+        /// <param name="onClosed">Invoked after the panel has finished hiding and the game resumes.</param>
         public void Open(ArenaSpawnConfigSO.GoddessEncounters settings, Action onClosed = null)
         {
             EnsureInitialised();
@@ -140,28 +204,64 @@ namespace UI.Shop
             _pause?.Pause(this);
 
             m_Root.SetActive(true);
+            if (m_Chrome != null) m_Chrome.Show();
+            if (m_Goddess != null) m_Goddess.PlayEnter();
 
             GenerateOffers(excludeCurrent: false);
+            PlayBubblesIn();
             RefreshWallet();
             RefreshRefreshButton();
         }
 
-        /// <summary>Exit button: hide, resume, hand back to the encounter director.</summary>
+        /// <summary>
+        /// Exit button: shrinks the bubbles, fades the backdrop, lets the Goddess leave, then hides,
+        /// resumes and hands back to the encounter director.
+        /// </summary>
         public void Close()
         {
-            if (!IsOpen)
+            if (!IsOpen || _closing)
                 return;
 
-            CloseInternal();
+            _closing = true;
+            _swapping = false;
+            KillPendingStep();
+            RefreshRefreshButton();
 
-            Action callback = _onClosed;
-            _onClosed = null;
-            callback?.Invoke();
+            float wait = m_Chrome != null ? m_Chrome.HideDuration : 0f;
+            for (int i = 0; i < m_Cards.Count; i++)
+            {
+                if (!IsCardVisible(i))
+                    continue;
+
+                _bubbles[i].PlayShrink();
+                wait = Mathf.Max(wait, _bubbles[i].ShrinkDuration);
+            }
+
+            if (m_Chrome != null) m_Chrome.Hide();
+
+            // Schedule the visual wait before starting the Goddess exit: PlayExit may call back
+            // synchronously, and FinishCloseWhenReady must see the visuals still pending.
+            _pendingStep = DOVirtual.DelayedCall(wait, () =>
+            {
+                _pendingStep = null;
+                FinishCloseWhenReady();
+            }, ignoreTimeScale: true);
+
+            if (m_Goddess != null)
+            {
+                _waitingForGoddess = true;
+                m_Goddess.PlayExit(() =>
+                {
+                    _waitingForGoddess = false;
+                    FinishCloseWhenReady();
+                });
+            }
         }
 
         /// <summary>
-        /// Closes without notifying the opener. For teardown paths (scene unload, game over) where
-        /// the follow-up behaviour no longer makes sense but the game must not stay frozen.
+        /// Closes instantly without notifying the opener. For teardown paths (scene unload, game
+        /// over) where the follow-up behaviour no longer makes sense but the game must not stay frozen.
+        /// Also cuts short a close animation that is already playing.
         /// </summary>
         public void ForceClose()
         {
@@ -169,19 +269,42 @@ namespace UI.Shop
                 return;
 
             _onClosed = null;
-            CloseInternal();
+            FinishClose();
         }
 
-        private void CloseInternal()
+        private void FinishCloseWhenReady()
         {
-            IsOpen = false;
+            if (!_closing || _pendingStep != null || _waitingForGoddess)
+                return;
 
-            foreach (AbilityOfferCard card in m_Cards)
+            FinishClose();
+
+            Action callback = _onClosed;
+            _onClosed = null;
+            callback?.Invoke();
+        }
+
+        /// <summary>Puts every piece back to its resting state, ready for the next <see cref="Open"/>.</summary>
+        private void FinishClose()
+        {
+            KillPendingStep();
+            if (m_Goddess != null) m_Goddess.StopExit();
+
+            IsOpen = false;
+            _closing = false;
+            _swapping = false;
+            _waitingForGoddess = false;
+
+            for (int i = 0; i < m_Cards.Count; i++)
             {
-                if (card != null)
-                    card.Clear();
+                if (_bubbles[i] != null)
+                    _bubbles[i].ResetToRest();
+
+                if (m_Cards[i] != null)
+                    m_Cards[i].Clear();
             }
 
+            if (m_Chrome != null) m_Chrome.ResetHidden();
             m_Root.SetActive(false);
             _pause?.Resume(this);
         }
@@ -231,6 +354,9 @@ namespace UI.Shop
 
         private void OnCardClicked(AbilityOfferCard card)
         {
+            if (_swapping || _closing)
+                return;
+
             if (_abilities == null || !_abilities.TryPurchase(card.Offer))
                 return;
 
@@ -238,12 +364,22 @@ namespace UI.Shop
             // instant effects fired. All that is left is to reflect it in the panel.
             card.MarkSold();
             OnPurchased?.Invoke(card.Offer.Definition, card.Offer.Level);
+            if (m_Goddess != null) m_Goddess.PlayGrant();
+
+            OfferBubble bubble = BubbleFor(card);
+            if (bubble != null)
+                bubble.PlayPop(card.Clear);
+            else
+                card.Clear();
 
             RefreshWallet();
             RefreshAffordability();
             RefreshRefreshButton();
         }
 
+        /// <summary>
+        /// Sends the remaining bubbles up off the screen, then rolls and floats in a new set.
+        /// </summary>
         private void Refresh()
         {
             if (!CanRefresh())
@@ -254,9 +390,45 @@ namespace UI.Shop
                 return;
 
             _refreshesUsed++;
-            GenerateOffers(excludeCurrent: true);
+            _swapping = true;
+            if (m_Goddess != null) m_Goddess.PlayRefresh();
+
+            float wait = 0f;
+            for (int i = 0; i < m_Cards.Count; i++)
+            {
+                if (!IsCardVisible(i))
+                    continue;
+
+                _bubbles[i].PlayFloatAway();
+                wait = Mathf.Max(wait, _bubbles[i].FloatAwayDuration);
+            }
+
+            _pendingStep = DOVirtual.DelayedCall(wait, () =>
+            {
+                _pendingStep = null;
+                _swapping = false;
+
+                GenerateOffers(excludeCurrent: true);
+                PlayBubblesIn();
+                RefreshRefreshButton();
+            }, ignoreTimeScale: true);
+
             RefreshWallet();
             RefreshRefreshButton();
+        }
+
+        /// <summary>Floats every bound card in from the centre, one after another.</summary>
+        private void PlayBubblesIn()
+        {
+            float delay = m_FirstBubbleDelay;
+            for (int i = 0; i < m_Cards.Count; i++)
+            {
+                if (!IsCardVisible(i))
+                    continue;
+
+                _bubbles[i].PlayIntro(delay);
+                delay += m_BubbleStagger;
+            }
         }
 
 #endregion
@@ -327,6 +499,8 @@ namespace UI.Shop
 
         private bool CanRefresh()
         {
+            if (_swapping || _closing)
+                return false;
             if (_settings == null || _settings.RefreshCost <= 0)
                 return false;
             if (_settings.MaxRefreshesPerVisit > 0 && _refreshesUsed >= _settings.MaxRefreshesPerVisit)
@@ -334,6 +508,25 @@ namespace UI.Shop
 
             int cost = CurrentRefreshCost();
             return _economy != null && _economy.CanAfford(CurrencyType.Gems, cost);
+        }
+
+        /// <summary>A bound card whose bubble is still on screen (not popped).</summary>
+        private bool IsCardVisible(int index)
+        {
+            AbilityOfferCard card = m_Cards[index];
+            return card != null && _bubbles[index] != null && card.IsBound && card.gameObject.activeSelf;
+        }
+
+        private OfferBubble BubbleFor(AbilityOfferCard card)
+        {
+            int index = m_Cards.IndexOf(card);
+            return index >= 0 ? _bubbles[index] : null;
+        }
+
+        private void KillPendingStep()
+        {
+            _pendingStep?.Kill();
+            _pendingStep = null;
         }
     }
 }

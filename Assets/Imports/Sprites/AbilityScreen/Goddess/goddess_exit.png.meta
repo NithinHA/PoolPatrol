@@ -119,11 +119,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 394
+        y: 418
         width: 443
-        height: 393
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 370
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -141,11 +141,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 443
-        y: 394
+        y: 408
         width: 443
-        height: 393
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 370
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -163,11 +163,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 886
-        y: 394
+        y: 405
         width: 443
-        height: 393
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 370
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -184,12 +184,12 @@ TextureImporter:
       name: Chibi Mermaid Sinking Splash Sprite Sheet_3
       rect:
         serializedVersion: 2
-        x: 1329
-        y: 394
+        x: 1331
+        y: 402
         width: 443
-        height: 393
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 370
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -207,11 +207,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1
+        y: 54
         width: 443
-        height: 393
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 350
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -229,11 +229,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 443
-        y: 1
+        y: 53
         width: 443
-        height: 393
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 350
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -251,11 +251,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 886
-        y: 1
+        y: 55
         width: 443
-        height: 393
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 350
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -273,11 +273,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1329
-        y: 1
+        y: 51
         width: 443
-        height: 393
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        height: 350
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
