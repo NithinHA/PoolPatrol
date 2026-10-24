@@ -5,7 +5,8 @@ namespace PTL.Framework.Services
 {
     /// <summary>
     /// Default <see cref="ISettingsService"/>. Backs every option with PlayerPrefs and raises a single
-    /// change event; consumers (AudioManager, haptic callers) read the current value and refresh.
+    /// change event; consumers (AudioManager, haptic callers, PoolEnvironment) read the current value
+    /// and refresh.
     /// </summary>
     public class SettingsService : ISettingsService
     {
@@ -14,6 +15,7 @@ namespace PTL.Framework.Services
         private const string KeyHaptics = "Settings_Haptics";
         private const string KeyMusicOn = "Settings_MusicEnabled";
         private const string KeySfxOn   = "Settings_SFXEnabled";
+        private const string KeyQuality = "Settings_GraphicsQuality";
 
         private const float DefaultMusic = 0.7f;
         private const float DefaultSfx   = 0.8f;
@@ -23,6 +25,7 @@ namespace PTL.Framework.Services
         private bool _hapticsEnabled;
         private bool _musicEnabled;
         private bool _sfxEnabled;
+        private GraphicsQuality _graphicsQuality;
 
         public event Action OnSettingsChanged;
 
@@ -31,6 +34,8 @@ namespace PTL.Framework.Services
         public bool HapticsEnabled => _hapticsEnabled;
         public bool MusicEnabled => _musicEnabled;
         public bool SFXEnabled => _sfxEnabled;
+        public GraphicsQuality GraphicsQuality => _graphicsQuality;
+        public GraphicsQualityProfile GraphicsProfile => GraphicsQualityProfile.For(_graphicsQuality);
 
         public float EffectiveMusicVolume => _musicEnabled ? _musicVolume : 0f;
         public float EffectiveSFXVolume => _sfxEnabled ? _sfxVolume : 0f;
@@ -42,6 +47,11 @@ namespace PTL.Framework.Services
             _hapticsEnabled = PlayerPrefs.GetInt(KeyHaptics, 1) == 1;
             _musicEnabled   = PlayerPrefs.GetInt(KeyMusicOn, 1) == 1;
             _sfxEnabled     = PlayerPrefs.GetInt(KeySfxOn, 1) == 1;
+            // Until the player picks a tier, follow the device; the guess is not saved, so a better
+            // heuristic in a later build still applies to players who never touched the setting.
+            _graphicsQuality = PlayerPrefs.HasKey(KeyQuality)
+                ? (GraphicsQuality)Mathf.Clamp(PlayerPrefs.GetInt(KeyQuality), (int)GraphicsQuality.Low, (int)GraphicsQuality.High)
+                : GraphicsQualityProfile.DefaultForDevice();
         }
 
         public void OnDestroy() { PlayerPrefs.Save(); }
@@ -85,6 +95,15 @@ namespace PTL.Framework.Services
             if (enabled == _sfxEnabled) return;
             _sfxEnabled = enabled;
             PlayerPrefs.SetInt(KeySfxOn, enabled ? 1 : 0);
+            Changed();
+        }
+
+        public void SetGraphicsQuality(GraphicsQuality quality)
+        {
+            bool firstChoice = !PlayerPrefs.HasKey(KeyQuality);
+            if (quality == _graphicsQuality && !firstChoice) return;
+            _graphicsQuality = quality;
+            PlayerPrefs.SetInt(KeyQuality, (int)quality);
             Changed();
         }
 

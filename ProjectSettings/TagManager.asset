@@ -42,11 +42,17 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Water
+    uniqueID: 2016119633
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
   - name: Player
     uniqueID: 3589231065
+    locked: 0
+  - name: Foreground
+    uniqueID: 611706937
     locked: 0
   - name: UI
     uniqueID: 4045921759
@@ -60,3 +66,4 @@ TagManager:
   - Light Layer 5
   - Light Layer 6
   - Light Layer 7
+  m_MigratedRenderPipelines: []

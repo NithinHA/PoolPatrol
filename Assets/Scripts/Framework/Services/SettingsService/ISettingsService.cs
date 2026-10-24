@@ -3,7 +3,7 @@ using System;
 namespace PTL.Framework.Services
 {
     /// <summary>
-    /// Player-facing options (music/SFX volume, haptics) persisted across sessions. Registered as a
+    /// Player-facing options (music/SFX volume, haptics, graphics quality) persisted across sessions. Registered as a
     /// persistent service in <see cref="Bootstrap"/>. The Settings popup writes it; <c>AudioManager</c>
     /// and haptic callers read it and listen for changes.
     /// </summary>
@@ -36,10 +36,20 @@ namespace PTL.Framework.Services
         /// <summary><see cref="SFXVolume"/> gated by <see cref="SFXEnabled"/>. What AudioManager applies.</summary>
         float EffectiveSFXVolume { get; }
 
+        /// <summary>
+        /// Graphics quality tier chosen in the Settings popup. Defaults per device until the player
+        /// picks one (see <see cref="GraphicsQualityProfile.DefaultForDevice"/>).
+        /// </summary>
+        GraphicsQuality GraphicsQuality { get; }
+
+        /// <summary>The rendering knobs for <see cref="GraphicsQuality"/>. What consumers should read.</summary>
+        GraphicsQualityProfile GraphicsProfile { get; }
+
         void SetMusicVolume(float value);
         void SetSFXVolume(float value);
         void SetHapticsEnabled(bool enabled);
         void SetMusicEnabled(bool enabled);
         void SetSFXEnabled(bool enabled);
+        void SetGraphicsQuality(GraphicsQuality quality);
     }
 }

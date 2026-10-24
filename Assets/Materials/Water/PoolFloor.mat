@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: PoolFloor
+  m_Shader: {fileID: 4800000, guid: 5646fe5646d4a4d4f9a148dcf7cd04b5, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _CAUSTICS_CHROMA
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _CausticsTex:
+        m_Texture: {fileID: 2800000, guid: f236a97cecbde764a87595caeba5cbc2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FloorTex:
+        m_Texture: {fileID: 2800000, guid: 2d1dca6b9d90801459baa3db7b8a65a8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AOStrength: 0.5
+    - _AOWidth: 0.45
+    - _CausticsChroma: 0
+    - _CausticsChromaOn: 1
+    - _CausticsScale: 8
+    - _CausticsSpeed: 0.04
+    - _DepthDistance: 5
+    - _FloorTexScale: 4
+    - _FloorTexWeight: 0.245
+    - _GroutWidth: 0
+    - _RefractionStrength: 5
+    - _RimShadowStrength: 0.45
+    - _RippleLight: 3
+    - _TileSize: 0.5
+    - _WallCaustics: 0.64
+    - _WallHeight: 4
+    - _WobbleSpeed: 0.8
+    - _WobbleStrength: 0.17
+    m_Colors:
+    - _CausticsColor: {r: 0.9, g: 1, b: 1, a: 0.42}
+    - _CausticsRange: {r: 0.12, g: 0.9, b: 0, a: 0}
+    - _DeepColor: {r: 0.049999982, g: 0.45, b: 0.75, a: 0.45}
+    - _GroutColor: {r: 0.86, g: 0.96999997, b: 1, a: 0.5647059}
+    - _TileColorA: {r: 0.72, g: 0.93, b: 0.96999997, a: 1}
+    - _TileColorB: {r: 0.6, g: 0.86, b: 0.94, a: 1}
+    - _WallFace: {r: 1.3, g: 0.55, b: 0, a: 0}
+    - _WallShade: {r: 0.8, g: 0.52, b: 0, a: 0}
+    - _WaterTint: {r: 0.45, g: 0.85, b: 0.95, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

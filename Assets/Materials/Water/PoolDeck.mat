@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: PoolDeck
+  m_Shader: {fileID: 4800000, guid: 0932f7a3675bf2442909b5b36e5b0f62, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _DeckTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Ambient: 0.62
+    - _CopingBevel: 0.55
+    - _CopingShadowWidth: 0.25
+    - _CopingTileLength: 1.1
+    - _CopingWidth: 0.7
+    - _DeckGroutWidth: 0.02
+    - _DeckTexScale: 4
+    - _DeckTexWeight: 0
+    - _DeckTileSize: 1.6
+    - _SunStrength: 0.5
+    m_Colors:
+    - _CopingColor: {r: 0.97999996, g: 0.95, b: 0.88, a: 1}
+    - _CopingGroutColor: {r: 0.74, g: 0.69, b: 0.62, a: 1}
+    - _DeckColorA: {r: 0.93, g: 0.8, b: 0.6399999, a: 1}
+    - _DeckColorB: {r: 0.88, g: 0.74, b: 0.58, a: 1}
+    - _DeckGroutColor: {r: 0.78, g: 0.65999997, b: 0.52, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
