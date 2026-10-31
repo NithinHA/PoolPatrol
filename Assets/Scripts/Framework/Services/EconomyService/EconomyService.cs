@@ -33,8 +33,8 @@ namespace PTL.Framework.Services
             // Gems: exhaustible, run-scoped. Only usable for upgrades within the current run.
             Register(CurrencyType.Gems, exhaustible: true);
 
-            // Future non-exhaustible example (carried across runs, saved to disk):
-            // Register(CurrencyType.Coins, exhaustible: false, persistentKey: "Economy_Coins");
+            // Coins: persistent, global. Carried across runs and saved to disk.
+            Register(CurrencyType.Coins, exhaustible: false, persistentKey: "Economy_Coins");
         }
 
         public void OnDestroy() { }
@@ -102,8 +102,13 @@ namespace PTL.Framework.Services
 
         private static void Persist(Account account)
         {
-            if (!account.Exhaustible && !string.IsNullOrEmpty(account.PersistentKey))
-                PlayerPrefs.SetInt(account.PersistentKey, account.Balance);
+            if (account.Exhaustible || string.IsNullOrEmpty(account.PersistentKey))
+                return;
+
+            // Flushed immediately: persistent balances change rarely (pouch pickup, run end, a
+            // purchase), and a coin grant must survive the app being killed on mobile.
+            PlayerPrefs.SetInt(account.PersistentKey, account.Balance);
+            PlayerPrefs.Save();
         }
     }
 }

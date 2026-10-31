@@ -19,15 +19,23 @@ namespace PTL.Framework.Services
         private int   _enemiesKilled;
         private int   _currentWave;
         private int   _totalWaves;
+        private int   _score;
+        private int   _highestStreak;
+        private int   _coinsCollected;
+        private int   _coinPouchesDropped;
         private bool  _runActive;
 
         public event Action OnStatsChanged;
 
-        public float ElapsedSeconds => _elapsed;
-        public int   EnemiesKilled  => _enemiesKilled;
-        public int   CurrentWave    => _currentWave;
-        public int   TotalWaves     => _totalWaves;
-        public bool  IsRunActive    => _runActive;
+        public float ElapsedSeconds     => _elapsed;
+        public int   EnemiesKilled      => _enemiesKilled;
+        public int   CurrentWave        => _currentWave;
+        public int   TotalWaves         => _totalWaves;
+        public int   Score              => _score;
+        public int   HighestStreak      => _highestStreak;
+        public int   CoinsCollected     => _coinsCollected;
+        public int   CoinPouchesDropped => _coinPouchesDropped;
+        public bool  IsRunActive        => _runActive;
 
 #region Default callbacks
 
@@ -46,11 +54,15 @@ namespace PTL.Framework.Services
 
         public void BeginRun()
         {
-            _elapsed       = 0f;
-            _enemiesKilled = 0;
-            _currentWave   = 0;
-            _totalWaves    = 0;
-            _runActive     = true;
+            _elapsed            = 0f;
+            _enemiesKilled      = 0;
+            _currentWave        = 0;
+            _totalWaves         = 0;
+            _score              = 0;
+            _highestStreak      = 0;
+            _coinsCollected     = 0;
+            _coinPouchesDropped = 0;
+            _runActive          = true;
             OnStatsChanged?.Invoke();
         }
 
@@ -84,6 +96,42 @@ namespace PTL.Framework.Services
             _currentWave = currentWave;
             _totalWaves  = totalWaves;
             OnStatsChanged?.Invoke();
+        }
+
+        public void AddScore(int amount)
+        {
+            if (!_runActive || amount <= 0)
+                return;
+
+            _score += amount;
+            OnStatsChanged?.Invoke();
+        }
+
+        public void ReportStreak(int streak)
+        {
+            if (!_runActive || streak <= _highestStreak)
+                return;
+
+            _highestStreak = streak;
+            OnStatsChanged?.Invoke();
+        }
+
+        public void AddCollectedCoins(int amount)
+        {
+            if (!_runActive || amount <= 0)
+                return;
+
+            _coinsCollected += amount;
+            OnStatsChanged?.Invoke();
+        }
+
+        public void RecordCoinPouchDrop()
+        {
+            if (!_runActive)
+                return;
+
+            _coinPouchesDropped++;
+            // Silent: an internal cap counter, not something any UI displays.
         }
 
         public string FormatElapsed()

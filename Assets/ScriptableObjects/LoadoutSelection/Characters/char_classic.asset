@@ -15,5 +15,8 @@ MonoBehaviour:
   Id: char_classic
   DisplayName: Classic Kid
   Icon: {fileID: -727239350, guid: f0c11a036c9b449868dc429022a8eb43, type: 3}
-  UnlockedByDefault: 1
+  Unlock: 0
+  CoinPrice: 300
+  ArenaIndex: 0
+  IapProductId: 
   HeadSprite: {fileID: -727239350, guid: f0c11a036c9b449868dc429022a8eb43, type: 3}

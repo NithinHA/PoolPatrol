@@ -7,6 +7,8 @@ namespace PTL.Framework.Services
     public class ProgressionService : IProgression
     {
         private const string PROGRESS_KEY_PREFIX = "Arena_{0}_Level_{1}";
+        private const string BEST_SCORE_SUFFIX   = "_BestScore";
+        private const string BEST_STREAK_SUFFIX  = "_BestStreak";
 
         private readonly List<ArenaDefinitionSO> _arenas;
 
@@ -32,6 +34,39 @@ namespace PTL.Framework.Services
         {
             PlayerPrefs.SetInt(ProgressKey(arenaIndex, levelIndex), 1);
             PlayerPrefs.Save();
+        }
+
+        public LevelWinResult RecordLevelWin(int arenaIndex, int levelIndex, int score, int streak)
+        {
+            // Read the "before" state first: both milestones are one-time, and completion flags never
+            // revert, so "was not done before, is done now" fires exactly once per level / arena.
+            bool firstClear       = !IsLevelCompleted(arenaIndex, levelIndex);
+            bool arenaWasComplete = IsArenaCompleted(arenaIndex);
+
+            string key = ProgressKey(arenaIndex, levelIndex);
+            PlayerPrefs.SetInt(key, 1);
+
+            bool newBestScore = score > PlayerPrefs.GetInt(key + BEST_SCORE_SUFFIX, 0);
+            if (newBestScore)
+                PlayerPrefs.SetInt(key + BEST_SCORE_SUFFIX, score);
+
+            bool newBestStreak = streak > PlayerPrefs.GetInt(key + BEST_STREAK_SUFFIX, 0);
+            if (newBestStreak)
+                PlayerPrefs.SetInt(key + BEST_STREAK_SUFFIX, streak);
+
+            PlayerPrefs.Save();
+
+            bool arenaCompleted = !arenaWasComplete && IsArenaCompleted(arenaIndex);
+            return new LevelWinResult(firstClear, arenaCompleted, newBestScore, newBestStreak);
+        }
+
+        public LevelProgress GetLevelProgress(int arenaIndex, int levelIndex)
+        {
+            string key = ProgressKey(arenaIndex, levelIndex);
+            return new LevelProgress(
+                PlayerPrefs.GetInt(key, 0) == 1,
+                PlayerPrefs.GetInt(key + BEST_SCORE_SUFFIX, 0),
+                PlayerPrefs.GetInt(key + BEST_STREAK_SUFFIX, 0));
         }
 
         public int GetHighestUnlockedArena()
@@ -68,10 +103,13 @@ namespace PTL.Framework.Services
             return PlayerPrefs.GetInt(ProgressKey(arenaIndex, levelIndex), 0) == 1;
         }
 
-        private bool IsArenaCompleted(int arenaIndex)
+        public bool IsArenaCompleted(int arenaIndex)
         {
+            if (arenaIndex < 0 || arenaIndex >= _arenas.Count)
+                return false;
+
             var arena = _arenas[arenaIndex];
-            return IsLevelCompleted(arenaIndex, arena.LevelCount - 1);
+            return arena.LevelCount > 0 && IsLevelCompleted(arenaIndex, arena.LevelCount - 1);
         }
 
         private static string ProgressKey(int arenaIndex, int levelIndex)

@@ -15,7 +15,10 @@ MonoBehaviour:
   Id: weapon_handgun
   DisplayName: Handgun
   Icon: {fileID: -731559957, guid: 0ec5a592e71fe524e8f03f84275efd9a, type: 3}
-  UnlockedByDefault: 1
+  Unlock: 0
+  CoinPrice: 300
+  ArenaIndex: 0
+  IapProductId: 
   Kind: 1
   Description: The most basic pistol. 6 ammo per magazine. Complete magazine reload at once.
   ComboBonusDescription: A circular shockwave damaging nearby enemies within the radius.

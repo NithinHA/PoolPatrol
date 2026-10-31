@@ -24,12 +24,26 @@ void BeginRun();  // resets all exhaustible currencies to 0 — called by LevelM
 | Type | Exhaustible | Storage | Purpose |
 |------|-------------|---------|---------|
 | `Gems` | ✅ yes | in-memory | Arena economy. Spent on in-run upgrades. Wiped by `BeginRun()`. |
-| _(future)_ | no | `PlayerPrefs` | Meta-game unlocks (characters, weapons). One `Register` call, everything else is shared. |
+| `Coins` | no | `PlayerPrefs` (`Economy_Coins`, flushed on every change) | Meta currency: run-end payout, coin pouches, (future) IAP packs. Spent on cosmetics / weapons. |
 
-To add a persistent currency: add an entry to `CurrencyType`, then in `EconomyService.Start`:
-```csharp
-Register(CurrencyType.Coins, exhaustible: false, persistentKey: "Economy_Coins");
-```
+To add another persistent currency: add an entry to `CurrencyType`, then one `Register(type, exhaustible: false, persistentKey: "...")` call in `EconomyService.Start`.
+
+## Score (run stat, not a currency) — Docs/economy-and-progression.md
+
+- Lives on `IRunStatsService` (`Score`, `HighestStreak`, `CoinsCollected`, `CoinPouchesDropped`), reset by `BeginRun`.
+- **Attribution**: a player shot's `WeaponAttack` travels in `EnemyDeathParameters.Attack`; `EnemyController.Die` calls `attack.RegisterKill(this)` (and dies only once). Any new kill source belonging to a shot (AoE, chain, pierce) must pass the attack — `IComboWeapon.PerformComboHitEffect` receives it for that. Enemy friendly fire passes null and never scores.
+- **`ScoreKeeper`** (Game scene, on LevelManager) listens to `PlayerWeaponController.OnShotFired(attack, streakAtFire)`, groups each shot's kills, and scores once per group when the shot resolves or after `ResolutionWindow` without a kill: `Σ EnemyController.ScoreValue × (1 + 0.2·s + 0.5·(n−1))`. Also +2 per gem pickup. Spawns a pooled `ScoreBubble` (`PoolableItemType.ScoreBubble`).
+- All numbers live in `EconomyConfigSO` (`Assets/ScriptableObjects/Economy/EconomyConfig.asset`), including the run-end payout (`ComputePayout`).
+- **Run end**: `LevelManager.SettleRun` → on win `IProgression.RecordLevelWin` (completed / best score / best streak, returns first-clear + arena-completion flags) → grants `RunPayout.Total` coins → `PostGameUI.Show(won, RunSummary)`.
+- Coin pouches: `DropCoinPouchOnDeath` (gem dropper; chance + per-run cap) → `CoinCollectable` grants immediately. `CoinWalletUI` slides in over the gem wallet only for grants during an active run.
+- Scene/prefab setup is re-runnable: **PoolPatrol/Economy/Wire Score & Coins** (`Editor/EconomyWiring.cs`).
+
+## Unlockables (spending Coins)
+
+- Every `LoadoutItemSO` (character / floatie / weapon — pool textures were removed) has `Unlock` = `Free | Coins | ArenaClear | IAP` plus `CoinPrice`, `ArenaIndex`, `IapProductId`. Weapons can't be IAP (`OnValidate` flips them to Coins).
+- `LoadoutService.IsUnlocked(item)` is the single rule: Free → yes; ArenaClear → `IProgression.IsArenaCompleted(ArenaIndex)` or owned; Coins / IAP → owned (`PlayerPrefs` `Loadout_Owned_{Id}`). `TryPurchase` spends via `IEconomyService.TrySpend`; `GrantOwnership` is the IAP-fulfilment hook (no store integration yet). Selections restore in `Start`, after progression is registered.
+- Loadout screen: locked thumbnails show a tag (price / "Arena N" / "Store") and raise `LoadoutSelectorUI.OnLockedClicked` → `LoadoutPurchasePanel` (Buy disabled with the shortfall when unaffordable); a purchase equips the item. Coin balance top-right.
+- Prices / rules live in the table in **PoolPatrol/Loadout/Wire Coin Unlocks** (`Editor/LoadoutUnlockWiring.cs`), which also builds the thumbnail lock overlay and the panel.
 
 ## Collectable pickups
 

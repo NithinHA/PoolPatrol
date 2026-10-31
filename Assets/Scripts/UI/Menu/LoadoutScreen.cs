@@ -9,9 +9,10 @@ using UnityEngine.UI;
 namespace UI.Menu
 {
     /// <summary>
-    /// Third menu screen: character / floatie / weapon / pool-texture selectors feeding a live avatar
-    /// preview, plus the selected weapon's description and combo-bonus text. Reports Play / Back up to
-    /// the navigator; all selections are committed to the <see cref="ILoadoutService"/> as they change.
+    /// Third menu screen: character / floatie / weapon selectors feeding a live avatar preview, plus
+    /// the selected weapon's description and combo-bonus text, the coin balance, and a purchase panel
+    /// for locked items. Reports Play / Back up to the navigator; all selections are committed to the
+    /// <see cref="ILoadoutService"/> as they change.
     /// </summary>
     public class LoadoutScreen : MonoBehaviour
     {
@@ -19,7 +20,6 @@ namespace UI.Menu
         [SerializeField] private LoadoutSelectorUI m_CharacterSelector;
         [SerializeField] private LoadoutSelectorUI m_FloatieSelector;
         [SerializeField] private LoadoutSelectorUI m_WeaponSelector;
-        [SerializeField] private LoadoutSelectorUI m_PoolTextureSelector;
 
         [Header("Preview")]
         [SerializeField] private LoadoutAvatarPreview m_Avatar;
@@ -35,7 +35,14 @@ namespace UI.Menu
         [SerializeField] private Button m_PlayButton;
         [SerializeField] private Button m_BackButton;
 
+        [Header("Unlocks")]
+        [Tooltip("The player's coin balance.")]
+        [SerializeField] private TMP_Text m_CoinBalanceText;
+        [Tooltip("Opens when a locked item is tapped: price / unlock reason and a Buy button.")]
+        [SerializeField] private LoadoutPurchasePanel m_PurchasePanel;
+
         private ILoadoutService _loadout;
+        private IEconomyService _economy;
         private Action _onPlay;
         private Action _onBack;
         private bool _wired;
@@ -63,6 +70,14 @@ namespace UI.Menu
             _loadout = ServiceLocator.GetLoadoutService();
             if (_loadout == null) return;
 
+            if (_economy == null)
+            {
+                _economy = ServiceLocator.GetEconomyService();
+                if (_economy != null) _economy.OnBalanceChanged += OnBalanceChanged;
+            }
+            RefreshBalance();
+            if (m_PurchasePanel != null) m_PurchasePanel.Hide();
+
             PopulateSelectors();
 
             if (m_Avatar != null)
@@ -77,13 +92,14 @@ namespace UI.Menu
         private void PopulateSelectors()
         {
             if (m_CharacterSelector != null)
-                m_CharacterSelector.Populate(_loadout.Characters, _loadout.IsCharacterUnlocked, _loadout.SelectedCharacterIndex);
+                m_CharacterSelector.Populate(_loadout.Characters, _loadout.IsCharacterUnlocked, _loadout.SelectedCharacterIndex,
+                    i => LockedTag(_loadout.Characters[i]));
             if (m_FloatieSelector != null)
-                m_FloatieSelector.Populate(_loadout.Floaties, _loadout.IsFloatieUnlocked, _loadout.SelectedFloatieIndex);
+                m_FloatieSelector.Populate(_loadout.Floaties, _loadout.IsFloatieUnlocked, _loadout.SelectedFloatieIndex,
+                    i => LockedTag(_loadout.Floaties[i]));
             if (m_WeaponSelector != null)
-                m_WeaponSelector.Populate(_loadout.Weapons, _loadout.IsWeaponUnlocked, _loadout.SelectedWeaponIndex);
-            if (m_PoolTextureSelector != null)
-                m_PoolTextureSelector.Populate(_loadout.PoolTextures, _loadout.IsPoolTextureUnlocked, _loadout.SelectedPoolTextureIndex);
+                m_WeaponSelector.Populate(_loadout.Weapons, _loadout.IsWeaponUnlocked, _loadout.SelectedWeaponIndex,
+                    i => LockedTag(_loadout.Weapons[i]));
 
             // Subscribe once; selectors live for the lifetime of the screen.
             if (_wired) return;
@@ -92,8 +108,92 @@ namespace UI.Menu
             if (m_CharacterSelector != null) m_CharacterSelector.OnChanged += OnCharacterChanged;
             if (m_FloatieSelector != null) m_FloatieSelector.OnChanged += OnFloatieChanged;
             if (m_WeaponSelector != null) m_WeaponSelector.OnChanged += OnWeaponChanged;
-            if (m_PoolTextureSelector != null) m_PoolTextureSelector.OnChanged += OnPoolTextureChanged;
+
+            if (m_CharacterSelector != null) m_CharacterSelector.OnLockedClicked += OnLockedCharacter;
+            if (m_FloatieSelector != null) m_FloatieSelector.OnLockedClicked += OnLockedFloatie;
+            if (m_WeaponSelector != null) m_WeaponSelector.OnLockedClicked += OnLockedWeapon;
         }
+
+#region Unlocks
+
+        private void OnLockedCharacter(int index) => OfferUnlock(m_CharacterSelector, _loadout.Characters[index], index);
+        private void OnLockedFloatie(int index) => OfferUnlock(m_FloatieSelector, _loadout.Floaties[index], index);
+        private void OnLockedWeapon(int index) => OfferUnlock(m_WeaponSelector, _loadout.Weapons[index], index);
+
+        private void OfferUnlock(LoadoutSelectorUI selector, LoadoutItemSO item, int index)
+        {
+            if (m_PurchasePanel == null || item == null) return;
+
+            m_PurchasePanel.Show(item, UnlockReason(item), Balance, () => Buy(selector, item, index));
+        }
+
+        private void Buy(LoadoutSelectorUI selector, LoadoutItemSO item, int index)
+        {
+            PurchaseResult result = _loadout.TryPurchase(item);
+            if (result == PurchaseResult.Success || result == PurchaseResult.AlreadyUnlocked)
+            {
+                m_PurchasePanel.Hide();
+                // Equip what was just bought: the selector fires OnChanged, which selects it in the service.
+                selector.RefreshAndSelect(index);
+                return;
+            }
+
+            // Balance moved underneath the panel (or the purchase failed): re-show with fresh numbers.
+            Debug.LogWarning($"[LoadoutScreen] Purchase of '{item.Id}' failed: {result}");
+            OfferUnlock(selector, item, index);
+        }
+
+        /// <summary>The short label on a locked thumbnail.</summary>
+        private static string LockedTag(LoadoutItemSO item) => item.Unlock switch
+        {
+            UnlockType.Coins      => item.CoinPrice.ToString(),
+            UnlockType.ArenaClear => $"Arena {item.ArenaIndex + 1}",
+            UnlockType.IAP        => "Store",
+            _                     => null,
+        };
+
+        private string UnlockReason(LoadoutItemSO item)
+        {
+            switch (item.Unlock)
+            {
+                case UnlockType.Coins:
+                    return $"Unlock for {item.CoinPrice} coins.\nYou have {Balance}.";
+
+                case UnlockType.ArenaClear:
+                    return $"Clear every level of {ArenaName(item.ArenaIndex)} to unlock.";
+
+                case UnlockType.IAP:
+                    return "Coming soon to the store.";
+
+                default:
+                    return string.Empty;
+            }
+        }
+
+        private static string ArenaName(int arenaIndex)
+        {
+            IProgression progression = ServiceLocator.GetProgressionService();
+            if (progression != null && arenaIndex >= 0 && arenaIndex < progression.ArenaCount)
+            {
+                string arenaName = progression.GetArenaDefinition(arenaIndex).ArenaName;
+                if (!string.IsNullOrEmpty(arenaName)) return arenaName;
+            }
+            return $"Arena {arenaIndex + 1}";
+        }
+
+        private int Balance => _economy?.GetBalance(CurrencyType.Coins) ?? 0;
+
+        private void OnBalanceChanged(CurrencyType type, int newBalance, int delta)
+        {
+            if (type == CurrencyType.Coins) RefreshBalance();
+        }
+
+        private void RefreshBalance()
+        {
+            if (m_CoinBalanceText != null) m_CoinBalanceText.text = Balance.ToString();
+        }
+
+#endregion
 
         private void OnCharacterChanged(int index)
         {
@@ -126,14 +226,6 @@ namespace UI.Menu
             UpdateWeaponInfo(_loadout.SelectedWeapon);
         }
 
-        private void OnPoolTextureChanged(int index)
-        {
-            _loadout.SelectPoolTexture(index);
-            // Ripple only — the pool texture doesn't belong to the avatar's own body, so it shouldn't
-            // squash/stretch in reaction to it.
-            if (m_Avatar != null) m_Avatar.PlayRippleOnly();
-        }
-
         private void UpdateWeaponInfo(WeaponDefinitionSO weapon)
         {
             if (weapon == null) return;
@@ -154,7 +246,12 @@ namespace UI.Menu
             if (m_CharacterSelector != null) m_CharacterSelector.OnChanged -= OnCharacterChanged;
             if (m_FloatieSelector != null) m_FloatieSelector.OnChanged -= OnFloatieChanged;
             if (m_WeaponSelector != null) m_WeaponSelector.OnChanged -= OnWeaponChanged;
-            if (m_PoolTextureSelector != null) m_PoolTextureSelector.OnChanged -= OnPoolTextureChanged;
+
+            if (m_CharacterSelector != null) m_CharacterSelector.OnLockedClicked -= OnLockedCharacter;
+            if (m_FloatieSelector != null) m_FloatieSelector.OnLockedClicked -= OnLockedFloatie;
+            if (m_WeaponSelector != null) m_WeaponSelector.OnLockedClicked -= OnLockedWeapon;
+
+            if (_economy != null) _economy.OnBalanceChanged -= OnBalanceChanged;
         }
     }
 }

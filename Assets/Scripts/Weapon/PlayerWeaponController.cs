@@ -32,6 +32,13 @@ namespace Weapon
         /// </summary>
         public event Action<WeaponBase> OnWeaponChanged;
 
+        /// <summary>
+        /// Fired for every shot that actually left the weapon. Args: the shot's attack, and the hit
+        /// streak at the moment of firing — captured before this shot's own hit can increment it,
+        /// which is the streak scoring uses.
+        /// </summary>
+        public event Action<WeaponAttack, int> OnShotFired;
+
 #region Unity callbacks
 
         protected override void Awake()
@@ -132,6 +139,7 @@ namespace Weapon
             _activeCrosshair = null;
 
             Vector2 directionPostRotation = (mousePos - (Vector2)transform.position).normalized;
+            int streakAtFire = m_PlayerController.PlayerCombo.CurrentCombo;
             WeaponAttack attack = ActiveWeapon.FireWeapon(directionPostRotation, BulletSource);
             if (attack != null)
             {
@@ -142,11 +150,13 @@ namespace Weapon
                     m_PlayerController.PlayerCombo.AddCombo(hitPos);
                     if (ActiveWeapon is IComboWeapon comboWeapon)
                     {
-                        comboWeapon.PerformComboHitEffect(hitPos, m_PlayerController.PlayerCombo.CurrentComboLevel);
+                        comboWeapon.PerformComboHitEffect(hitPos, m_PlayerController.PlayerCombo.CurrentComboLevel, attack);
                     }
                 };
 
                 attack.OnHitFail += () => { m_PlayerController.PlayerCombo.BreakCombo(); };
+
+                OnShotFired?.Invoke(attack, streakAtFire);
             }
             else
             {

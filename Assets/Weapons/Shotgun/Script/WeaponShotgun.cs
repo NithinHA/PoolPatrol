@@ -70,7 +70,8 @@ namespace Weapon
                             EnemyDeathParameters enemyDeathParams = new EnemyDeathParameters()
                             {
                                 CollidingObject = col.gameObject,
-                                CollisionDirection = toEnemy.normalized
+                                CollisionDirection = toEnemy.normalized,
+                                Attack = source == BulletSource.Player ? attack : null
                             };
 
                             if (!successInvoked)
@@ -145,7 +146,7 @@ namespace Weapon
             }
         }
 
-        public void PerformComboHitEffect(Vector2 hitPosition, PlayerCombo.ComboLevel currentLevel)
+        public void PerformComboHitEffect(Vector2 hitPosition, PlayerCombo.ComboLevel currentLevel, WeaponAttack attack)
         {
             // The hit area scaling is done passively via OnComboLevelChanged, but we can do dynamic camera shake here.
             // Since we don't pass the exact enemiesHitCount here directly from PlayerWeaponController, we could just do a standard shake 

@@ -15,5 +15,8 @@ MonoBehaviour:
   Id: char_surfer
   DisplayName: Surfer
   Icon: {fileID: -2020659963, guid: f0c11a036c9b449868dc429022a8eb43, type: 3}
-  UnlockedByDefault: 0
+  Unlock: 2
+  CoinPrice: 300
+  ArenaIndex: 0
+  IapProductId: 
   HeadSprite: {fileID: -2020659963, guid: f0c11a036c9b449868dc429022a8eb43, type: 3}

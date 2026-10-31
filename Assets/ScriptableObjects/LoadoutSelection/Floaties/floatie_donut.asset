@@ -15,6 +15,9 @@ MonoBehaviour:
   Id: floatie_donut
   DisplayName: Donut
   Icon: {fileID: 21300000, guid: ce7bedf227cd39c4392c2e61096c4ce9, type: 3}
-  UnlockedByDefault: 1
+  Unlock: 0
+  CoinPrice: 300
+  ArenaIndex: 0
+  IapProductId: 
   BodySprite: {fileID: 21300000, guid: ce7bedf227cd39c4392c2e61096c4ce9, type: 3}
   ReflectionSprite: {fileID: 21300000, guid: 01063a2a96a52b146a79deca7326df96, type: 3}

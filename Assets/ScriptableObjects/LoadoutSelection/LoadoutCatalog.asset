@@ -28,8 +28,3 @@ MonoBehaviour:
   Weapons:
   - {fileID: 11400000, guid: 347952ca3e1c3ac409a02facb263f435, type: 2}
   - {fileID: 11400000, guid: be3731219d119f443b817341167c509e, type: 2}
-  PoolTextures:
-  - {fileID: 11400000, guid: 7403c41e51e066846801b3380c844472, type: 2}
-  - {fileID: 11400000, guid: 3761f60dfa571e042aedefcc757b45ae, type: 2}
-  - {fileID: 11400000, guid: f330552d032a62148a7a8da3b0c0687d, type: 2}
-  - {fileID: 11400000, guid: 49347066ce3e2f5419cecca89dca5c5c, type: 2}

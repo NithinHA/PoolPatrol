@@ -13,6 +13,5 @@ namespace Loadout
         public List<CharacterDefinitionSO> Characters = new();
         public List<FloatieDefinitionSO> Floaties = new();
         public List<WeaponDefinitionSO> Weapons = new();
-        public List<PoolTextureDefinitionSO> PoolTextures = new();
     }
 }

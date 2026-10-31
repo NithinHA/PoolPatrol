@@ -52,7 +52,7 @@ namespace Weapon
             // Handgun specific passive changes can go here (e.g., shooting faster)
         }
 
-        public void PerformComboHitEffect(Vector2 hitPosition, PlayerCombo.ComboLevel currentLevel)
+        public void PerformComboHitEffect(Vector2 hitPosition, PlayerCombo.ComboLevel currentLevel, WeaponAttack attack)
         {
             float range = m_RangeLow;
             Color color = m_ComboLowColor;
@@ -100,7 +100,8 @@ namespace Weapon
                         EnemyDeathParameters enemyDeathParams = new EnemyDeathParameters()
                         {
                             CollidingObject = col.gameObject,
-                            CollisionDirection = direction
+                            CollisionDirection = direction,
+                            Attack = attack
                         };
                         enemy.Die(enemyDeathParams);
                     }

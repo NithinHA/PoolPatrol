@@ -4,8 +4,9 @@ namespace PTL.Framework.Services
 {
     /// <summary>
     /// Run-scoped scoreboard: how long the current run has lasted, how many enemies the player has
-    /// killed, and which wave of the arena they are on. Reset at the start of every run by
-    /// <c>LevelManager</c> alongside the economy / ability / run-modifier services.
+    /// killed, which wave of the arena they are on, and the run's score / best streak / coin pouches.
+    /// Reset at the start of every run by <c>LevelManager</c> alongside the economy / ability /
+    /// run-modifier services.
     ///
     /// Everything here is "this run only" — the pause menu's Current Run panel and the post-game
     /// screen both read it, so neither has to keep its own counters.
@@ -27,6 +28,21 @@ namespace PTL.Framework.Services
         /// <summary>Total wave sections in the arena config. 0 until the arena reports it.</summary>
         int TotalWaves { get; }
 
+        /// <summary>
+        /// Score earned this run (kills, gem pickups). A stat, not a currency: it converts into
+        /// Coins at run end and is recorded in the level's progress.
+        /// </summary>
+        int Score { get; }
+
+        /// <summary>Longest run of consecutive hits reached this run.</summary>
+        int HighestStreak { get; }
+
+        /// <summary>Coins picked up from coin pouches this run. Already granted; shown on the summary.</summary>
+        int CoinsCollected { get; }
+
+        /// <summary>Coin pouches dropped this run, so droppers can respect their per-run cap.</summary>
+        int CoinPouchesDropped { get; }
+
         /// <summary>True between <see cref="BeginRun"/> and <see cref="EndRun"/>.</summary>
         bool IsRunActive { get; }
 
@@ -44,6 +60,18 @@ namespace PTL.Framework.Services
 
         /// <summary>Reported by <c>ArenaDirector</c> as the timeline walks its wave sections.</summary>
         void SetWaveProgress(int currentWave, int totalWaves);
+
+        /// <summary>Adds to <see cref="Score"/>. Ignored outside an active run or for amounts &lt;= 0.</summary>
+        void AddScore(int amount);
+
+        /// <summary>Reports the player's current hit streak; <see cref="HighestStreak"/> keeps the max.</summary>
+        void ReportStreak(int streak);
+
+        /// <summary>Records coins granted by a coin pouch pickup (the grant itself goes through the economy).</summary>
+        void AddCollectedCoins(int amount);
+
+        /// <summary>Counts one coin pouch dropped this run.</summary>
+        void RecordCoinPouchDrop();
 
         /// <summary>Formats <see cref="ElapsedSeconds"/> as <c>MM:SS</c> (or <c>H:MM:SS</c> past an hour).</summary>
         string FormatElapsed();

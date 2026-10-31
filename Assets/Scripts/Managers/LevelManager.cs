@@ -1,3 +1,4 @@
+using Economy;
 using Player;
 using PTL.Framework;
 using PTL.Framework.Services;
@@ -27,6 +28,10 @@ public class LevelManager : MonoBehaviour
     [Header("Post-Game")]
     [Tooltip("Shown on win or loss, offering Retry / Main Menu.")]
     [SerializeField] private PostGameUI m_PostGameUI;
+
+    [Header("Economy")]
+    [Tooltip("Score → coin conversion and run-end bonuses.")]
+    [SerializeField] private EconomyConfigSO m_EconomyConfig;
 
     [Header("Pool Goddess")]
     [Tooltip("Shop panel. Force-closed if the run ends while it is open, so the game never stays frozen.")]
@@ -155,8 +160,8 @@ public class LevelManager : MonoBehaviour
 
         Debug.Log("[LevelManager] Level complete!");
         EndRun();
-        ServiceLocator.GetProgressionService()?.CompleteLevel(_arenaIndex, _levelIndex);
-        m_PostGameUI?.Show(won: true);
+        RunSummary summary = SettleRun(won: true);
+        m_PostGameUI?.Show(won: true, summary);
     }
 
     private void OnGameOver()
@@ -166,7 +171,43 @@ public class LevelManager : MonoBehaviour
 
         Debug.Log("[LevelManager] Game Over.");
         EndRun();
-        m_PostGameUI?.Show(won: false);
+        RunSummary summary = SettleRun(won: false);
+        m_PostGameUI?.Show(won: false, summary);
+    }
+
+    /// <summary>
+    /// Run-end bookkeeping: on a win, records the level's progress (completion, best score/streak),
+    /// then grants the coin payout — score conversion (full on a win, reduced on a loss) plus the
+    /// win-only clear / first-clear / arena-completion bonuses. Coin pouches were already credited
+    /// when picked up, so they only appear in the summary.
+    /// </summary>
+    private RunSummary SettleRun(bool won)
+    {
+        IRunStatsService stats = ServiceLocator.GetRunStatsService();
+        int score      = stats?.Score ?? 0;
+        int streak     = stats?.HighestStreak ?? 0;
+        int pouchCoins = stats?.CoinsCollected ?? 0;
+
+        LevelMilestones milestones = default;
+        bool newBestScore = false;
+
+        IProgression progression = ServiceLocator.GetProgressionService();
+        if (won && progression != null)
+        {
+            LevelWinResult result = progression.RecordLevelWin(_arenaIndex, _levelIndex, score, streak);
+            milestones   = new LevelMilestones(result.FirstClear, result.ArenaCompleted);
+            newBestScore = result.NewBestScore;
+        }
+
+        RunPayout payout = default;
+        if (m_EconomyConfig != null)
+            payout = m_EconomyConfig.ComputePayout(won, score, milestones);
+        else
+            Debug.LogError("[LevelManager] No EconomyConfig assigned — no coins paid out for this run.");
+
+        ServiceLocator.GetEconomyService()?.Grant(CurrencyType.Coins, payout.Total);
+
+        return new RunSummary(won, score, streak, payout, pouchCoins, newBestScore);
     }
 
     /// <summary>

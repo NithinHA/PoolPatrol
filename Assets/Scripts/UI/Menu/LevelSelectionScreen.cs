@@ -79,6 +79,7 @@ namespace UI.Menu
                 // No per-level star rating is tracked yet; show all stars lit once completed.
                 int stars = completed ? (card != null ? 3 : 0) : 0;
                 card.Init(level + 1, unlocked, stars, () => Select(level));
+                card.SetProgress(progression.GetLevelProgress(arenaIndex, l));
                 _cards.Add(card);
             }
 

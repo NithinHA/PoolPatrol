@@ -27,6 +27,10 @@ namespace Enemy
                  "selection over a section's difficulty ramp. Idle ~1, chaser/shooter higher.")]
         [Min(0f)] public float ThreatCost = 1f;
 
+        [Tooltip("Base score for killing this enemy, before the streak / multi-kill multiplier. " +
+                 "Idle and droppers 10, random move 15, chaser 20, shooter 25.")]
+        [Min(0)] public int ScoreValue = 10;
+
         public RippleCausingParticleEmitter WaterRippleParticleEmitter;
         public Rigidbody2D RigidBody { get; private set; }
 
@@ -48,6 +52,8 @@ namespace Enemy
         
         private CinemachineTargetGroup _targetGroup;
         [Space] [SerializeField] private float m_FrameRadius = .5f;
+
+        private bool _isDead;
 
         void Awake()
         {
@@ -78,6 +84,14 @@ namespace Enemy
 
         public void Die(EnemyDeathParameters parameters)
         {
+            // Destroy is deferred to end of frame, so the same enemy can be caught twice in one frame
+            // (a piercing bullet plus its own combo shockwave). Die once: one kill, one drop, one score.
+            if (_isDead)
+                return;
+            _isDead = true;
+
+            parameters.Attack?.RegisterKill(this);
+
             // play enemy death SFX and VFX
             WaterRippleParticleEmitter.EmitParticles();     // TODO: Wouldn't do anything as the object would be destroyed this frame. Need to handle this elsewhere.
             _deathHandler?.TriggerDeathEffects(parameters);

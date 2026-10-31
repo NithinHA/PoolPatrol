@@ -132,12 +132,10 @@ namespace PoolPatrol.Editor
             var character = WireSelector(s3.Find("selection_panel/character_selection"));
             var floatie   = WireSelector(s3.Find("selection_panel/floatie_selection"));
             var weapon    = WireSelector(s3.Find("selection_panel/weapon_selection"));
-            var pool      = WireSelector(s3.Find("selection_panel/pool_texture_selection"));
 
             SetRef(loadout, "m_CharacterSelector", character);
             SetRef(loadout, "m_FloatieSelector", floatie);
             SetRef(loadout, "m_WeaponSelector", weapon);
-            SetRef(loadout, "m_PoolTextureSelector", pool);
 
             var avatar = BuildAvatar(s3.Find("avatar_placeholder"));
             SetRef(loadout, "m_Avatar", avatar);

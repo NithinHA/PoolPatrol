@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using PTL.Framework.Services;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +23,12 @@ namespace UI.Menu
         [SerializeField] private Image[] m_Stars;
         [SerializeField] private Button m_Button;
 
+        [Header("Progress (optional)")]
+        [Tooltip("All-time best score. Hidden until the level has been completed.")]
+        [SerializeField] private TMP_Text m_BestScoreText;
+        [Tooltip("All-time best streak. Hidden until the level has been completed.")]
+        [SerializeField] private TMP_Text m_BestStreakText;
+
         private Tween _punchTween;
         public bool Unlocked { get; private set; }
 
@@ -42,6 +49,22 @@ namespace UI.Menu
             }
 
             if (m_Highlight != null) m_Highlight.SetActive(false);
+        }
+
+        /// <summary>Shows the level's all-time bests. Call after <see cref="Init"/>.</summary>
+        public void SetProgress(LevelProgress progress)
+        {
+            if (m_BestScoreText != null)
+            {
+                m_BestScoreText.gameObject.SetActive(progress.Completed);
+                m_BestScoreText.text = $"Best {progress.BestScore}";
+            }
+
+            if (m_BestStreakText != null)
+            {
+                m_BestStreakText.gameObject.SetActive(progress.Completed);
+                m_BestStreakText.text = $"Streak {progress.BestStreak}";
+            }
         }
 
         public void SetSelected(bool selected)

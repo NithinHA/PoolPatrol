@@ -13,5 +13,7 @@ namespace Pooling
         BulletMissedParticles,
         DroppedGem,
         DroppedHeart,
+        DroppedCoinPouch,
+        ScoreBubble,
     }
 }

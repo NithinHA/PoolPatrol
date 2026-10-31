@@ -11,7 +11,9 @@ namespace UI.Menu
     /// A reusable loadout category selector (character / floatie / weapon / pool texture). Fills a
     /// horizontal scroll row with one thumbnail per option, highlights the selected one, and moves the
     /// selection with the left/right arrows (which skip locked entries). Locked entries still appear,
-    /// greyed, as a teaser. Fires <see cref="OnChanged"/> with the selected absolute index.
+    /// greyed and tagged with their price / unlock reason; tapping one raises
+    /// <see cref="OnLockedClicked"/> instead of selecting it. Fires <see cref="OnChanged"/> with the
+    /// selected absolute index.
     /// </summary>
     public class LoadoutSelectorUI : MonoBehaviour
     {
@@ -27,10 +29,14 @@ namespace UI.Menu
         private readonly List<LoadoutSelectionItem> _items = new();
         private IReadOnlyList<LoadoutItemSO> _options;
         private Func<int, bool> _isUnlocked;
+        private Func<int, string> _lockedTag;
         private int _current;
 
         /// <summary>Fired with the selected absolute index after it changes.</summary>
         public event Action<int> OnChanged;
+
+        /// <summary>Fired with the index of a locked entry the player tapped, so the screen can offer to unlock it.</summary>
+        public event Action<int> OnLockedClicked;
 
         public int CurrentIndex => _current;
 
@@ -40,10 +46,13 @@ namespace UI.Menu
             if (m_RightButton != null) m_RightButton.onClick.AddListener(Next);
         }
 
-        public void Populate(IReadOnlyList<LoadoutItemSO> options, Func<int, bool> isUnlocked, int initialIndex)
+        /// <param name="lockedTag">Optional short label for locked entries (price / unlock reason).</param>
+        public void Populate(IReadOnlyList<LoadoutItemSO> options, Func<int, bool> isUnlocked, int initialIndex,
+            Func<int, string> lockedTag = null)
         {
             _options = options ?? new List<LoadoutItemSO>();
             _isUnlocked = isUnlocked ?? (_ => true);
+            _lockedTag = lockedTag;
             _current = Mathf.Clamp(initialIndex, 0, Mathf.Max(0, _options.Count - 1));
 
             // Rebuild the row: clear whatever placeholder items are in the scene, then one per option.
@@ -63,6 +72,22 @@ namespace UI.Menu
             RefreshItems();
             RefreshArrows();
             UpdateLabel();
+        }
+
+        /// <summary>
+        /// Re-reads every entry's unlock state (after a purchase) and moves the selection to
+        /// <paramref name="index"/>, firing <see cref="OnChanged"/> if it moved.
+        /// </summary>
+        public void RefreshAndSelect(int index)
+        {
+            if (index != _current && index >= 0 && index < _options.Count && _isUnlocked(index))
+            {
+                SetCurrent(index);
+                return;
+            }
+
+            RefreshItems();
+            RefreshArrows();
         }
 
         public void Next() => MoveToUnlocked(+1);
@@ -94,7 +119,8 @@ namespace UI.Menu
                 bool unlocked = _isUnlocked(i);
                 int captured = i;
                 _items[i].Set(_options[i].Icon, unlocked, i == _current,
-                    unlocked ? () => SetCurrent(captured) : (Action)null);
+                    unlocked ? () => SetCurrent(captured) : () => OnLockedClicked?.Invoke(captured),
+                    unlocked ? null : _lockedTag?.Invoke(i));
             }
         }
 

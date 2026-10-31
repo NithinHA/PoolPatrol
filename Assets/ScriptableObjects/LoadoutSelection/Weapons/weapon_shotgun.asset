@@ -15,7 +15,10 @@ MonoBehaviour:
   Id: weapon_shotgun
   DisplayName: Shotgun
   Icon: {fileID: 794710520, guid: 0ec5a592e71fe524e8f03f84275efd9a, type: 3}
-  UnlockedByDefault: 1
+  Unlock: 0
+  CoinPrice: 300
+  ArenaIndex: 0
+  IapProductId: 
   Kind: 2
   Description: A wide-spread blaster. Fires a fan of pellets at close range for heavy burst damage.
   ComboBonusDescription: Releases a knockback blast that shoves back every enemy it hits.

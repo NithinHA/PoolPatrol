@@ -15,5 +15,8 @@ MonoBehaviour:
   Id: char_captain
   DisplayName: Captain
   Icon: {fileID: -326805365, guid: f0c11a036c9b449868dc429022a8eb43, type: 3}
-  UnlockedByDefault: 0
+  Unlock: 1
+  CoinPrice: 800
+  ArenaIndex: 0
+  IapProductId: 
   HeadSprite: {fileID: -326805365, guid: f0c11a036c9b449868dc429022a8eb43, type: 3}

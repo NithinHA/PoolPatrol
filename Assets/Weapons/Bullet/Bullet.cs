@@ -107,7 +107,9 @@ namespace Weapon
                     EnemyDeathParameters enemyDeathParams = new EnemyDeathParameters()
                     {
                         CollidingObject = other.gameObject,
-                        CollisionDirection = _lastFrameVelocity.normalized
+                        CollisionDirection = _lastFrameVelocity.normalized,
+                        // Only the player's shots earn score; enemy friendly fire stays unattributed.
+                        Attack = _source == BulletSource.Player ? _attack : null
                     };
                     
                     _attack?.OnHitSuccess?.Invoke(enemy.transform.position);

@@ -24,7 +24,27 @@ hitScore = (Σ baseValue of enemies killed) × (1 + 0.2·s + 0.5·(n − 1))
 - Additive multipliers by design (max ≈ ×3.2 at s=6, n=3).
 - **Gem pickup**: small flat score bonus (unmultiplied), e.g. +2.
 
-**Score bubble** (on each kill): pooled via `ObjectPoolManager` (new `PoolableItemType`). Shows only the final `hitScore`, floats upward briefly (~0.5s) and fades. Color-coded by tier: low / medium / high gain (thresholds configurable). No breakdown shown.
+### Score bubble
+
+One bubble **per successful shot / hit**, not per enemy. It shows the total `hitScore` earned from everything that shot killed.
+
+**Behaviour**
+- Triggered when a shot resolves and kills ≥1 enemy (direct hit plus any secondary kills: shockwave, shotgun spread, launcher AoE, laser pierce). A shot that kills nothing spawns no bubble.
+- All kills attributed to the same shot are collected first (a short resolution window, ~0.3s, or the weapon's own impact event), then scored once: `Σ baseValue × multiplier`, with `n` = number of enemies in that group.
+- `s` is the streak **at the moment of the shot**, before this shot's own hit increments it. The streak increment happens after scoring.
+- Spawn position: at the primary impact point (or the centroid of the killed enemies for multi-kills), nudged so it doesn't overlap the HUD.
+- Animation: floats upward and fades over ~0.5s. Text is the final integer only, with no breakdown or `+` stacking.
+- Pooled via `ObjectPoolManager` (new `PoolableItemType`); returned to pool when the animation ends.
+- Color/size tier by `hitScore` (low / medium / high; thresholds configurable, size grows slightly with tier).
+- The same value is added to the run's score total once. A gem pickup uses the same bubble style with its flat bonus.
+
+**Example**: streak `s = 4`, player hits one enemy and the handgun shockwave kills 3 more, so `n = 4` enemies of base 10 each.
+```
+Σ baseValue = 4 × 10 = 40
+multiplier  = 1 + 0.2·4 + 0.5·(4 − 1) = 1 + 0.8 + 1.5 = 3.3
+hitScore    = 40 × 3.3 = 132   → one bubble showing "132" (high tier)
+```
+For comparison, a single kill at the same streak scores `10 × 1.8 = 18`.
 
 **Streak display**: not near crosshair (crosshair is transient). Display on/around the player/floatie — TBD.
 

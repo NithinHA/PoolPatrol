@@ -11,6 +11,7 @@ namespace Economy
     {
         GemWallet,
         Health,
+        CoinWallet,
     }
 
     /// <summary>

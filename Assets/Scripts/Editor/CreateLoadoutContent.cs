@@ -8,7 +8,7 @@ using UnityEngine;
 namespace PoolPatrol.Editor
 {
     /// <summary>
-    /// Generates placeholder loadout content (characters, floaties, weapons, pool textures) and a
+    /// Generates placeholder loadout content (characters, floaties, weapons) and a
     /// <see cref="LoadoutCatalogSO"/> that lists them, mirroring <see cref="CreateStarterAbilities"/>.
     /// Sprites are left empty for the artist to assign; the first entries are unlocked so the flow works
     /// out of the box. Safe to re-run — it overwrites the assets in place.
@@ -50,27 +50,19 @@ namespace PoolPatrol.Editor
                     "A wide-spread blaster. Fires a fan of pellets at close range for heavy burst damage.",
                     "Releases a knockback blast that shoves back every enemy it hits."),
             };
-            catalog.PoolTextures = new List<PoolTextureDefinitionSO>
-            {
-                PoolTexture("pool_classic",   "Classic Tiles",  true),
-                PoolTexture("pool_mosaic",    "Blue Mosaic",    true),
-                PoolTexture("pool_lagoon",    "Lagoon",         false),
-                PoolTexture("pool_neon",      "Neon Grid",      false),
-            };
-
             EditorUtility.SetDirty(catalog);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log($"[CreateLoadoutContent] Wrote LoadoutCatalog with " +
                       $"{catalog.Characters.Count} characters, {catalog.Floaties.Count} floaties, " +
-                      $"{catalog.Weapons.Count} weapons, {catalog.PoolTextures.Count} pool textures at {CatalogPath}.");
+                      $"{catalog.Weapons.Count} weapons at {CatalogPath}.");
             Selection.activeObject = catalog;
         }
 
         private static CharacterDefinitionSO Character(string id, string name, bool unlocked)
         {
             var so = LoadOrCreate<CharacterDefinitionSO>($"{Root}/{id}.asset");
-            so.Id = id; so.DisplayName = name; so.UnlockedByDefault = unlocked;
+            so.Id = id; so.DisplayName = name; so.Unlock = unlocked ? UnlockType.Free : UnlockType.Coins;
             EditorUtility.SetDirty(so);
             return so;
         }
@@ -78,7 +70,7 @@ namespace PoolPatrol.Editor
         private static FloatieDefinitionSO Floatie(string id, string name, bool unlocked)
         {
             var so = LoadOrCreate<FloatieDefinitionSO>($"{Root}/{id}.asset");
-            so.Id = id; so.DisplayName = name; so.UnlockedByDefault = unlocked;
+            so.Id = id; so.DisplayName = name; so.Unlock = unlocked ? UnlockType.Free : UnlockType.Coins;
             EditorUtility.SetDirty(so);
             return so;
         }
@@ -87,16 +79,8 @@ namespace PoolPatrol.Editor
             string description, string comboBonus)
         {
             var so = LoadOrCreate<WeaponDefinitionSO>($"{Root}/{id}.asset");
-            so.Id = id; so.DisplayName = name; so.Kind = kind; so.UnlockedByDefault = unlocked;
+            so.Id = id; so.DisplayName = name; so.Kind = kind; so.Unlock = unlocked ? UnlockType.Free : UnlockType.Coins;
             so.Description = description; so.ComboBonusDescription = comboBonus;
-            EditorUtility.SetDirty(so);
-            return so;
-        }
-
-        private static PoolTextureDefinitionSO PoolTexture(string id, string name, bool unlocked)
-        {
-            var so = LoadOrCreate<PoolTextureDefinitionSO>($"{Root}/{id}.asset");
-            so.Id = id; so.DisplayName = name; so.UnlockedByDefault = unlocked;
             EditorUtility.SetDirty(so);
             return so;
         }

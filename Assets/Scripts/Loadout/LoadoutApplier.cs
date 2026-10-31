@@ -6,8 +6,8 @@ using Weapon;
 namespace Loadout
 {
     /// <summary>
-    /// Dresses the Game scene from the player's saved loadout: swaps the floatie, character head, and
-    /// pool-texture sprites, and equips the chosen weapon. Reads <see cref="ILoadoutService"/> on
+    /// Dresses the Game scene from the player's saved loadout: swaps the floatie and character head
+    /// sprites, and equips the chosen weapon. Reads <see cref="ILoadoutService"/> on
     /// Start. Every reference is optional so the scene degrades gracefully if art is still placeholder.
     /// </summary>
     public class LoadoutApplier : MonoBehaviour
@@ -20,12 +20,6 @@ namespace Loadout
         [SerializeField] private SpriteRenderer m_CharacterHead;
         [Tooltip("Optional mirrored head renderer used by the water reflection.")]
         [SerializeField] private SpriteRenderer m_CharacterHeadReflection;
-
-        [Header("Pool")]
-        [Tooltip("The pool background renderer (a MeshRenderer in the Game scene). Its material texture is swapped.")]
-        [SerializeField] private Renderer m_PoolRenderer;
-        [Tooltip("Texture property on the pool material to swap (URP Lit/Unlit: _BaseMap; custom shaders often _MainTex).")]
-        [SerializeField] private string m_PoolTextureProperty = "_MainTex";
 
         [Header("Weapon")]
         [SerializeField] private PlayerWeaponController m_WeaponController;
@@ -44,7 +38,6 @@ namespace Loadout
 
             ApplyFloatie(loadout.SelectedFloatie);
             ApplyCharacter(loadout.SelectedCharacter);
-            ApplyPoolTexture(loadout.SelectedPoolTexture);
             ApplyWeapon(loadout.SelectedWeapon);
         }
 
@@ -63,16 +56,6 @@ namespace Loadout
 
             if (m_CharacterHead != null) m_CharacterHead.sprite = character.HeadSprite;
             if (m_CharacterHeadReflection != null) m_CharacterHeadReflection.sprite = character.HeadSprite;
-        }
-
-        private void ApplyPoolTexture(PoolTextureDefinitionSO pool)
-        {
-            if (pool == null || pool.PoolSprite == null || pool.PoolSprite.texture == null || m_PoolRenderer == null)
-                return;
-
-            Material mat = m_PoolRenderer.material;   // instance, not the shared asset
-            if (mat.HasProperty(m_PoolTextureProperty))
-                mat.SetTexture(m_PoolTextureProperty, pool.PoolSprite.texture);
         }
 
         private void ApplyWeapon(WeaponDefinitionSO weapon)

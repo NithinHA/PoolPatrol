@@ -14,7 +14,9 @@ namespace Weapon
         /// <summary>
         /// Called dynamically when a specific attack (bullet, etc.) hits a target.
         /// The weapon can use the provided combo level to execute unique behaviors (AoE, chaining, etc.).
+        /// Pass <paramref name="attack"/> into the death parameters of anything the effect kills, so
+        /// those kills are scored as part of the same shot.
         /// </summary>
-        void PerformComboHitEffect(Vector2 hitPosition, PlayerCombo.ComboLevel currentLevel);
+        void PerformComboHitEffect(Vector2 hitPosition, PlayerCombo.ComboLevel currentLevel, WeaponAttack attack);
     }
 }

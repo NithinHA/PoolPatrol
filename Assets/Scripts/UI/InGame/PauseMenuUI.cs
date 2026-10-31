@@ -70,6 +70,9 @@ namespace UI.InGame
 
         [SerializeField] private TMP_Text m_EnemiesKilledValueText;
 
+        [Tooltip("Score earned so far this run.")]
+        [SerializeField] private TMP_Text m_ScoreValueText;
+
         [Header("Active abilities")]
         [Tooltip("Grid parent the ability cells are spawned under (AbilitiesBox).")]
         [SerializeField] private RectTransform m_AbilitiesBox;
@@ -292,6 +295,9 @@ namespace UI.InGame
 
             if (m_EnemiesKilledValueText != null)
                 m_EnemiesKilledValueText.text = _runStats.EnemiesKilled.ToString();
+
+            if (m_ScoreValueText != null)
+                m_ScoreValueText.text = _runStats.Score.ToString();
         }
 
 #endregion
