@@ -16,6 +16,7 @@ namespace UI.Menu
     {
         [SerializeField] private ArenaCarousel m_Carousel;
         [SerializeField] private Button m_NextButton;
+        [SerializeField] private Button m_ShopButton;
 
         [Header("Optional screen-level labels (mirror the centred arena)")]
         [SerializeField] private TMP_Text m_ArenaNameText;
@@ -25,13 +26,18 @@ namespace UI.Menu
 
         public int SelectedArenaIndex => m_Carousel != null ? m_Carousel.SelectedIndex : 0;
 
-        public void Bind(Action<int> onNext)
+        public void Bind(Action<int> onNext, Action onShop)
         {
             _onNext = onNext;
             if (m_NextButton != null)
             {
                 m_NextButton.onClick.RemoveAllListeners();
                 m_NextButton.onClick.AddListener(() => _onNext?.Invoke(SelectedArenaIndex));
+            }
+            if (m_ShopButton != null)
+            {
+                m_ShopButton.onClick.RemoveAllListeners();
+                m_ShopButton.onClick.AddListener(() => onShop?.Invoke());
             }
             if (m_Carousel != null)
                 m_Carousel.OnSelectionChanged += UpdateLabels;

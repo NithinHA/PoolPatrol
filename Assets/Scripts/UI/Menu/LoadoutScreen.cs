@@ -10,9 +10,9 @@ namespace UI.Menu
 {
     /// <summary>
     /// Third menu screen: character / floatie / weapon selectors feeding a live avatar preview, plus
-    /// the selected weapon's description and combo-bonus text, the coin balance, and a purchase panel
-    /// for locked items. Reports Play / Back up to the navigator; all selections are committed to the
-    /// <see cref="ILoadoutService"/> as they change.
+    /// the selected weapon's description and combo-bonus text and the coin balance. Lists only what the
+    /// player has unlocked; everything else is bought in the Shop. Reports Play / Back up to the
+    /// navigator; all selections are committed to the <see cref="ILoadoutService"/> as they change.
     /// </summary>
     public class LoadoutScreen : MonoBehaviour
     {
@@ -35,11 +35,9 @@ namespace UI.Menu
         [SerializeField] private Button m_PlayButton;
         [SerializeField] private Button m_BackButton;
 
-        [Header("Unlocks")]
+        [Header("Wallet")]
         [Tooltip("The player's coin balance.")]
         [SerializeField] private TMP_Text m_CoinBalanceText;
-        [Tooltip("Opens when a locked item is tapped: price / unlock reason and a Buy button.")]
-        [SerializeField] private LoadoutPurchasePanel m_PurchasePanel;
 
         private ILoadoutService _loadout;
         private IEconomyService _economy;
@@ -76,7 +74,6 @@ namespace UI.Menu
                 if (_economy != null) _economy.OnBalanceChanged += OnBalanceChanged;
             }
             RefreshBalance();
-            if (m_PurchasePanel != null) m_PurchasePanel.Hide();
 
             PopulateSelectors();
 
@@ -92,14 +89,11 @@ namespace UI.Menu
         private void PopulateSelectors()
         {
             if (m_CharacterSelector != null)
-                m_CharacterSelector.Populate(_loadout.Characters, _loadout.IsCharacterUnlocked, _loadout.SelectedCharacterIndex,
-                    i => LockedTag(_loadout.Characters[i]));
+                m_CharacterSelector.Populate(_loadout.Characters, _loadout.IsCharacterUnlocked, _loadout.SelectedCharacterIndex);
             if (m_FloatieSelector != null)
-                m_FloatieSelector.Populate(_loadout.Floaties, _loadout.IsFloatieUnlocked, _loadout.SelectedFloatieIndex,
-                    i => LockedTag(_loadout.Floaties[i]));
+                m_FloatieSelector.Populate(_loadout.Floaties, _loadout.IsFloatieUnlocked, _loadout.SelectedFloatieIndex);
             if (m_WeaponSelector != null)
-                m_WeaponSelector.Populate(_loadout.Weapons, _loadout.IsWeaponUnlocked, _loadout.SelectedWeaponIndex,
-                    i => LockedTag(_loadout.Weapons[i]));
+                m_WeaponSelector.Populate(_loadout.Weapons, _loadout.IsWeaponUnlocked, _loadout.SelectedWeaponIndex);
 
             // Subscribe once; selectors live for the lifetime of the screen.
             if (_wired) return;
@@ -108,80 +102,7 @@ namespace UI.Menu
             if (m_CharacterSelector != null) m_CharacterSelector.OnChanged += OnCharacterChanged;
             if (m_FloatieSelector != null) m_FloatieSelector.OnChanged += OnFloatieChanged;
             if (m_WeaponSelector != null) m_WeaponSelector.OnChanged += OnWeaponChanged;
-
-            if (m_CharacterSelector != null) m_CharacterSelector.OnLockedClicked += OnLockedCharacter;
-            if (m_FloatieSelector != null) m_FloatieSelector.OnLockedClicked += OnLockedFloatie;
-            if (m_WeaponSelector != null) m_WeaponSelector.OnLockedClicked += OnLockedWeapon;
         }
-
-#region Unlocks
-
-        private void OnLockedCharacter(int index) => OfferUnlock(m_CharacterSelector, _loadout.Characters[index], index);
-        private void OnLockedFloatie(int index) => OfferUnlock(m_FloatieSelector, _loadout.Floaties[index], index);
-        private void OnLockedWeapon(int index) => OfferUnlock(m_WeaponSelector, _loadout.Weapons[index], index);
-
-        private void OfferUnlock(LoadoutSelectorUI selector, LoadoutItemSO item, int index)
-        {
-            if (m_PurchasePanel == null || item == null) return;
-
-            m_PurchasePanel.Show(item, UnlockReason(item), Balance, () => Buy(selector, item, index));
-        }
-
-        private void Buy(LoadoutSelectorUI selector, LoadoutItemSO item, int index)
-        {
-            PurchaseResult result = _loadout.TryPurchase(item);
-            if (result == PurchaseResult.Success || result == PurchaseResult.AlreadyUnlocked)
-            {
-                m_PurchasePanel.Hide();
-                // Equip what was just bought: the selector fires OnChanged, which selects it in the service.
-                selector.RefreshAndSelect(index);
-                return;
-            }
-
-            // Balance moved underneath the panel (or the purchase failed): re-show with fresh numbers.
-            Debug.LogWarning($"[LoadoutScreen] Purchase of '{item.Id}' failed: {result}");
-            OfferUnlock(selector, item, index);
-        }
-
-        /// <summary>The short label on a locked thumbnail.</summary>
-        private static string LockedTag(LoadoutItemSO item) => item.Unlock switch
-        {
-            UnlockType.Coins      => item.CoinPrice.ToString(),
-            UnlockType.ArenaClear => $"Arena {item.ArenaIndex + 1}",
-            UnlockType.IAP        => "Store",
-            _                     => null,
-        };
-
-        private string UnlockReason(LoadoutItemSO item)
-        {
-            switch (item.Unlock)
-            {
-                case UnlockType.Coins:
-                    return $"Unlock for {item.CoinPrice} coins.\nYou have {Balance}.";
-
-                case UnlockType.ArenaClear:
-                    return $"Clear every level of {ArenaName(item.ArenaIndex)} to unlock.";
-
-                case UnlockType.IAP:
-                    return "Coming soon to the store.";
-
-                default:
-                    return string.Empty;
-            }
-        }
-
-        private static string ArenaName(int arenaIndex)
-        {
-            IProgression progression = ServiceLocator.GetProgressionService();
-            if (progression != null && arenaIndex >= 0 && arenaIndex < progression.ArenaCount)
-            {
-                string arenaName = progression.GetArenaDefinition(arenaIndex).ArenaName;
-                if (!string.IsNullOrEmpty(arenaName)) return arenaName;
-            }
-            return $"Arena {arenaIndex + 1}";
-        }
-
-        private int Balance => _economy?.GetBalance(CurrencyType.Coins) ?? 0;
 
         private void OnBalanceChanged(CurrencyType type, int newBalance, int delta)
         {
@@ -190,10 +111,9 @@ namespace UI.Menu
 
         private void RefreshBalance()
         {
-            if (m_CoinBalanceText != null) m_CoinBalanceText.text = Balance.ToString();
+            if (m_CoinBalanceText != null)
+                m_CoinBalanceText.text = (_economy?.GetBalance(CurrencyType.Coins) ?? 0).ToString();
         }
-
-#endregion
 
         private void OnCharacterChanged(int index)
         {
@@ -246,10 +166,6 @@ namespace UI.Menu
             if (m_CharacterSelector != null) m_CharacterSelector.OnChanged -= OnCharacterChanged;
             if (m_FloatieSelector != null) m_FloatieSelector.OnChanged -= OnFloatieChanged;
             if (m_WeaponSelector != null) m_WeaponSelector.OnChanged -= OnWeaponChanged;
-
-            if (m_CharacterSelector != null) m_CharacterSelector.OnLockedClicked -= OnLockedCharacter;
-            if (m_FloatieSelector != null) m_FloatieSelector.OnLockedClicked -= OnLockedFloatie;
-            if (m_WeaponSelector != null) m_WeaponSelector.OnLockedClicked -= OnLockedWeapon;
 
             if (_economy != null) _economy.OnBalanceChanged -= OnBalanceChanged;
         }

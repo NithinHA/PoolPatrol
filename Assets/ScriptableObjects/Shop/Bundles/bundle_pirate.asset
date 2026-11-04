@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3b454ab04874494e8c351deeb0687b3, type: 3}
+  m_Name: bundle_pirate
+  m_EditorClassIdentifier: Assembly-CSharp::Monetization.ItemBundleSO
+  DisplayName: Pirate Pack
+  Icon: {fileID: 21300000, guid: 06fdda4a16a820b4e9943baea97913f5, type: 3}
+  ProductId: com.poolpatrol.bundle.pirate
+  FallbackPrice: "\u20B9299"
+  Items:
+  - {fileID: 11400000, guid: 8af06620108394846b8f941edd0d51bd, type: 2}
+  - {fileID: 11400000, guid: 069a114896d79e64992349c52d2aa778, type: 2}
+  - {fileID: 11400000, guid: c2554ab88bafef7449766eaf8801fe86, type: 2}

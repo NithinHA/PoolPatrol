@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3b454ab04874494e8c351deeb0687b3, type: 3}
+  m_Name: bundle_tropical
+  m_EditorClassIdentifier: Assembly-CSharp::Monetization.ItemBundleSO
+  DisplayName: Tropical Pack
+  Icon: {fileID: 21300000, guid: af70232e2f562db46b0ac2d09b8d118b, type: 3}
+  ProductId: com.poolpatrol.bundle.tropical
+  FallbackPrice: "\u20B9299"
+  Items:
+  - {fileID: 11400000, guid: 84e062e566bddbf41842e1bafe76b03d, type: 2}
+  - {fileID: 11400000, guid: da078b18f441a9c4e9f9b402f477e7fe, type: 2}
+  - {fileID: 11400000, guid: 0e2f5eb31e4c83a4080e0bc581d11587, type: 2}

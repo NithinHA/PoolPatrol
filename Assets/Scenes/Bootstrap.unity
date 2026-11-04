@@ -888,6 +888,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0bd1049fd65a6a145b8f0735f07f5995, type: 2}
   - {fileID: 11400000, guid: 09aa0a7f5eb9d364d9665041d503d85f, type: 2}
   m_LoadoutCatalog: {fileID: 11400000, guid: 6043ff83ff255524fa7b5aaa256d71d4, type: 2}
+  m_ShopCatalog: {fileID: 11400000, guid: b0158d152381ed544b8f1e8edc6308b4, type: 2}
 --- !u!4 &2004694566
 Transform:
   m_ObjectHideFlags: 0

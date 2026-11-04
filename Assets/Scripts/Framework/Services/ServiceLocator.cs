@@ -103,6 +103,11 @@ namespace PTL.Framework
             return HasService(typeof(ILoadoutService)) ? GetService<ILoadoutService>() : null;
         }
 
+        public static IShopService GetShopService()
+        {
+            return HasService(typeof(IShopService)) ? GetService<IShopService>() : null;
+        }
+
         public static IRunStatsService GetRunStatsService()
         {
             return HasService(typeof(IRunStatsService)) ? GetService<IRunStatsService>() : null;

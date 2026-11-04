@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49a843bd00d84b2438c727cdaa9e1b76, type: 3}
+  m_Name: floatie_lifeguard
+  m_EditorClassIdentifier: Assembly-CSharp::Loadout.FloatieDefinitionSO
+  Id: floatie_lifeguard
+  DisplayName: Lifeguard Ring
+  Icon: {fileID: 21300000, guid: 92c55836bd2515e48bc53288187926c4, type: 3}
+  Unlock: 1
+  CoinPrice: 500
+  ArenaIndex: 0
+  IapProductId: 
+  IapFallbackPrice: "\u20B930"
+  BodySprite: {fileID: 21300000, guid: 92c55836bd2515e48bc53288187926c4, type: 3}
+  ReflectionSprite: {fileID: 0}

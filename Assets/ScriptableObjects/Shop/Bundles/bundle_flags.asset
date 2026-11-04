@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3b454ab04874494e8c351deeb0687b3, type: 3}
+  m_Name: bundle_flags
+  m_EditorClassIdentifier: Assembly-CSharp::Monetization.ItemBundleSO
+  DisplayName: Country Flags Pack
+  Icon: {fileID: 21300000, guid: e71e0c592fafe604c842cc3737619f15, type: 3}
+  ProductId: com.poolpatrol.bundle.flags
+  FallbackPrice: "\u20B9249"
+  Items:
+  - {fileID: 11400000, guid: 142372c7b4be08547898689aedc506e4, type: 2}
+  - {fileID: 11400000, guid: 22dc7e8c026072f4986d7995d2113ff1, type: 2}

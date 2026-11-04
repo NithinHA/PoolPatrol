@@ -7,10 +7,12 @@ using UnityEngine;
 namespace UI.Menu
 {
     /// <summary>
-    /// Owns navigation across the three menu screens (Arena → Level → Loadout). Slides screens
-    /// horizontally with DOTween, tweens the background blur to 0 on the loadout screen (so the avatar
-    /// floats on the pool) and back otherwise, and kicks off the water-splash transition into the Game
-    /// scene on Play. Replaces the legacy <c>MenuFlowController</c> for the new screens.
+    /// Owns navigation across the three menu screens (Arena → Level → Loadout) and the Shop. Slides
+    /// screens horizontally with DOTween, tweens the background blur to 0 on the loadout screen (so the
+    /// avatar floats on the pool) and back otherwise, and kicks off the water-splash transition into the
+    /// Game scene on Play. The Shop sits above the Arena screen: opening it pushes the Arena screen down
+    /// while the Shop drops in from the top, and closing it reverses that.
+    /// Replaces the legacy <c>MenuFlowController</c> for the new screens.
     /// </summary>
     public class MenuNavigator : MonoBehaviour
     {
@@ -20,6 +22,9 @@ namespace UI.Menu
         [SerializeField] private ArenaSelectionScreen m_ArenaScreen;
         [SerializeField] private LevelSelectionScreen m_LevelScreen;
         [SerializeField] private LoadoutScreen m_LoadoutScreen;
+
+        [Header("Shop (above the Arena screen)")]
+        [SerializeField] private ShopScreen m_ShopScreen;
 
         [Header("Background")]
         [SerializeField] private MenuBackgroundBlur m_Blur;
@@ -49,9 +54,10 @@ namespace UI.Menu
                 (RectTransform)m_LoadoutScreen.transform,
             };
 
-            m_ArenaScreen.Bind(OnArenaNext);
+            m_ArenaScreen.Bind(OnArenaNext, OpenShop);
             m_LevelScreen.Bind(OnLevelNext, () => GoTo(ScreenId.Arena));
             m_LoadoutScreen.Bind(OnPlay, () => GoTo(ScreenId.Level));
+            if (m_ShopScreen != null) m_ShopScreen.Bind(CloseShop);
         }
 
         private void Start()
@@ -60,8 +66,15 @@ namespace UI.Menu
             float w = ScreenWidth();
             for (int i = 0; i < _screens.Length; i++)
             {
-                _screens[i].anchoredPosition = new Vector2(i == 0 ? 0f : w, _screens[i].anchoredPosition.y);
+                _screens[i].anchoredPosition = new Vector2(i == 0 ? 0f : w, 0f);
                 _screens[i].gameObject.SetActive(i == 0);
+            }
+
+            if (m_ShopScreen != null)
+            {
+                var shop = (RectTransform)m_ShopScreen.transform;
+                shop.anchoredPosition = new Vector2(0f, ScreenHeight());
+                shop.gameObject.SetActive(false);
             }
 
             _current = 0;
@@ -112,7 +125,7 @@ namespace UI.Menu
             RectTransform to = _screens[targetIndex];
 
             to.gameObject.SetActive(true);
-            to.anchoredPosition = new Vector2(dir * w, to.anchoredPosition.y);
+            to.anchoredPosition = new Vector2(dir * w, 0f);
 
             _animating = true;
             to.DOAnchorPosX(0f, m_SlideDuration).SetEase(m_SlideEase).SetUpdate(true);
@@ -127,6 +140,53 @@ namespace UI.Menu
             UpdateBlur();
         }
 
+#region Shop
+
+        private void OpenShop()
+        {
+            if (_animating || m_ShopScreen == null) return;
+
+            var shop = (RectTransform)m_ShopScreen.transform;
+            RectTransform arena = _screens[(int)ScreenId.Arena];
+            float h = ScreenHeight();
+
+            shop.gameObject.SetActive(true);
+            shop.anchoredPosition = new Vector2(0f, h);
+            m_ShopScreen.Show();
+
+            _animating = true;
+            shop.DOAnchorPosY(0f, m_SlideDuration).SetEase(m_SlideEase).SetUpdate(true);
+            arena.DOAnchorPosY(-h, m_SlideDuration).SetEase(m_SlideEase).SetUpdate(true)
+                .OnComplete(() =>
+                {
+                    arena.gameObject.SetActive(false);
+                    _animating = false;
+                });
+        }
+
+        private void CloseShop()
+        {
+            if (_animating || m_ShopScreen == null) return;
+
+            var shop = (RectTransform)m_ShopScreen.transform;
+            RectTransform arena = _screens[(int)ScreenId.Arena];
+            float h = ScreenHeight();
+
+            arena.gameObject.SetActive(true);
+            arena.anchoredPosition = new Vector2(0f, -h);
+
+            _animating = true;
+            arena.DOAnchorPosY(0f, m_SlideDuration).SetEase(m_SlideEase).SetUpdate(true);
+            shop.DOAnchorPosY(h, m_SlideDuration).SetEase(m_SlideEase).SetUpdate(true)
+                .OnComplete(() =>
+                {
+                    shop.gameObject.SetActive(false);
+                    _animating = false;
+                });
+        }
+
+#endregion
+
         private void UpdateBlur()
         {
             if (m_Blur == null) return;
@@ -139,6 +199,13 @@ namespace UI.Menu
             float w = _screens != null && _screens.Length > 0 ? _screens[0].rect.width : 0f;
             if (w <= 1f) w = Screen.width;   // fallback before the first layout pass
             return w;
+        }
+
+        private float ScreenHeight()
+        {
+            float h = _screens != null && _screens.Length > 0 ? _screens[0].rect.height : 0f;
+            if (h <= 1f) h = Screen.height;   // fallback before the first layout pass
+            return h;
         }
     }
 }

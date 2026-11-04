@@ -8,12 +8,11 @@ using UnityEngine.UI;
 namespace UI.Menu
 {
     /// <summary>
-    /// A reusable loadout category selector (character / floatie / weapon / pool texture). Fills a
-    /// horizontal scroll row with one thumbnail per option, highlights the selected one, and moves the
-    /// selection with the left/right arrows (which skip locked entries). Locked entries still appear,
-    /// greyed and tagged with their price / unlock reason; tapping one raises
-    /// <see cref="OnLockedClicked"/> instead of selecting it. Fires <see cref="OnChanged"/> with the
-    /// selected absolute index.
+    /// A reusable loadout category selector (character / floatie / weapon). Fills a horizontal scroll
+    /// row with one thumbnail per unlocked option, highlights the selected one, and moves the selection
+    /// with the left/right arrows. Locked options aren't shown at all; they live in the Shop. Indices are
+    /// always absolute into the full option list, so the screen and service never see the filtering.
+    /// Fires <see cref="OnChanged"/> with the selected absolute index.
     /// </summary>
     public class LoadoutSelectorUI : MonoBehaviour
     {
@@ -27,18 +26,14 @@ namespace UI.Menu
         [SerializeField] private TMP_Text m_LabelText;
 
         private readonly List<LoadoutSelectionItem> _items = new();
+        private readonly List<int> _visible = new();   // absolute option index of each shown thumbnail
         private IReadOnlyList<LoadoutItemSO> _options;
-        private Func<int, bool> _isUnlocked;
-        private Func<int, string> _lockedTag;
-        private int _current;
+        private int _position;                         // index into _visible
 
         /// <summary>Fired with the selected absolute index after it changes.</summary>
         public event Action<int> OnChanged;
 
-        /// <summary>Fired with the index of a locked entry the player tapped, so the screen can offer to unlock it.</summary>
-        public event Action<int> OnLockedClicked;
-
-        public int CurrentIndex => _current;
+        public int CurrentIndex => _visible.Count > 0 ? _visible[_position] : 0;
 
         private void Awake()
         {
@@ -46,107 +41,70 @@ namespace UI.Menu
             if (m_RightButton != null) m_RightButton.onClick.AddListener(Next);
         }
 
-        /// <param name="lockedTag">Optional short label for locked entries (price / unlock reason).</param>
-        public void Populate(IReadOnlyList<LoadoutItemSO> options, Func<int, bool> isUnlocked, int initialIndex,
-            Func<int, string> lockedTag = null)
+        public void Populate(IReadOnlyList<LoadoutItemSO> options, Func<int, bool> isUnlocked, int initialIndex)
         {
             _options = options ?? new List<LoadoutItemSO>();
-            _isUnlocked = isUnlocked ?? (_ => true);
-            _lockedTag = lockedTag;
-            _current = Mathf.Clamp(initialIndex, 0, Mathf.Max(0, _options.Count - 1));
+
+            _visible.Clear();
+            for (int i = 0; i < _options.Count; i++)
+                if (isUnlocked == null || isUnlocked(i))
+                    _visible.Add(i);
+
+            _position = Mathf.Max(0, _visible.IndexOf(initialIndex));
 
             // Rebuild the row: clear whatever placeholder items are in the scene, then one per option.
-            foreach (LoadoutSelectionItem item in _items)
-                if (item != null) Destroy(item.gameObject);
             _items.Clear();
-
             for (int i = 0; i < m_Content.childCount; i++)
                 Destroy(m_Content.GetChild(i).gameObject);
 
-            for (int i = 0; i < _options.Count; i++)
-            {
-                LoadoutSelectionItem item = Instantiate(m_ItemPrefab, m_Content);
-                _items.Add(item);
-            }
+            for (int i = 0; i < _visible.Count; i++)
+                _items.Add(Instantiate(m_ItemPrefab, m_Content));
 
-            RefreshItems();
-            RefreshArrows();
-            UpdateLabel();
-        }
-
-        /// <summary>
-        /// Re-reads every entry's unlock state (after a purchase) and moves the selection to
-        /// <paramref name="index"/>, firing <see cref="OnChanged"/> if it moved.
-        /// </summary>
-        public void RefreshAndSelect(int index)
-        {
-            if (index != _current && index >= 0 && index < _options.Count && _isUnlocked(index))
-            {
-                SetCurrent(index);
-                return;
-            }
-
-            RefreshItems();
-            RefreshArrows();
-        }
-
-        public void Next() => MoveToUnlocked(+1);
-        public void Previous() => MoveToUnlocked(-1);
-
-        private void MoveToUnlocked(int dir)
-        {
-            for (int i = _current + dir; i >= 0 && i < _options.Count; i += dir)
-            {
-                if (_isUnlocked(i)) { SetCurrent(i); return; }
-            }
-        }
-
-        private void SetCurrent(int index)
-        {
-            if (index == _current || index < 0 || index >= _options.Count) return;
-            _current = index;
             RefreshItems();
             RefreshArrows();
             UpdateLabel();
             ScrollToCurrent();
-            OnChanged?.Invoke(_current);
+        }
+
+        public void Next() => SetPosition(_position + 1);
+        public void Previous() => SetPosition(_position - 1);
+
+        private void SetPosition(int position)
+        {
+            if (position == _position || position < 0 || position >= _visible.Count) return;
+            _position = position;
+            RefreshItems();
+            RefreshArrows();
+            UpdateLabel();
+            ScrollToCurrent();
+            OnChanged?.Invoke(_visible[_position]);
         }
 
         private void RefreshItems()
         {
             for (int i = 0; i < _items.Count; i++)
             {
-                bool unlocked = _isUnlocked(i);
                 int captured = i;
-                _items[i].Set(_options[i].Icon, unlocked, i == _current,
-                    unlocked ? () => SetCurrent(captured) : () => OnLockedClicked?.Invoke(captured),
-                    unlocked ? null : _lockedTag?.Invoke(i));
+                _items[i].Set(_options[_visible[i]].Icon, i == _position, () => SetPosition(captured));
             }
         }
 
         private void RefreshArrows()
         {
-            if (m_LeftButton != null) m_LeftButton.interactable = HasUnlocked(-1);
-            if (m_RightButton != null) m_RightButton.interactable = HasUnlocked(+1);
-        }
-
-        private bool HasUnlocked(int dir)
-        {
-            for (int i = _current + dir; i >= 0 && i < _options.Count; i += dir)
-                if (_isUnlocked(i)) return true;
-            return false;
+            if (m_LeftButton != null) m_LeftButton.interactable = _position > 0;
+            if (m_RightButton != null) m_RightButton.interactable = _position < _visible.Count - 1;
         }
 
         private void UpdateLabel()
         {
-            if (m_LabelText != null && _current >= 0 && _current < _options.Count)
-                m_LabelText.text = _options[_current].DisplayName;
+            if (m_LabelText != null && _visible.Count > 0)
+                m_LabelText.text = _options[_visible[_position]].DisplayName;
         }
 
         private void ScrollToCurrent()
         {
-            if (m_ScrollRect == null || _options.Count <= 1) return;
-            m_ScrollRect.horizontalNormalizedPosition = _current / (float)(_options.Count - 1);
+            if (m_ScrollRect == null || _visible.Count <= 1) return;
+            m_ScrollRect.horizontalNormalizedPosition = _position / (float)(_visible.Count - 1);
         }
     }
 }

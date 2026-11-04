@@ -22,10 +22,14 @@ namespace PTL.Framework
         [Tooltip("Every character / floatie / weapon / pool texture the player can equip.")]
         [SerializeField] private Loadout.LoadoutCatalogSO m_LoadoutCatalog;
 
+        [Header("Shop")]
+        [Tooltip("Coin packs and item bundles sold on the main-menu Shop's Bundles tab.")]
+        [SerializeField] private Monetization.ShopCatalogSO m_ShopCatalog;
+
         protected override void Awake()
         {
             base.Awake();
-            InitializeAllServices(m_Arenas, m_LoadoutCatalog, () => StartCoroutine(OnInitialized()));
+            InitializeAllServices(m_Arenas, m_LoadoutCatalog, m_ShopCatalog, () => StartCoroutine(OnInitialized()));
             ConfigureServices();
         }
 
@@ -53,7 +57,8 @@ namespace PTL.Framework
         /// <summary>
         /// Initialize all the persistent core game services here-
         /// </summary>
-        private static void InitializeAllServices(List<ArenaDefinitionSO> arenas, Loadout.LoadoutCatalogSO loadoutCatalog, Action onComplete = null)
+        private static void InitializeAllServices(List<ArenaDefinitionSO> arenas, Loadout.LoadoutCatalogSO loadoutCatalog,
+            Monetization.ShopCatalogSO shopCatalog, Action onComplete = null)
         {
             Dictionary<Type, IService> map = new Dictionary<Type, IService>()
             {
@@ -68,6 +73,7 @@ namespace PTL.Framework
                 { typeof(ISettingsService), new SettingsService() },
                 { typeof(IRunStatsService), new RunStatsService() },
                 { typeof(ILoadoutService), new LoadoutService(loadoutCatalog) },
+                { typeof(IShopService), new ShopService(shopCatalog, loadoutCatalog, StoreGatewayFactory.Create(), new AcceptAllReceiptValidator()) },
             };
 
             foreach (KeyValuePair<Type, IService> item in map)

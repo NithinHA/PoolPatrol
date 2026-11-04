@@ -14,14 +14,18 @@ namespace Loadout
         /// <summary>Unlocked by completing every level of an arena (<see cref="LoadoutItemSO.ArenaIndex"/>).</summary>
         ArenaClear,
 
-        /// <summary>Real-money purchase (<see cref="LoadoutItemSO.IapProductId"/>). Never allowed for weapons.</summary>
+        /// <summary>Real-money purchase (<see cref="LoadoutItemSO.IapProductId"/>).</summary>
         IAP,
+
+        /// <summary>Only obtainable through an item bundle. Not listed on its own in the Shop.</summary>
+        BundleOnly,
     }
 
     /// <summary>
     /// Shared fields for every selectable loadout cosmetic. Subclasses add their own visual payload
     /// (head sprite, floatie sprite, weapon stats, …). Having one base lets the LoadoutService treat
-    /// all four categories with the same persist / restore / unlock logic.
+    /// all categories with the same persist / restore / unlock logic, and lets the Shop list and sell
+    /// them without a second set of item data.
     /// </summary>
     public abstract class LoadoutItemSO : ScriptableObject
     {
@@ -33,7 +37,7 @@ namespace Loadout
         public Sprite Icon;
 
         [Header("Unlock")]
-        [Tooltip("How the player gets this item. Locked items appear greyed in the selector with a price / reason tag.")]
+        [Tooltip("How the player gets this item. Locked items appear only in the Shop; the loadout screen lists unlocked items.")]
         public UnlockType Unlock = UnlockType.Free;
 
         [Tooltip("Coins: one-time price. Starting tiers ~300 / 800 / 1500+.")]
@@ -45,17 +49,7 @@ namespace Loadout
         [Tooltip("IAP: store product id that grants this item.")]
         public string IapProductId;
 
-        /// <summary>Whether this category may be sold for real money. Weapons say no (no pay-to-win).</summary>
-        protected virtual bool AllowsIap => true;
-
-        protected virtual void OnValidate()
-        {
-            if (Unlock == UnlockType.IAP && !AllowsIap)
-            {
-                Debug.LogWarning($"[{GetType().Name}] '{name}' cannot be an IAP unlock — weapons are coin or " +
-                                 "arena-clear only. Switched to Coins.", this);
-                Unlock = UnlockType.Coins;
-            }
-        }
+        [Tooltip("IAP: shown until the store reports its localized price, and whenever the store is unavailable.")]
+        public string IapFallbackPrice = "₹30";
     }
 }

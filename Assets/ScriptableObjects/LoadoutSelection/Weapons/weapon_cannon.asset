@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 167db0a14d7254e43b09bed53cb739d5, type: 3}
+  m_Name: weapon_cannon
+  m_EditorClassIdentifier: Assembly-CSharp::Loadout.WeaponDefinitionSO
+  Id: weapon_cannon
+  DisplayName: Cannon
+  Icon: {fileID: 21300000, guid: 629c972841a38ed479fa2289d16277a1, type: 3}
+  Unlock: 3
+  CoinPrice: 300
+  ArenaIndex: 0
+  IapProductId: com.poolpatrol.weapon.cannon
+  IapFallbackPrice: "\u20B960"
+  Kind: 2
+  Description: A wide-spread blaster. Fires a fan of pellets at close range for heavy burst damage.
+  ComboBonusDescription: Releases a knockback blast that shoves back every enemy it hits.

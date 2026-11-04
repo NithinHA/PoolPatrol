@@ -11,12 +11,12 @@ using UnityEngine.UI;
 namespace PoolPatrol.Editor
 {
     /// <summary>
-    /// Sets up coin / arena-clear unlockables (Docs/economy-and-progression.md → Unlockables):
-    /// assigns each catalog item its unlock rule, gives the loadout thumbnail prefab a lock overlay
-    /// and price tag, and builds the coin balance + purchase panel on the Menu scene's Loadout screen.
+    /// RETIRED, safe to delete along with LoadoutPurchasePanel.cs. The Shop replaced the locked thumbnails
+    /// and purchase panel this built, and its menu item is gone because it would reset every item not in
+    /// the table below to Free. Prices now live on the item assets; see ShopWiring for the first-run setup.
     ///
-    /// Re-runnable: unlock data is overwritten from the table below, and every object it builds is
-    /// deleted and rebuilt by name. Items not in the table become Free.
+    /// Originally: assigned each catalog item its unlock rule, gave the loadout thumbnail prefab a lock
+    /// overlay and price tag, and built the coin balance + purchase panel on the Loadout screen.
     /// </summary>
     public static class LoadoutUnlockWiring
     {
@@ -55,7 +55,6 @@ namespace PoolPatrol.Editor
             { "floatie_unicorn",  new Rule(UnlockType.Coins, 1500) },
         };
 
-        [MenuItem("PoolPatrol/Loadout/Wire Coin Unlocks")]
         public static void WireAll()
         {
             ApplyUnlockRules();

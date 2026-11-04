@@ -91,9 +91,10 @@ LevelProgress { bool completed; int bestScore; int bestStreak; }
 
 Each cosmetic item has a data-driven unlock type:
 ```
-UnlockType { Free, Coins, ArenaClear, IAP }   // + price / arena id / product id
+UnlockType { Free, Coins, ArenaClear, IAP, BundleOnly }   // + price / arena id / product id
 ```
-- **Character heads & floaties**: pure art, many possible. Each arena completion unlocks one new head or floatie. Rest are coin-priced; some IAP (e.g. country-flag floatie pack).
-- **Weapons**: unlocked via coins or arena clear — **never IAP** (avoid pay-to-win). Weapons are sidegrades.
+- **Character heads & floaties**: pure art, many possible. Each arena completion unlocks one new head or floatie. Rest are coin-priced; some IAP, singly or in item bundles (e.g. a country-flag floatie pack).
+- **Weapons**: unlocked via coins, arena clear or IAP, singly or in bundles. Weapons must stay sidegrades so real-money ones aren't pay-to-win.
 - Starting coin price tiers (tune later): ~300 / 800 / 1500+.
+- Locked items appear only in the main-menu Shop; the loadout screen lists what the player has unlocked.
 

@@ -38,12 +38,20 @@ To add another persistent currency: add an entry to `CurrencyType`, then one `Re
 - Coin pouches: `DropCoinPouchOnDeath` (gem dropper; chance + per-run cap) → `CoinCollectable` grants immediately. `CoinWalletUI` slides in over the gem wallet only for grants during an active run.
 - Scene/prefab setup is re-runnable: **PoolPatrol/Economy/Wire Score & Coins** (`Editor/EconomyWiring.cs`).
 
-## Unlockables (spending Coins)
+## Unlockables and the Shop
 
-- Every `LoadoutItemSO` (character / floatie / weapon — pool textures were removed) has `Unlock` = `Free | Coins | ArenaClear | IAP` plus `CoinPrice`, `ArenaIndex`, `IapProductId`. Weapons can't be IAP (`OnValidate` flips them to Coins).
-- `LoadoutService.IsUnlocked(item)` is the single rule: Free → yes; ArenaClear → `IProgression.IsArenaCompleted(ArenaIndex)` or owned; Coins / IAP → owned (`PlayerPrefs` `Loadout_Owned_{Id}`). `TryPurchase` spends via `IEconomyService.TrySpend`; `GrantOwnership` is the IAP-fulfilment hook (no store integration yet). Selections restore in `Start`, after progression is registered.
-- Loadout screen: locked thumbnails show a tag (price / "Arena N" / "Store") and raise `LoadoutSelectorUI.OnLockedClicked` → `LoadoutPurchasePanel` (Buy disabled with the shortfall when unaffordable); a purchase equips the item. Coin balance top-right.
-- Prices / rules live in the table in **PoolPatrol/Loadout/Wire Coin Unlocks** (`Editor/LoadoutUnlockWiring.cs`), which also builds the thumbnail lock overlay and the panel.
+- Every `LoadoutItemSO` (character / floatie / weapon — pool textures were removed) has `Unlock` = `Free | Coins | ArenaClear | IAP | BundleOnly` plus `CoinPrice`, `ArenaIndex`, `IapProductId`, `IapFallbackPrice`. Prices live on the item assets.
+- `LoadoutService.IsUnlocked(item)` is the single rule: Free → yes; ArenaClear → `IProgression.IsArenaCompleted(ArenaIndex)` or owned; Coins / IAP / BundleOnly → owned (`PlayerPrefs` `Loadout_Owned_{Id}`). `TryPurchase` spends via `IEconomyService.TrySpend`; `GrantOwnership` is how IAP fulfilment grants items. Selections restore in `Start`, after progression is registered.
+- Loadout screen lists **unlocked items only**. `LoadoutSelectorUI` filters internally but still reports absolute indices. Everything locked lives in the Shop.
+
+### Main-menu Shop (`[Screen4] Shop`, unrelated to the in-run Goddess shop in `UI.Shop`)
+
+- **Data:** the Characters / Floaties / Weapons tabs read `LoadoutCatalogSO`. The Bundles tab reads `ShopCatalogSO` (`Assets/ScriptableObjects/Shop`, assigned on `Bootstrap`), which lists `CoinPackSO` (consumable) and `ItemBundleSO` (non-consumable, references items directly). Both derive from `ShopOfferSO`; namespace `Monetization`.
+- **`IShopService`** (`Framework/Services/ShopService`) is the UI's only way to buy: `BuyWithCoins(item)`, `BuyProduct(productId)`, `GetPrice`, `CanStartPurchase`, `RestorePurchases`, plus `OnPurchaseResolved` / `OnStoreStateChanged`. It builds one product table from both catalogs and fulfils payments.
+- **`IStoreGateway`** hides the billing backend. `UnityIapStoreGateway` is the only file that references `UnityEngine.Purchasing`; `SimulatedStoreGateway` runs in the editor (`StoreGatewayFactory` compiles it out of players). Set `FailNextPurchaseWith` to rehearse a failure.
+- **Fulfilment order** (`ShopService.HandlePurchasePending`): validate → record `Shop_Txn_{id}` → grant → flush PlayerPrefs → confirm. Never confirm before the grant is on disk; a redelivered transaction skips the grant via the ledger. `IReceiptValidator` defaults to `AcceptAllReceiptValidator` — replace before shipping.
+- **UI** (`UI/Menu/Shop`, namespace `UI.Menu`): `ShopScreen` owns tabs, wallet and status; `ShopPanel` subclasses list cards; `ShopPriceTag` is a button for coin / money prices and an unclickable label for Owned / arena names. `MenuNavigator` runs the vertical slide.
+- **Rebuild:** **PoolPatrol/Shop/Build Shop** (`Editor/ShopWiring.cs`) regenerates placeholder art, prefabs and the scene hierarchy. It creates content assets only on the first run, so edited prices are safe. Text uses the Shop's own Lato font because the default Liberation Sans has no ₹ glyph.
 
 ## Collectable pickups
 

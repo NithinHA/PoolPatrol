@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 750cf836f1ed7c544a8d141a3d99c66e, type: 3}
+  m_Name: ShopCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::Monetization.ShopCatalogSO
+  CoinPacks:
+  - {fileID: 11400000, guid: 6800851f04cbc6b498482d1f7c152945, type: 2}
+  - {fileID: 11400000, guid: cc44f46c4beaefd409a926a2d814dee3, type: 2}
+  - {fileID: 11400000, guid: 77ee00dd6c6ba5f49ac152b97ebd917c, type: 2}
+  - {fileID: 11400000, guid: 7131ea3d861e2fa4ebf9bc6dbb368182, type: 2}
+  Bundles:
+  - {fileID: 11400000, guid: 380061710c3b7794094568bef16da332, type: 2}
+  - {fileID: 11400000, guid: 20eb71e41c0db0a448c94fbbd47497d4, type: 2}
+  - {fileID: 11400000, guid: 309bece0641a94e4793394fff938cb84, type: 2}
+  - {fileID: 11400000, guid: 320f3acdca04c4841b29520992e6717f, type: 2}
+  - {fileID: 11400000, guid: 7a88eb0087faf8c4abe1023f3f9e8b24, type: 2}

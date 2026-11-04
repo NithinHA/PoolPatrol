@@ -18,8 +18,5 @@ namespace Loadout
 
         [Tooltip("Short line describing the combo bonus this weapon unlocks.")]
         [TextArea] public string ComboBonusDescription;
-
-        /// <summary>Weapons are sidegrades bought with coins or earned by arena clears — never IAP.</summary>
-        protected override bool AllowsIap => false;
     }
 }

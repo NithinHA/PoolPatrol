@@ -30,6 +30,7 @@ PoolPatrol is a top-down 2D arcade shooter built in **Unity 6 (6000.0.36f1)** wi
 | Spawning / waves | `Assets/Scripts/SpawningLogic` | `ArenaDirector` + ScriptableObject sections (`CooldownSectionSO`, `WaveSectionSO`). See **enemy-spawning**. |
 | Player | `Assets/Scripts/Player/**` | `PlayerController` (input events), `PlayerCombo`, `PlayerHealth`. |
 | UI / HUD | `Assets/Scripts/UI/HUD` | Polls weapon/player state; some listen to `WeaponMagazine` events. |
+| Main-menu Shop + IAP | `Assets/Scripts/UI/Menu/Shop`, `Assets/Scripts/Framework/Services/ShopService`, `Assets/Scripts/Monetization` | `IShopService` over an `IStoreGateway`. Not the in-run Goddess shop (`UI/Shop`). See **economy**. |
 | Movement | `Assets/Scripts/Movement` | `ImpulseMover`, `BounceMovementHandler`. |
 | Constants | `Assets/Scripts/Util/Constants.cs` | Tags, scene names, screen bounds, audio keys, multiplayer property keys. |
 
