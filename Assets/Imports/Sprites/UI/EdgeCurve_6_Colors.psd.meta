@@ -1,0 +1,693 @@
+fileFormatVersion: 2
+guid: 7d3ee08afbe05e94ab37d14cbefcf7b8
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2824645436502160834
+    second: EdgeCurve_6_Colors_0
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: EdgeCurve_Cyan_Capsule_Large
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 2019
+        width: 631
+        height: 198
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 100, y: 0, z: 100, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c5b3231f08233720800000000000000
+      internalID: 2824645436502160834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Blue_Capsule_Large
+      rect:
+        serializedVersion: 2
+        x: 1002
+        y: 2019
+        width: 631
+        height: 198
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 100, y: 0, z: 100, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9492f2af96d7814599588d975e10689
+      internalID: 1628623501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Cyan_RoundSquare_Large
+      rect:
+        serializedVersion: 2
+        x: 659
+        y: 2010
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 54, y: 54, z: 54, w: 54}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f32a8880941bc0a43808f0be1cb7af2a
+      internalID: 2111952700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Blue_RoundSquare_Large
+      rect:
+        serializedVersion: 2
+        x: 1639
+        y: 2010
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 54, y: 54, z: 54, w: 54}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0da6eecfc1b4e1b4eb61d71f8fb9c723
+      internalID: -1001994558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Pink_Capsule_Large
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 1286
+        width: 631
+        height: 198
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 100, y: 0, z: 100, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 82aea66fcd155d343ad65fce824bfb05
+      internalID: -740371565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Pink_RoundSquare_Large
+      rect:
+        serializedVersion: 2
+        x: 659
+        y: 1276
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 54, y: 54, z: 54, w: 54}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 29159ae8e1d2a4446b08142e8df12016
+      internalID: -1684822030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Red_Capsule_Large
+      rect:
+        serializedVersion: 2
+        x: 1002
+        y: 1286
+        width: 631
+        height: 198
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 100, y: 0, z: 100, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 980729299cba5b44fbb599ade0b74dca
+      internalID: 63370009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Red_RoundSquare_Large
+      rect:
+        serializedVersion: 2
+        x: 1639
+        y: 1276
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 54, y: 54, z: 54, w: 54}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 026adb05e54a7af4ba7f6452fd6fe382
+      internalID: -960160586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Yellow_Capsule_Large
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 543
+        width: 631
+        height: 198
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 100, y: 0, z: 100, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d40ffefca05af2d4d8ba8286bd76784b
+      internalID: -1401216935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Green_Capsule_Large
+      rect:
+        serializedVersion: 2
+        x: 1002
+        y: 543
+        width: 631
+        height: 198
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 100, y: 0, z: 100, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 639009a7c5af73049974bac0999ad914
+      internalID: 9104030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Yellow_RoundSquare_Large
+      rect:
+        serializedVersion: 2
+        x: 659
+        y: 534
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 54, y: 54, z: 54, w: 54}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 73b9099a96ec4e54ebf946c47c126fd7
+      internalID: 330483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Green_RoundSquare_Large
+      rect:
+        serializedVersion: 2
+        x: 1639
+        y: 534
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 54, y: 54, z: 54, w: 54}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9eef3f5ebe2e1844ebb359e6b6088c8f
+      internalID: -1572345517
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Cyan_Stretch
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 1513
+        width: 245
+        height: 172
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 43, y: 40, z: 43, w: 43}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f2453772f37e6574693365b5ea320f6a
+      internalID: -1707767588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Blue_Stretch
+      rect:
+        serializedVersion: 2
+        x: 1397
+        y: 1513
+        width: 245
+        height: 172
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 43, y: 40, z: 43, w: 43}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 375e5abfbe92b0346922d55f60e2a706
+      internalID: 191569236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Red_Stretch
+      rect:
+        serializedVersion: 2
+        x: 1397
+        y: 779
+        width: 245
+        height: 172
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 43, y: 40, z: 43, w: 43}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5b58644b8a739754d88797736239b07f
+      internalID: 738259086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Green_Stretch
+      rect:
+        serializedVersion: 2
+        x: 1397
+        y: 36
+        width: 245
+        height: 172
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 43, y: 40, z: 43, w: 43}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 81587debd3aa89d4a86d5eb9e795d00c
+      internalID: 1203272753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Pink_Stretch
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 779
+        width: 245
+        height: 172
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 43, y: 40, z: 43, w: 43}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 66191d71b4d6aac4a99b70facf4ea6e8
+      internalID: -904337789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Yellow_Stretch
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 36
+        width: 245
+        height: 172
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 43, y: 40, z: 43, w: 43}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ba778edbd7d1924088e764e73031c8b
+      internalID: -1572825010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Yellow_Circle_Large
+      rect:
+        serializedVersion: 2
+        x: 673
+        y: 23
+        width: 195
+        height: 195
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 42113c5976fb0284ea5f6f98f92d1837
+      internalID: 1092323322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Green_Circle_Large
+      rect:
+        serializedVersion: 2
+        x: 1654
+        y: 23
+        width: 195
+        height: 195
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1dd8ea9d09c0c0143b3a3035a7b15529
+      internalID: 1331242792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Pink_Circle_Large
+      rect:
+        serializedVersion: 2
+        x: 673
+        y: 766
+        width: 195
+        height: 195
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 264bda5ebd7711746b8ee6c4c2bd93df
+      internalID: 611479667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Cyan_Circle_Large
+      rect:
+        serializedVersion: 2
+        x: 673
+        y: 1501
+        width: 195
+        height: 195
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b4e17c8b9d2267e4e8975f986177eade
+      internalID: 1456876230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Red_Circle_Large
+      rect:
+        serializedVersion: 2
+        x: 1654
+        y: 766
+        width: 195
+        height: 195
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 25bb0ab3194aa704193874763a2792cb
+      internalID: 799336501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EdgeCurve_Blue_Circle_Large
+      rect:
+        serializedVersion: 2
+        x: 1654
+        y: 1501
+        width: 195
+        height: 195
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92b7f3b9ee9713a45b8a393944f841c7
+      internalID: -720698426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 8fd60073a36b71c479fbb2a8a48aaad7
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":2.0,"y":3.0},"gridSpriteSize":{"x":1000.0,"y":740.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      EdgeCurve_6_Colors_2: 240698523
+      EdgeCurve_6_Colors_3: -80407147
+      EdgeCurve_6_Colors_4: 1346426512
+      EdgeCurve_6_Colors_5: -6107468
+      EdgeCurve_Blue_Capsule_Large: 1628623501
+      EdgeCurve_Blue_Circle_Large: -720698426
+      EdgeCurve_Blue_RoundSquare_Large: -1001994558
+      EdgeCurve_Blue_Stretch: 191569236
+      EdgeCurve_Cyan_Capsule_Large: 2824645436502160834
+      EdgeCurve_Cyan_Circle_Large: 1456876230
+      EdgeCurve_Cyan_RoundSquare_Large: 2111952700
+      EdgeCurve_Cyan_Stretch: -1707767588
+      EdgeCurve_Green_Capsule_Large: 9104030
+      EdgeCurve_Green_Circle_Large: 1331242792
+      EdgeCurve_Green_RoundSquare_Large: -1572345517
+      EdgeCurve_Green_Stretch: 1203272753
+      EdgeCurve_Pink_Capsule_Large: -740371565
+      EdgeCurve_Pink_Circle_Large: 611479667
+      EdgeCurve_Pink_RoundSquare_Large: -1684822030
+      EdgeCurve_Pink_Stretch: -904337789
+      EdgeCurve_Red_Capsule_Large: 63370009
+      EdgeCurve_Red_Circle_Large: 799336501
+      EdgeCurve_Red_RoundSquare_Large: -960160586
+      EdgeCurve_Red_Stretch: 738259086
+      EdgeCurve_Yellow_Capsule_Large: -1401216935
+      EdgeCurve_Yellow_Circle_Large: 1092323322
+      EdgeCurve_Yellow_RoundSquare_Large: 330483
+      EdgeCurve_Yellow_Stretch: -1572825010
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

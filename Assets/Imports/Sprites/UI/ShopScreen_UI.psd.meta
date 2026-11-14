@@ -466,6 +466,28 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: square_rounded_white
+      rect:
+        serializedVersion: 2
+        x: 903
+        y: 334
+        width: 98
+        height: 100
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88858243f31c28f41b3f8d4279bc46c0
+      internalID: -586023291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -499,6 +521,7 @@ TextureImporter:
       i: -1066506113
       square_rounded_gray: 1249246417
       square_rounded_red: -507099872
+      square_rounded_white: -586023291
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
