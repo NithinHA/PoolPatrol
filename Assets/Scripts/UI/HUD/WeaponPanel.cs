@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using PTL.Framework;
 using Player;
 using UnityEngine;
@@ -14,7 +15,18 @@ namespace UI.HUD
         [SerializeField] private Image           m_WeaponIcon;        // Swapped when weapon changes
         [SerializeField] private CooldownIndicator m_CooldownIndicator;
 
+        [Header("Recoil (weapon icon blast per shot)")]
+        [Tooltip("Scale the icon snaps to the instant a shot fires.")]
+        [SerializeField] private float m_RecoilPeakScale = 1.4f;
+        [Tooltip("Rotation (degrees) the icon snaps to, muzzle kicking upward.")]
+        [SerializeField] private float m_RecoilAngle = 16f;
+        [Tooltip("Canvas units the icon is thrown back along the barrel's opposite direction.")]
+        [SerializeField] private Vector2 m_RecoilOffset = new Vector2(-12f, -8f);
+        [SerializeField] private float m_RecoilSnapDuration = 0.05f;
+        [SerializeField] private float m_RecoilSettleDuration = 0.35f;
+
         private WeaponMagazine _magazine;
+        private Tween _recoilTween;
         private ReloadStyle _reloadStyle;
         private readonly List<BulletIcon> _icons = new List<BulletIcon>();
 
@@ -46,6 +58,7 @@ namespace UI.HUD
             if (_weaponController != null)
                 _weaponController.OnWeaponChanged -= BindWeapon;
             UnbindMagazine();
+            _recoilTween?.Kill();
         }
 
         private void Update()
@@ -183,7 +196,9 @@ namespace UI.HUD
         {
             int spentIndex = newAmmo;
             if (spentIndex >= 0 && spentIndex < _icons.Count)
-                _icons[spentIndex].SetSpent();
+                _icons[spentIndex].Fire();
+
+            PlayRecoil();
 
             if (_pollReload && _reloadStyle == ReloadStyle.BoltAction)
             {
@@ -196,6 +211,31 @@ namespace UI.HUD
                 if (spentIndex >= 0 && spentIndex < _icons.Count)
                     _icons[spentIndex].BeginReload(_reloadStyle);
             }
+        }
+
+        /// <summary>
+        /// Explosive kick on the weapon portrait: it snaps big, tilted and thrown back in a few frames,
+        /// then springs home with an elastic wobble. Every shot restarts it from rest.
+        /// </summary>
+        private void PlayRecoil()
+        {
+            if (m_WeaponIcon == null)
+                return;
+
+            // Complete (not Kill) so rapid fire always restarts from the rest pose.
+            _recoilTween?.Complete();
+
+            RectTransform icon = m_WeaponIcon.rectTransform;
+            Vector2 rest = icon.anchoredPosition;
+
+            Sequence seq = DOTween.Sequence();
+            seq.Append(icon.DOScale(m_RecoilPeakScale, m_RecoilSnapDuration).SetEase(Ease.OutQuad));
+            seq.Join(icon.DOLocalRotate(new Vector3(0f, 0f, m_RecoilAngle), m_RecoilSnapDuration).SetEase(Ease.OutQuad));
+            seq.Join(icon.DOAnchorPos(rest + m_RecoilOffset, m_RecoilSnapDuration).SetEase(Ease.OutQuad));
+            seq.Append(icon.DOScale(1f, m_RecoilSettleDuration).SetEase(Ease.OutElastic, 1.2f, 0.4f));
+            seq.Join(icon.DOLocalRotate(Vector3.zero, m_RecoilSettleDuration).SetEase(Ease.OutElastic, 1.2f, 0.4f));
+            seq.Join(icon.DOAnchorPos(rest, m_RecoilSettleDuration).SetEase(Ease.OutElastic, 1.2f, 0.4f));
+            _recoilTween = seq;
         }
 
         private void OnReloadStarted()

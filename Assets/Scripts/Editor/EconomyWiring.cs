@@ -370,7 +370,9 @@ namespace PoolPatrol.Editor
             GameObject coinWallet = Object.Instantiate(slot.gameObject, parent);
             coinWallet.name = "CoinWallet";
             Object.DestroyImmediate(coinWallet.GetComponent<GemWalletUI>());
-            Object.DestroyImmediate(coinWallet.GetComponent<CollectionTargetMarker>());
+            // The gem target may sit on the wallet's icon child, so clear every copy.
+            foreach (var marker in coinWallet.GetComponentsInChildren<CollectionTargetMarker>(true))
+                Object.DestroyImmediate(marker);
             Object.DestroyImmediate(coinWallet.GetComponent<CanvasGroup>());
             coinWallet.transform.SetAsLastSibling();   // draws over the pause button while sliding
 
@@ -379,16 +381,17 @@ namespace PoolPatrol.Editor
                 layout = coinWallet.AddComponent<LayoutElement>();
             layout.ignoreLayout = true;
 
-            Image icon = coinWallet.transform.Find("bg/gem_icon")?.GetComponent<Image>();
+            // Child paths match the restyled HUD pill (icon / text).
+            Image icon = coinWallet.transform.Find("icon")?.GetComponent<Image>();
             if (icon != null)
             {
-                icon.name = "coin_icon";
-                icon.sprite = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/Knob.psd");
+                Sprite coin = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Prefabs/UI/Menu/ShopScreen/PlaceholderArt/coin.png");
+                icon.sprite = coin != null ? coin : AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/Knob.psd");
                 icon.color = CoinGold;
                 icon.preserveAspect = true;
             }
 
-            TMP_Text count = coinWallet.transform.Find("label/text")?.GetComponent<TMP_Text>();
+            TMP_Text count = coinWallet.transform.Find("text")?.GetComponent<TMP_Text>();
 
             var ui = coinWallet.AddComponent<CoinWalletUI>();
             var so = new SerializedObject(ui);

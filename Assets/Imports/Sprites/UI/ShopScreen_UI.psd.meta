@@ -488,6 +488,50 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: ShopScreen_container_circleShadow_blue
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 435
+        width: 84
+        height: 89
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 474a9d896b92e7f4abac23f4400bf995
+      internalID: 1499480660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ShopScreen_container_circle_blue
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 434
+        width: 110
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a481d25a0c4bdc46b7a36748b8c16d4
+      internalID: 733101145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -508,6 +552,8 @@ TextureImporter:
       ShopScreen_banner_red: -659977688
       ShopScreen_container: -149359569
       ShopScreen_container_blue: -1825914444
+      ShopScreen_container_circleShadow_blue: 1499480660
+      ShopScreen_container_circle_blue: 733101145
       ShopScreen_container_rounded_blue: 1532347647
       ShopScreen_container_yellow: -177287322
       ShopScreen_heading_white: -1066506113

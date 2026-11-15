@@ -2,6 +2,7 @@ using DG.Tweening;
 using PTL.Framework;
 using PTL.Framework.Services;
 using TMPro;
+using UI.HUD;
 using UnityEngine;
 
 namespace Economy.UI
@@ -140,10 +141,6 @@ namespace Economy.UI
 
         private Vector2 HiddenPosition() => ShownPosition() + Vector2.up * m_HiddenOffset;
 
-        private void SetCount(int value)
-        {
-            if (m_CountText != null)
-                m_CountText.text = value.ToString();
-        }
+        private void SetCount(int value) => HudNumberText.SetGrouped(m_CountText, value);
     }
 }

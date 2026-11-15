@@ -6,19 +6,31 @@ using Weapon;
 namespace UI.HUD
 {
     /// <summary>
-    /// Single ammo indicator for WeaponIndicator (new). Drives the bullet_fill
-    /// child: fill amount represents load progress, scale/punch/pulse effects
-    /// sell the shoot and reload beats.
+    /// Single ammo indicator for WeaponIndicator (new). The root Image is the empty socket (what a
+    /// spent round looks like); the bullet_fill child is the live round, whose fill amount represents
+    /// load progress. Firing plays a short beat: the round flashes white and pops up in size, then
+    /// shrinks back while dimming to grey and fading out, leaving the empty socket.
+    ///
+    /// Everything is a handful of DOTween tweens on existing RectTransforms — no particle systems.
     /// </summary>
     public class BulletIcon : MonoBehaviour
     {
         [SerializeField] private Image m_BulletFill;
         [SerializeField] private float m_SpentScale = 0.67f;
-        [Header("Shoot punch")]
-        [SerializeField] private float m_ShootPunchScale = 0.35f;
-        [SerializeField] private float m_ShootPunchDuration = 0.25f;
-        [SerializeField] private int   m_ShootPunchVibrato = 8;
-        [SerializeField] private float m_ShootPunchElasticity = 0.8f;
+
+        [Header("Colors")]
+        [SerializeField] private Color m_LiveColor = Color.white;
+        [SerializeField] private Color m_FlashColor = Color.white;
+        [SerializeField] private Color m_SpentColor = new Color(0.45f, 0.48f, 0.55f, 1f);
+
+        [Header("Fire")]
+        [Tooltip("Scale the round pops to on the flash, before it shrinks into a spent casing.")]
+        [SerializeField] private float m_FirePopScale = 1.75f;
+        [SerializeField] private float m_FirePopDuration = 0.07f;
+        [Tooltip("Pop → grey. The socket underneath is what remains.")]
+        [SerializeField] private float m_FireDimDuration = 0.2f;
+        [SerializeField] private float m_FireFadeDuration = 0.1f;
+
         [Header("Reload pulse (looping while a bullet is loading)")]
         [SerializeField] private float m_ReloadPulseScale = 0.12f;
         [SerializeField] private float m_ReloadPulseDuration = 0.35f;
@@ -28,8 +40,10 @@ namespace UI.HUD
         [SerializeField] private Ease  m_EaseMode = Ease.OutBack;
 
         private RectTransform _fillRect;
+
         private Tween _scaleTween;
         private Tween _pulseTween;
+        private Tween _fireTween;
 
         private void Awake()
         {
@@ -41,22 +55,45 @@ namespace UI.HUD
         /// </summary>
         public void SetLive()
         {
-            KillTweens();
+            KillRoundTweens();
             m_BulletFill.fillAmount = 1f;
+            m_BulletFill.color = m_LiveColor;
             _fillRect.localScale = Vector3.one;
         }
 
         /// <summary>
-        /// Called immediately after the shot fires. Fill drops instantly and
-        /// the icon gives a punchy recoil kick for extra juice.
+        /// Shows the slot as empty with no animation — initial build and bookkeeping resets.
+        /// For the shot itself use <see cref="Fire"/>.
         /// </summary>
         public void SetSpent()
         {
-            KillTweens();
+            KillRoundTweens();
             m_BulletFill.fillAmount = 0f;
+            m_BulletFill.color = m_LiveColor;
             _fillRect.localScale = Vector3.one * m_SpentScale;
-            _scaleTween = _fillRect.DOPunchScale(Vector3.one * m_ShootPunchScale, m_ShootPunchDuration,
-                m_ShootPunchVibrato, m_ShootPunchElasticity);
+        }
+
+        /// <summary>
+        /// This round was just fired: flash white, pop big, then shrink and grey out to the empty socket.
+        /// </summary>
+        public void Fire()
+        {
+            KillRoundTweens();
+
+            m_BulletFill.fillAmount = 1f;
+            m_BulletFill.color = m_FlashColor;
+            _fillRect.localScale = Vector3.one;
+
+            Color spentClear = m_SpentColor;
+            spentClear.a = 0f;
+
+            Sequence seq = DOTween.Sequence();
+            seq.Append(_fillRect.DOScale(m_FirePopScale, m_FirePopDuration).SetEase(Ease.OutQuad));
+            seq.Append(_fillRect.DOScale(m_SpentScale, m_FireDimDuration).SetEase(Ease.InQuad));
+            seq.Join(m_BulletFill.DOColor(m_SpentColor, m_FireDimDuration).SetEase(Ease.OutQuad));
+            seq.Append(m_BulletFill.DOColor(spentClear, m_FireFadeDuration).SetEase(Ease.InQuad));
+            seq.OnComplete(SetSpent);
+            _fireTween = seq;
         }
 
         /// <summary>
@@ -66,8 +103,8 @@ namespace UI.HUD
         /// </summary>
         public void BeginReload(ReloadStyle style)
         {
-            _scaleTween?.Kill();
-            _pulseTween?.Kill();
+            KillRoundTweens();
+            m_BulletFill.color = m_LiveColor;
 
             _fillRect.localScale = Vector3.one * m_SpentScale;
             _pulseTween = _fillRect
@@ -92,10 +129,9 @@ namespace UI.HUD
         /// </summary>
         public void CompleteReload()
         {
+            KillRoundTweens();
             m_BulletFill.fillAmount = 1f;
-
-            _pulseTween?.Kill();
-            _scaleTween?.Kill();
+            m_BulletFill.color = m_LiveColor;
             _fillRect.localScale = Vector3.one * m_SpentScale;
 
             Sequence pop = DOTween.Sequence();
@@ -106,12 +142,14 @@ namespace UI.HUD
             _scaleTween = pop;
         }
 
-        private void KillTweens()
+        private void KillRoundTweens()
         {
             _scaleTween?.Kill();
             _pulseTween?.Kill();
+            _fireTween?.Kill();
+            _scaleTween = _pulseTween = _fireTween = null;
         }
 
-        private void OnDestroy() => KillTweens();
+        private void OnDestroy() => KillRoundTweens();
     }
 }

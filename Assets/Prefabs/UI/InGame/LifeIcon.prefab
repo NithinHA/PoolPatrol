@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 80, y: 80}
+  m_SizeDelta: {x: 52, y: 52}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2787347466045670577
 CanvasRenderer:
@@ -91,4 +91,4 @@ MonoBehaviour:
   m_Image: {fileID: 3597861261235194985}
   m_AnimDuration: 0.25
   m_ActiveColor: {r: 1, g: 0.8862745, b: 0.27058825, a: 1}
-  m_InactiveColor: {r: 0.41568628, g: 0.41568628, b: 0.41568628, a: 1}
+  m_InactiveColor: {r: 0.55, g: 0.6, b: 0.7, a: 1}

@@ -118,10 +118,10 @@ TextureImporter:
       name: icon_retry
       rect:
         serializedVersion: 2
-        x: 1021
-        y: 646
-        width: 207
-        height: 212
+        x: 576
+        y: 284
+        width: 130
+        height: 134
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,35 +137,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: button_bg_transparent_3
-      rect:
-        serializedVersion: 2
-        x: 44
-        y: 660
-        width: 715
-        height: 204
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1041a107b71e6bf4baa44726301d4ad0
-      internalID: -46876590
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: icon_play
       rect:
         serializedVersion: 2
-        x: 816
-        y: 659
-        width: 157
-        height: 189
+        x: 472
+        y: 292
+        width: 94
+        height: 118
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,35 +159,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: circle_bg_transparent_3
-      rect:
-        serializedVersion: 2
-        x: 799
-        y: 389
-        width: 223
-        height: 221
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: da11ea200f8da604680129b944c780ce
-      internalID: 1261458627
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: icon_music
       rect:
         serializedVersion: 2
-        x: 840
-        y: 188
-        width: 145
-        height: 161
+        x: 295
+        y: 32
+        width: 91
+        height: 101
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -228,10 +184,10 @@ TextureImporter:
       name: icon_home
       rect:
         serializedVersion: 2
-        x: 1280
-        y: 657
-        width: 207
-        height: 206
+        x: 460
+        y: 152
+        width: 129
+        height: 128
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -250,13 +206,13 @@ TextureImporter:
       name: button_bg_transparent_2
       rect:
         serializedVersion: 2
-        x: 44
-        y: 428
-        width: 715
-        height: 204
+        x: 1
+        y: 291
+        width: 453
+        height: 129
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 64, y: 0, z: 64, w: 0}
       customData: 
       outline: []
       physicsShape: []
@@ -272,13 +228,13 @@ TextureImporter:
       name: button_bg_transparent_1
       rect:
         serializedVersion: 2
-        x: 44
-        y: 195
-        width: 715
-        height: 204
+        x: 1
+        y: 156
+        width: 453
+        height: 129
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 64, y: 0, z: 64, w: 0}
       customData: 
       outline: []
       physicsShape: []
@@ -294,10 +250,10 @@ TextureImporter:
       name: circle_bg_transparent_2
       rect:
         serializedVersion: 2
-        x: 1038
-        y: 389
-        width: 223
-        height: 221
+        x: 2
+        y: 15
+        width: 139
+        height: 138
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -316,10 +272,10 @@ TextureImporter:
       name: circle_bg_transparent_1
       rect:
         serializedVersion: 2
-        x: 1275
-        y: 389
-        width: 223
-        height: 221
+        x: 147
+        y: 15
+        width: 137
+        height: 137
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -338,10 +294,10 @@ TextureImporter:
       name: icon_sound
       rect:
         serializedVersion: 2
-        x: 1041
-        y: 173
-        width: 198
-        height: 180
+        x: 401
+        y: 32
+        width: 124
+        height: 113
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -360,10 +316,10 @@ TextureImporter:
       name: icon_haptic
       rect:
         serializedVersion: 2
-        x: 1280
-        y: 183
-        width: 178
-        height: 172
+        x: 533
+        y: 29
+        width: 113
+        height: 108
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
