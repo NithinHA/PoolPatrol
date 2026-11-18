@@ -71,6 +71,12 @@ namespace Weapon
         public event Action<int> OnReloadComplete;
 
         /// <summary>
+        /// The trigger was pulled with no round available (magazine empty, or still reloading with
+        /// nothing loaded). Not raised for a shot blocked only by the fire cooldown.
+        /// </summary>
+        public event Action OnDryFire;
+
+        /// <summary>
         /// Capacity changed via <see cref="Reconfigure"/> (e.g. the "Extended Mag" ability).
         /// Passes the new size. UI should rebuild its per-bullet icons in response — capacity
         /// doesn't change every tick like ammo/reload does, so this is its own event rather than
@@ -202,6 +208,7 @@ namespace Weapon
                 {
                     // MagazineAtOnce OR BoltAction with 0 ammo.
                     InterruptReload();
+                    OnDryFire?.Invoke();
                     return false;
                 }
             }
@@ -209,6 +216,7 @@ namespace Weapon
             {
                 // Not reloading but empty? Trigger auto-reload.
                 BeginReload();
+                OnDryFire?.Invoke();
                 return false;
             }
 

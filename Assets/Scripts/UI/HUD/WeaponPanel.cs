@@ -25,14 +25,44 @@ namespace UI.HUD
         [SerializeField] private float m_RecoilSnapDuration = 0.05f;
         [SerializeField] private float m_RecoilSettleDuration = 0.35f;
 
+        [Header("Reloading (weapon icon)")]
+        [Tooltip("While reloading, the icon's alpha breathes between these on a sine.")]
+        [SerializeField, Range(0f, 1f)] private float m_ReloadAlphaMin = 0.5f;
+        [SerializeField, Range(0f, 1f)] private float m_ReloadAlphaMax = 0.85f;
+        [Tooltip("Seconds for one half of the breath (max → min).")]
+        [SerializeField] private float m_ReloadAlphaHalfPeriod = 0.45f;
+        [Tooltip("Scale the icon pops to when the reload completes.")]
+        [SerializeField] private float m_ReloadPopScale = 1.3f;
+        [SerializeField] private float m_ReloadPopDuration = 0.35f;
+
         private WeaponMagazine _magazine;
         private Tween _recoilTween;
+        private Tween _reloadPopTween;
+
+        // Reload alpha pulse. Alpha goes through the icon's CanvasRenderer (no mesh rebuild, and it
+        // multiplies over the Image colour rather than replacing it); the tween delegates are cached
+        // so starting/stopping the pulse allocates nothing beyond the tween itself.
+        private Tween _reloadPulseTween;
+        // The pulse tweens its own 0..1 phase (mapped onto max→min alpha), not the alpha itself:
+        // DOTween reads a getter tween's start value lazily, so tweening alpha directly would pick up
+        // the full-alpha hold of a shot that lands before the pulse's first update.
+        private float _pulsePhase;
+        private DG.Tweening.Core.DOGetter<float> _pulseGetter;
+        private DG.Tweening.Core.DOSetter<float> _pulseSetter;
+        private TweenCallback _resumeReloadPulse;
         private ReloadStyle _reloadStyle;
         private readonly List<BulletIcon> _icons = new List<BulletIcon>();
 
         private bool _pollReload;   // True only while a reload is in progress — gates the Update poll.
 
         private PlayerWeaponController _weaponController;
+
+        private void Awake()
+        {
+            _pulseGetter = () => _pulsePhase;
+            _pulseSetter = SetPulsePhase;
+            _resumeReloadPulse = ResumeReloadPulse;
+        }
 
         private void Start()
         {
@@ -59,6 +89,8 @@ namespace UI.HUD
                 _weaponController.OnWeaponChanged -= BindWeapon;
             UnbindMagazine();
             _recoilTween?.Kill();
+            _reloadPopTween?.Kill();
+            _reloadPulseTween?.Kill();
         }
 
         private void Update()
@@ -107,8 +139,13 @@ namespace UI.HUD
             _magazine.OnBulletReloaded += OnBulletReloaded;
             _magazine.OnReloadComplete += OnReloadComplete;
             _magazine.OnMagazineSizeChanged += OnMagazineSizeChanged;
+            _magazine.OnDryFire += OnDryFire;
 
             m_CooldownIndicator?.Bind(_magazine);
+
+            // A weapon swapped in mid-reload picks the pulse up straight away.
+            if (_magazine.IsReloading)
+                StartReloadPulse();
         }
 
         /// <summary>
@@ -142,8 +179,10 @@ namespace UI.HUD
             _magazine.OnBulletReloaded -= OnBulletReloaded;
             _magazine.OnReloadComplete -= OnReloadComplete;
             _magazine.OnMagazineSizeChanged -= OnMagazineSizeChanged;
+            _magazine.OnDryFire -= OnDryFire;
 
             m_CooldownIndicator?.Bind(null);
+            StopReloadPulse();
             _magazine = null;
         }
 
@@ -198,7 +237,10 @@ namespace UI.HUD
             if (spentIndex >= 0 && spentIndex < _icons.Count)
                 _icons[spentIndex].Fire();
 
+            // Shooting mid-reload (BoltAction): the breathing pauses at full alpha for the kick and
+            // picks back up when the recoil settles.
             PlayRecoil();
+            PauseReloadPulse();
 
             if (_pollReload && _reloadStyle == ReloadStyle.BoltAction)
             {
@@ -224,6 +266,7 @@ namespace UI.HUD
 
             // Complete (not Kill) so rapid fire always restarts from the rest pose.
             _recoilTween?.Complete();
+            _reloadPopTween?.Complete();
 
             RectTransform icon = m_WeaponIcon.rectTransform;
             Vector2 rest = icon.anchoredPosition;
@@ -235,12 +278,94 @@ namespace UI.HUD
             seq.Append(icon.DOScale(1f, m_RecoilSettleDuration).SetEase(Ease.OutElastic, 1.2f, 0.4f));
             seq.Join(icon.DOLocalRotate(Vector3.zero, m_RecoilSettleDuration).SetEase(Ease.OutElastic, 1.2f, 0.4f));
             seq.Join(icon.DOAnchorPos(rest, m_RecoilSettleDuration).SetEase(Ease.OutElastic, 1.2f, 0.4f));
+            seq.OnComplete(_resumeReloadPulse);
             _recoilTween = seq;
         }
+
+#region Reload visuals (weapon icon)
+
+        private void SetIconAlpha(float alpha)
+        {
+            if (m_WeaponIcon != null)
+                m_WeaponIcon.canvasRenderer.SetAlpha(alpha);
+        }
+
+        private void SetPulsePhase(float phase)
+        {
+            _pulsePhase = phase;
+            SetIconAlpha(Mathf.Lerp(m_ReloadAlphaMax, m_ReloadAlphaMin, phase));
+        }
+
+        private bool RecoilPlaying => _recoilTween != null && _recoilTween.IsActive() && _recoilTween.IsPlaying();
+
+        /// <summary>Starts the reload breathing; if a shot is still kicking, it waits for the kick to settle.</summary>
+        private void StartReloadPulse()
+        {
+            if (m_WeaponIcon == null)
+                return;
+
+            _reloadPulseTween?.Kill();
+            SetPulsePhase(0f);
+            _reloadPulseTween = DOTween.To(_pulseGetter, _pulseSetter, 1f, m_ReloadAlphaHalfPeriod)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo);
+
+            if (RecoilPlaying)
+                PauseReloadPulse();
+        }
+
+        /// <summary>Holds the breathing at full alpha (a shot is kicking). No-op when not reloading.</summary>
+        private void PauseReloadPulse()
+        {
+            if (_reloadPulseTween == null || !_reloadPulseTween.IsActive())
+                return;
+
+            _reloadPulseTween.Pause();
+            SetIconAlpha(1f);
+        }
+
+        /// <summary>Recoil settled: carry on breathing from where it paused, if still reloading.</summary>
+        private void ResumeReloadPulse()
+        {
+            if (_reloadPulseTween != null && _reloadPulseTween.IsActive() && _magazine != null && _magazine.IsReloading)
+                _reloadPulseTween.Play();
+        }
+
+        private void StopReloadPulse()
+        {
+            _reloadPulseTween?.Kill();
+            _reloadPulseTween = null;
+            SetIconAlpha(1f);
+        }
+
+        /// <summary>Reload done: full alpha and a scale pop so the "ready" moment reads.</summary>
+        private void PlayReloadPop()
+        {
+            if (m_WeaponIcon == null)
+                return;
+
+            _recoilTween?.Complete();
+            _reloadPopTween?.Complete();
+
+            RectTransform icon = m_WeaponIcon.rectTransform;
+            Sequence seq = DOTween.Sequence();
+            seq.Append(icon.DOScale(m_ReloadPopScale, m_ReloadPopDuration * 0.35f).SetEase(Ease.OutQuad));
+            seq.Append(icon.DOScale(1f, m_ReloadPopDuration * 0.65f).SetEase(Ease.OutBack, 2.5f));
+            _reloadPopTween = seq;
+        }
+
+        private void OnDryFire()
+        {
+            for (int i = 0; i < _icons.Count; i++)
+                _icons[i].DryFire();
+        }
+
+#endregion
 
         private void OnReloadStarted()
         {
             _pollReload = true;
+            StartReloadPulse();
 
             if (_magazine == null) return;
             for (int i = _magazine.CurrentAmmo; i < _icons.Count; i++)
@@ -263,6 +388,9 @@ namespace UI.HUD
             _pollReload = false;
             for (int i = 0; i < _icons.Count; i++)
                 _icons[i].CompleteReload();
+
+            StopReloadPulse();
+            PlayReloadPop();
         }
     }
 }

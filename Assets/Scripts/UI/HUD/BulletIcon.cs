@@ -39,15 +39,47 @@ namespace UI.HUD
         [SerializeField] private float m_ReloadCompleteScaleDuration = 0.35f;
         [SerializeField] private Ease  m_EaseMode = Ease.OutBack;
 
+        [Header("Dry fire (trigger pulled on an empty magazine)")]
+        [SerializeField] private float m_DryShakeStrength = 9f;
+        [SerializeField] private float m_DryShakeDuration = 0.3f;
+        [SerializeField] private int   m_DryShakeVibrato = 40;
+        [Tooltip("Multiplied over the socket and round for an instant, then fades back to normal.")]
+        [SerializeField] private Color m_DryTint = new Color(1f, 0.42f, 0.28f, 1f);
+
+        private RectTransform _rect;
         private RectTransform _fillRect;
+        private CanvasRenderer _socketRenderer;
+        private CanvasRenderer _fillRenderer;
 
         private Tween _scaleTween;
         private Tween _pulseTween;
         private Tween _fireTween;
+        private TweenCallback _onFireComplete;
+
+        // Set when reload begins while the fire pop is still playing: the reload visual starts once
+        // the pop finishes, rather than cutting it off mid-flash.
+        private bool _reloadPending;
+
+        private bool FirePlaying => _fireTween != null && _fireTween.IsActive();
+
+        // Dry-fire flourish: independent of the round's state tweens, so it never interrupts a reload.
+        private Tween _dryShakeTween;
+        private Tween _dryTintTween;
+        private float _dryTint;                       // 0 = normal, 1 = full tint
+        private DG.Tweening.Core.DOGetter<float> _dryTintGetter;
+        private DG.Tweening.Core.DOSetter<float> _dryTintSetter;
 
         private void Awake()
         {
+            _rect = (RectTransform)transform;
             _fillRect = m_BulletFill.rectTransform;
+            _socketRenderer = GetComponent<CanvasRenderer>();
+            _fillRenderer = m_BulletFill.canvasRenderer;
+
+            // Cached once: every dry fire reuses these instead of allocating closures.
+            _dryTintGetter = () => _dryTint;
+            _dryTintSetter = ApplyDryTint;
+            _onFireComplete = OnFireComplete;
         }
 
         /// <summary>
@@ -92,19 +124,44 @@ namespace UI.HUD
             seq.Append(_fillRect.DOScale(m_SpentScale, m_FireDimDuration).SetEase(Ease.InQuad));
             seq.Join(m_BulletFill.DOColor(m_SpentColor, m_FireDimDuration).SetEase(Ease.OutQuad));
             seq.Append(m_BulletFill.DOColor(spentClear, m_FireFadeDuration).SetEase(Ease.InQuad));
-            seq.OnComplete(SetSpent);
+            seq.OnComplete(_onFireComplete);
             _fireTween = seq;
+        }
+
+        private void OnFireComplete()
+        {
+            _fireTween = null;
+            bool reload = _reloadPending;
+            SetSpent();
+            if (reload)
+                StartReloadVisual();
         }
 
         /// <summary>
         /// Begins the reload animation state: fill is driven by WeaponPanel via
         /// SetReloadProgress(t), while the icon gently pulsates to read as
-        /// "charging" until the reload completes.
+        /// "charging" until the reload completes. A round still playing its fire pop finishes that
+        /// first, then starts reloading.
         /// </summary>
         public void BeginReload(ReloadStyle style)
         {
+            if (FirePlaying)
+            {
+                _reloadPending = true;
+                return;
+            }
+
+            StartReloadVisual();
+        }
+
+        private void StartReloadVisual()
+        {
             KillRoundTweens();
             m_BulletFill.color = m_LiveColor;
+            // Every reload starts this slot from empty; WeaponPanel feeds the progress from here.
+            // Without this, a slot whose fire pop was interrupted kept fillAmount = 1 and showed as
+            // a full round until its turn to load came round.
+            m_BulletFill.fillAmount = 0f;
 
             _fillRect.localScale = Vector3.one * m_SpentScale;
             _pulseTween = _fillRect
@@ -119,6 +176,9 @@ namespace UI.HUD
         /// </summary>
         public void SetReloadProgress(float t)
         {
+            // The fire pop owns the fill until it finishes (see BeginReload).
+            if (FirePlaying)
+                return;
             m_BulletFill.fillAmount = t;
         }
 
@@ -142,14 +202,47 @@ namespace UI.HUD
             _scaleTween = pop;
         }
 
+        /// <summary>
+        /// The trigger was pulled with nothing to fire: a hard positional shake with a red-orange
+        /// flash that fades back out. Runs alongside whatever state the round is in (reloading,
+        /// spent), without touching it.
+        /// </summary>
+        public void DryFire()
+        {
+            // Complete (not Kill): a shake that is cut short would leave the icon off its ring slot.
+            _dryShakeTween?.Complete();
+            _dryShakeTween = _rect.DOShakeAnchorPos(m_DryShakeDuration, m_DryShakeStrength, m_DryShakeVibrato, 90f, false, true);
+
+            // The tint goes through the CanvasRenderers, not Image.color: it multiplies over the
+            // round's own colour (so it never fights the fire/reload colour tweens) and does not
+            // rebuild the UI mesh.
+            _dryTintTween?.Kill();
+            ApplyDryTint(1f);
+            _dryTintTween = DOTween.To(_dryTintGetter, _dryTintSetter, 0f, m_DryShakeDuration).SetEase(Ease.InQuad);
+        }
+
+        private void ApplyDryTint(float t)
+        {
+            _dryTint = t;
+            Color c = Color.LerpUnclamped(Color.white, m_DryTint, t);
+            if (_socketRenderer != null) _socketRenderer.SetColor(c);
+            _fillRenderer.SetColor(c);
+        }
+
         private void KillRoundTweens()
         {
             _scaleTween?.Kill();
             _pulseTween?.Kill();
             _fireTween?.Kill();
             _scaleTween = _pulseTween = _fireTween = null;
+            _reloadPending = false;
         }
 
-        private void OnDestroy() => KillRoundTweens();
+        private void OnDestroy()
+        {
+            KillRoundTweens();
+            _dryShakeTween?.Kill();
+            _dryTintTween?.Kill();
+        }
     }
 }
