@@ -1,4 +1,3 @@
-using DG.Tweening;
 using PTL.Framework;
 using PTL.Framework.Services;
 using TMPro;
@@ -9,19 +8,19 @@ namespace Economy.UI
 {
     /// <summary>
     /// HUD wallet showing the current run's Gems balance. Listens to the economy service and
-    /// refreshes its label whenever the balance changes; the gem icon punches when gems arrive.
-    /// Put a <see cref="CollectionTargetMarker"/> (id = GemWallet) on the icon so gems fly into it.
+    /// refreshes its label whenever the balance changes. Its <see cref="CollectionIconTarget"/> is
+    /// where gems fly to; the icon shakes as each one arrives.
     /// </summary>
     public class GemWalletUI : MonoBehaviour
     {
         [SerializeField] private TMP_Text m_CountText;
-        [Tooltip("Optional. Punched whenever the balance goes up.")]
-        [SerializeField] private RectTransform m_Icon;
-        [SerializeField] private float m_IconPunchScale = 0.3f;
-        [SerializeField] private float m_IconPunchDuration = 0.25f;
+        [SerializeField] private CollectionIconTarget m_IconTarget;
 
         private IEconomyService _economy;
-        private Tween _punchTween;
+
+        private void OnEnable() => m_IconTarget.Enable(CollectionTargetId.GemWallet);
+
+        private void OnDisable() => m_IconTarget.Disable();
 
         private void Start()
         {
@@ -40,24 +39,12 @@ namespace Economy.UI
         {
             if (_economy != null)
                 _economy.OnBalanceChanged -= OnBalanceChanged;
-            _punchTween?.Kill();
         }
 
         private void OnBalanceChanged(CurrencyType type, int newBalance, int delta)
         {
-            if (type != CurrencyType.Gems)
-                return;
-
-            Refresh(newBalance);
-
-            if (delta > 0 && m_Icon != null)
-            {
-                // Complete (not Kill) so back-to-back gems never leave the icon mid-punch.
-                _punchTween?.Complete();
-                // Unscaled: gems can also be granted while the Goddess shop has time frozen.
-                _punchTween = m_Icon.DOPunchScale(Vector3.one * m_IconPunchScale, m_IconPunchDuration, 6, 0.6f)
-                    .SetUpdate(true);
-            }
+            if (type == CurrencyType.Gems)
+                Refresh(newBalance);
         }
 
         private void Refresh(int value) => HudNumberText.SetGrouped(m_CountText, value);

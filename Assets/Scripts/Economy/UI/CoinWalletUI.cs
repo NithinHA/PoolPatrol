@@ -19,14 +19,18 @@ namespace Economy.UI
     ///
     /// Setup: a sibling of the gem wallet with the same anchors and pivot, excluded from any layout
     /// group (LayoutElement.ignoreLayout). Its shown position is read from <see cref="m_Slot"/> (the
-    /// gem wallet), and the slot is also registered as the <see cref="CollectionTargetId.CoinWallet"/>
-    /// target, so pouches fly to where the wallet lands rather than where it starts.
+    /// gem wallet), and the icon target is registered as the <see cref="CollectionTargetId.CoinWallet"/>
+    /// target, so pouches fly to where the icon lands rather than where it starts.
     /// </summary>
     public class CoinWalletUI : MonoBehaviour
     {
         [Tooltip("The sliding panel. Defaults to this object, which must be a sibling of the slot.")]
         [SerializeField] private RectTransform m_Panel;
         [SerializeField] private TMP_Text m_CountText;
+
+        [Header("Icon")]
+        [Tooltip("Backdrop pouches fly to (at the slot, where the wallet lands) and the icon that shakes on arrival.")]
+        [SerializeField] private CollectionIconTarget m_IconTarget;
 
         [Header("Slot")]
         [Tooltip("The gem wallet: where this panel slides to, and what is hidden while it shows.")]
@@ -55,15 +59,21 @@ namespace Economy.UI
                 m_Panel = (RectTransform)transform;
         }
 
-        private void OnEnable()
-        {
-            if (m_Slot != null)
-                CollectionTargets.Register(CollectionTargetId.CoinWallet, m_Slot);
-        }
+        private void OnEnable() => m_IconTarget.Enable(CollectionTargetId.CoinWallet, LandingPosition);
 
-        private void OnDisable()
+        private void OnDisable() => m_IconTarget.Disable();
+
+        /// <summary>
+        /// Where the coin icon backdrop will be once the panel has slid into its slot. The panel waits
+        /// off-screen when a pouch starts flying, so the backdrop's own position is no use; shifting it by
+        /// the panel-to-slot offset gives the landing spot without caring about icon size or layout.
+        /// </summary>
+        private Vector3 LandingPosition()
         {
-            CollectionTargets.Unregister(CollectionTargetId.CoinWallet);
+            RectTransform anchor = m_IconTarget.Anchor;
+            if (anchor == null)
+                return m_Slot != null ? m_Slot.position : m_Panel.position;
+            return m_Slot != null ? anchor.position + (m_Slot.position - m_Panel.position) : anchor.position;
         }
 
         private void Start()

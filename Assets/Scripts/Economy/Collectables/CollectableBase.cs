@@ -279,7 +279,12 @@ namespace Economy
                 transform.DOMove(targetWorld, m_FlyToUiDuration).SetEase(m_FlyToUiEase);
                 transform.DOScale(Vector3.zero, m_FlyToUiDuration)
                     .SetEase(Ease.InQuad)
-                    .OnComplete(Despawn);
+                    .OnComplete(() =>
+                    {
+                        // Arrival is what the HUD icon reacts to (shake), so it fires per item.
+                        CollectionTargets.NotifyArrived(TargetId);
+                        Despawn();
+                    });
             }
             else
             {
